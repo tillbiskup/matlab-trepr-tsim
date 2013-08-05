@@ -76,16 +76,22 @@ global inifactor
 probename = input('Enter probename :','s');
 filename = [probename,'_spectrum.dat'];
 spectrum = load(filename);
-filename_fsc2_data = input('Enter filename :','s');
 
+filename_fsc2_data = input('Enter filename :','s');
 
 % The experimental data are read out and displayed by the function
 % <read_fsc2_data> Only the parameter frequency and field_params are used.
 % frequency is the microwave-frequency and with field_params the number of
 % points (number_of_points) of the measurement and therefore the
 % fit-function are calculated
-[data, frequency, field_params, scope_params, time_params] = read_fsc2_data ( filename_fsc2_data );
-number_of_Points = 1+abs((field_params(1)-field_params(2))/field_params(3));
+
+%-% 2013-08-05 (TB) Changed to trEPRfsc2Load, as the original function
+%-% doesn't exist any more...
+data = trEPRfsc2Load(filename_fsc2_data);
+%[data, frequency, field_params, scope_params, time_params] = read_fsc2_data ( filename_fsc2_data );
+frequency = data.parameters.bridge.MWfrequency;
+
+number_of_Points = length(spectrum); %1+abs((field_params(1)-field_params(2))/field_params(3));
 	
 	
 % This while-loop is enclosing the whole progamm. user_input is a variable

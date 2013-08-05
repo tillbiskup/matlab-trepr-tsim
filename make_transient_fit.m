@@ -73,11 +73,7 @@ global spectrum
 global inifactor
 
 
-probename = input('Enter probename :','s');
-filename = [probename,'_spectrum.dat'];
-spectrum = load(filename);
-
-filename_fsc2_data = input('Enter filename :','s');
+filename = input('Enter filename :','s');
 
 % The experimental data are read out and displayed by the function
 % <read_fsc2_data> Only the parameter frequency and field_params are used.
@@ -87,11 +83,39 @@ filename_fsc2_data = input('Enter filename :','s');
 
 %-% 2013-08-05 (TB) Changed to trEPRfsc2Load, as the original function
 %-% doesn't exist any more...
-data = trEPRfsc2Load(filename_fsc2_data);
-%[data, frequency, field_params, scope_params, time_params] = read_fsc2_data ( filename_fsc2_data );
-frequency = data.parameters.bridge.MWfrequency;
+data = trEPRload(filename);
 
-number_of_Points = length(spectrum); %1+abs((field_params(1)-field_params(2))/field_params(3));
+% First column in "spectrum" is B0 axis
+spectrum(:,1) = data.axes.y.values;
+
+% Check whether data are 2D or 1D, and in case of 2D, take maximum
+if min(size(data.data)) > 1
+    % For the time being, perform a pretrigger offset compensation on the
+    % data... (should be done by the user manually or within the toolbox,
+    % respectively.)
+    data.data = trEPRPOC(...
+        data.data,data.parameters.transient.triggerPosition);
+    % In case of fsc2 data, perform BGC
+    if isfield(data,'file') && isfield(data.file,'format') ...
+            && strcmpi(data.file.format,'fsc2')
+        data.data = trEPRBGC(data.data);
+    end
+    % Take maximum
+    [~,idxMax] = max(max(data.data));
+    spectrum(:,2) = data.data(:,idxMax);
+else
+    spectrum(:,2) = data.data;
+end
+
+frequency = data.parameters.bridge.MWfrequency.value;
+% In case we couldn't read a frequency value from the (too old) fsc2 file,
+% assume some reasonable value... (that works with the provided example
+% files).
+if isempty(frequency)
+    frequency = 9.67737;
+end
+
+npts = length(spectrum);
 	
 	
 % This while-loop is enclosing the whole progamm. user_input is a variable
@@ -116,7 +140,7 @@ while user_input ~= 1
     % number_of_Points were read out by the function <read_fsc2_data>
     g = 2.0034;
     Sys = struct('S', 1, 'g', [g g g]);
-    Exp = struct('mwFreq', frequency, 'nPoints', number_of_Points,'Harmonic',0);
+    Exp = struct('mwFreq', frequency, 'nPoints', npts,'Harmonic',0);
     
     
     % INITILIZATION OF THE FIT-PARAMETERS by using the sub-function
@@ -189,12 +213,12 @@ while user_input ~= 1
             % saving fitresults in the file <probename_simergebn.txt> by
             % using c-code (see matlab documentation)  here the char-array
             % results is needed
-            pointer = fopen([probename,'_simergebn.txt'],'wt');
+            pointer = fopen([samplename,'_simergebn.txt'],'wt');
             fprintf(pointer,results);
             fclose(pointer);
             
             % saving figure in the file <probename_simulation.fig>
-            saveas(gcf,[probename,'_simulation.fig']);
+            saveas(gcf,[samplename,'_simulation.fig']);
             
             % saving data in the file <probename_simulation.dat> by using
             % the double array savingdata which has the form 
@@ -203,7 +227,7 @@ while user_input ~= 1
             savingdata(:,2) = Signal;
             savingdata(:,3) = finalfit;
             savingdata(:,4) = difference;
-            save([probename,'_simulation.dat'], 'savingdata', '-ascii');
+            save([samplename,'_simulation.dat'], 'savingdata', '-ascii');
         end
         
         
@@ -213,7 +237,7 @@ while user_input ~= 1
             plot(Bfield,difference);
             legend({'Difference'}, 0);
             % saving difference-figure
-            saveas(gcf,[probename,'_difference_sim_sig.fig']);
+            saveas(gcf,[samplename,'_difference_sim_sig.fig']);
         end 
         
         

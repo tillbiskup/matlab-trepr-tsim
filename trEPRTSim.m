@@ -42,16 +42,16 @@
 % 	parameter microwave-frequency and Bfield-start and -end by using the
 % 	function <read_fsc2_data> and initialices a Sys and a Exp structure
 % 	with the read out data (see EasySpin documentation). It calls the
-% 	sub-function <transient_fitini> to initialice the user-chosen
+% 	sub-function <trEPRTSim_fitini> to initialice the user-chosen
 % 	fit-parameter. Afterwards it asks the user to give the number of
 % 	iterations the fit should run. Then it calls the matlab-function
 % 	<lsqcurvefit> which trys to change the fit-parameter so that the
 % 	measured signal and the fit-signal provided by the sub-function
-% 	<transient_fit> are most possible equal. lsqcurvefit runs till it
+% 	<trEPRTSim_fit> are most possible equal. lsqcurvefit runs till it
 % 	reaches the user-provided maximum number of iterations or till the the
 % 	difference between fit and signal is smaller then 1.0e-10 and then
 % 	gives back the best possible fit-parameter. Now
-% 	<transient_final_fit(fitout)> returns the final-fit with the best
+% 	<trEPRTSim_final_fit(fitout)> returns the final-fit with the best
 % 	parameter and gives back the parameter DeltaB which is needed to ajust
 % 	the Bfield  due to the false measurement of the magnetic-field. Then
 % 	the difference between the signal and the fit is calculated, the
@@ -144,11 +144,11 @@ while user_input ~= 1
     
     
     % INITILIZATION OF THE FIT-PARAMETERS by using the sub-function
-    % <transient_fitini> wich alows the user to select wich parameters to
+    % <trEPRTSim_fitini> wich alows the user to select wich parameters to
     % fit and returns the fit-parameter in fitini and the upper and lower
     % boundaries in lb and ub (see lsqcurvefit documentation for upper and
     % lower boundaries)
-    [fitin,lb,ub] = transient_fitini;              
+    [fitin,lb,ub] = trEPRTSim_fitini;              
        
     
     % User is asked to define the number of iterations lsqcurvefit should
@@ -156,22 +156,22 @@ while user_input ~= 1
     iterations = input('Number of iterations of fit-function ? : ');
 
     
-    % THE FIT ITSELF : lsqcurvefit trys to fit the function <transient_fit>
+    % THE FIT ITSELF : lsqcurvefit trys to fit the function <trEPRTSim_fit>
     % with the initialized fitparameters till it reaches the maximum number
     % of iterations or it reaches the termination tolerance on the function
     % value called TolFun wich is in this case 1.0e-10 (see lsqcurvefit
     % documentation). The final or best parameters are returned in the
     % vector fitout 
     options = optimset('MaxIter',iterations, 'TolFun', 1.0e-10);
-    fitout = lsqcurvefit(@transient_fit, fitin, Bfield, Signal, lb, ub, options);
+    fitout = lsqcurvefit(@trEPRTSim_fit, fitin, Bfield, Signal, lb, ub, options);
     
     
-    % FINALFIT : by using the sub-function <transient_final_fit> wich
+    % FINALFIT : by using the sub-function <trEPRTSim_final_fit> wich
     % returns the fit-spectra of the final-parameters evaluated by
     % lsqcurvefit. It also returns the parameter DeltaB to ajust the Bfield
     % due to false measurement of the magnetic-field. The Bfield is
     % directly corrected by this additive factor 
-    [finalfit,DeltaB] = transient_final_fit(fitout,Bfield);
+    [finalfit,DeltaB] = trEPRTSim_final_fit(fitout,Bfield);
     Bfield = Bfield+DeltaB;   % Bfield is beeing corrected 
     
     
@@ -180,10 +180,10 @@ while user_input ~= 1
     
     
     % DISPLAYMENT: of the final parameters by using the subfuntion
-    % <transient_displayment> wich writes the used parameter to the
+    % <trEPRTSim_displayment> wich writes the used parameter to the
     % workspace and returns the char array results in which the workspace
     % written parameters are included
-    results = transient_displayment(fitout,g);
+    results = trEPRTSim_displayment(fitout,g);
     
     
     % PLOTTING: the final fit in comparison to the measured signal

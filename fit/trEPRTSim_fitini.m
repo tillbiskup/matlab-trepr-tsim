@@ -1,17 +1,22 @@
-% Copyright (C) 2005 Moritz Kirste
-% 
-% This file ist free software.
-% 
-% Author:			Moritz Kirste <kirstem@physik.fu-berlin.de>
-% Maintainer:		Moritz Kirste <kirstem@physik.fu-berlin.de>
-% Created:			2005/10/10
-% Version:			$Revision: 1.3 $
-% Last Modification:	$Date: 2005/11/30 09:54:43 $
-% Keywords:			transient EPR, simulation, EasySpin
-% Keywords:         zero-field-splitting, fit-initialization
+function [fitin,lb,ub] = trEPRTSim_fitini()
+% TREPRTSIM_FITINI Initialize fit parameters for fitting triplet spectra
+% with trEPRTSim.
 %
+% Usage
+%   [fitin,lb,ub] = trEPRTSim_fitini();
 %
+%   fitin   - ?
 %
+%   lb      - ?
+%
+%   ub      - ?
+%
+% See also TREPRTSIM
+
+% (c) 2005, Moritz Kirste
+% (c) 2013, Deborah Meyer, Till Biskup
+% 2013-08-06
+
 %   This file uses EasySpin written and maintained by the EPR group at the
 %   ETH Zuerich. 
 %   Contact : easyspin@esr.phys.chem.ethz.ch 
@@ -19,7 +24,7 @@
 %   <quotation source="http://www.easyspin.ethz.ch/">
 %   "EasySpin is a Matlab toolbox for solving problems in Electron Paramagnetic 
 %   Resonance (EPR) spectroscopy. 
-%   Lisence:
+%   License:
 %   You may download and work with EasySpin free of charge and without any
 %   restrictions. You may copy and distribute verbatim copies of EasySpin.
 %   You may not use or modify EasySpin or a part of it for other software
@@ -43,7 +48,7 @@
 % starting-paramters  in the variable fitin, the boundary-conditions in the
 % variables lb and ub 
 
-function [fitin,lb,ub] = transient_fitini()
+
 
 % Sys and Exp are needed by EasySpin, spectrum is the measured signal and
 % inifactor defines which parameters should be fittet. All these parameters

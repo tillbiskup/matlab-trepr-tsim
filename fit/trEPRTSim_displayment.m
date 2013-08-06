@@ -1,21 +1,24 @@
-% Copyright (C) 2005 Moritz Kirste
-% 
-% This file ist free software.
-% 
-% Author:			Moritz Kirste <kirstem@physik.fu-berlin.de>
-% Maintainer:		Moritz Kirste <kirstem@physik.fu-berlin.de>
-% Created:			2005/10/10
-% Version:			$Revision: 1.3 $
-% Last Modification:	$Date: 2005/11/30 09:54:43 $
-% Keywords:			transient EPR, simulation, EasySpin,
-% Keywords:         zero-field-splitting, displayment
+function results = trEPRTSim_displayment(fitout,g)
+% TREPRTSIM_DISPLAYMENT Display fit results and final parameters.
+%
+% Usage
+%   results = trEPRTSim_displayment(fitout,g)
+%
+%   fitout  - ?
+%
+%   g       - ?
+%
+%   results - ?
+%
+% See also TREPRTSIM
+
+% (c) 2005, Moritz Kirste
+% (c) 2013, Deborah Meyer, Till Biskup
+% 2013-08-06
+
 %
 % This function concats all parameter that will be displayed in the return 
 % variable results and then displays the variable 
-
-
-function results = transient_displayment(fitout,g)
-
 
 % inifactor defines which parameters should be fittet
 global inifactor

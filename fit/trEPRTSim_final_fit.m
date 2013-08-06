@@ -1,17 +1,25 @@
-% Copyright (C) 2005 Moritz Kirste
-% 
-% This file ist free software.
-% 
-% Author:			Moritz Kirste <kirstem@physik.fu-berlin.de>
-% Maintainer:		Moritz Kirste <kirstem@physik.fu-berlin.de>
-% Created:			2005/10/10
-% Version:			$Revision: 1.3 $
-% Last Modification:	$Date: 2005/11/30 09:54:43 $
-% Keywords:			transient EPR, simulation, EasySpin,
-% Keywords:         zero-field-splitting, fit
+function [finalfit,DeltaB] = trEPRTSim_final_fit(fitout,Bfield)
+% TREPRTSIM_FINAL_FIT Calculate final fit with fit parameters defined by
+% inifactor.
 %
+% Usage
+%   [finalfit,DeltaB] = trEPRTSim_final_fit(fitout,Bfield)
 %
+%   fitout   - ?
 %
+%   Bfield   - ?
+%
+%   finalfit - ?
+%
+%   DeltaB   - ?
+%
+% See also TREPRTSIM
+
+% (c) 2005, Moritz Kirste
+% (c) 2013, Deborah Meyer, Till Biskup
+% 2013-08-06
+
+
 %   This file uses EasySpin written and maintained by the EPR group at the
 %   ETH Zuerich. 
 %   Contact : easyspin@esr.phys.chem.ethz.ch 
@@ -29,13 +37,10 @@
 %   publication, cite the appropriate articles. "
 %   </quotation>
 
-% DOCUMENTATION:
-% This function is calculating the fit using the EasySpin function pepper
-% plots the fit in comparison to the signal to show the improvements and
-% returns the data of the fit 
+% Ducumentation:
+% This function calculates the final-fit with the fit-parameters defined by
+% inifactor 
 
-
-function fit = transient_fit(fitin,Bfield)
 
 % Sys and Exp are needed by EasySpin, spectrum is the measured signal and
 % inifactor defines which parameters should be fittet. All these parameters
@@ -46,21 +51,21 @@ global spectrum
 global inifactor
 
 
-% Initialization of the parameters wich are undependent of the inifactor. The
+% Initialization of the parameter wich are undependent of the inifactor. The
 % meaning of the parameters should be clear (just in case : they are
-% commented in the function <transient_fitini.m> )
-D = fitin(1);
-E = fitin(2);
-Pol1 = fitin(3);
-Pol2 = fitin(4);
-Pol3 = fitin(5);
-scale = fitin(6);
-DeltaB = 0;
+% commented in the function transient_fitini.m )
+D = fitout(1);
+E = fitout(2);
+Pol1 = fitout(3);
+Pol2 = fitout(4);
+Pol3 = fitout(5);
+scale = fitout(6);
+DeltaB = 0; 
 
 
 % Setting the polarisation-vector and the D-vector (see EasySpin documentation)
-Exp.Temperature = [Pol1 Pol2 Pol3] ; 
-Sys.D = 1e3*[-D/3 + E, -D/3 - E, 2*D/3];    % GHZ is changed to MHz 
+Exp.Temperature = [Pol1 Pol2 Pol3] ;
+Sys.D = 1e3*[-D/3 + E, -D/3 - E, 2*D/3];  % GHZ is changed to MHz 
 
 
 % Initialization of the parameters depending on the inifactor by
@@ -72,28 +77,28 @@ Sys.D = 1e3*[-D/3 + E, -D/3 - E, 2*D/3];    % GHZ is changed to MHz
 % inifactor == 4 --> [D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB]
 % inifactor == 5 --> [D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB gx gy gz]
 if (inifactor == 1)||(inifactor == 2)||(inifactor == 3)
-    lw = fitin(7);
+    lw = fitout(7);
     Sys.lw = lw;
 end
 if (inifactor == 2)||(inifactor == 3)
-    DeltaB = fitin(8);
+    DeltaB = fitout(8);
 end
 if (inifactor == 3)
-    gx = fitin(9);
-    gy = fitin(10);
-    gz = fitin(11);
+    gx = fitout(9);
+    gy = fitout(10);
+    gz = fitout(11);
     Sys.gStrain = [gx gy gz];
 end
 if (inifactor == 4)||(inifactor == 5)
-    lwD = fitin(7);
-    lwE = fitin(8);
-    DeltaB = fitin(9);
+    lwD = fitout(7);
+    lwE = fitout(8);
+    DeltaB = fitout(9);
     Sys.DStrain = [lwD lwE];    
 end
 if (inifactor == 5)
-    gx = fitin(10);
-    gy = fitin(11);
-    gz = fitin(12);
+    gx = fitout(10);
+    gy = fitout(11);
+    gz = fitout(12);
     Sys.gStrain = [gx gy gz];
 end
 
@@ -109,16 +114,6 @@ Exp.Range = [Bstart Bend];
 
 
 % Easyspin calculates the fit with the function pepper and scales it then
-% with the given scaling-factor fit is the return variable
+% with the given scaling-factor finalfit is the return variable
 fitvector = pepper(Sys,Exp);
-fit(:,1) = scale*fitvector';
-
-
-% The momentarly parameters are displayed
-disp(num2str(fitin))
-
-
-% The momentarly figure is plotted to see the improvement
-figure(1)
-plot(Bfield,[spectrum(:,2),fit]);
-pause(0.001);
+finalfit(:,1) = scale*fitvector(:);

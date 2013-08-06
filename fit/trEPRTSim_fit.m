@@ -1,15 +1,18 @@
-function fit = trEPRTSim_fit(fitin,Bfield)
+function sim = trEPRTSim_fit(par,Bfield)
 % TREPRTSIM_FIT Calculate fit calling trEPRTSim_sim and display iterative
 % results.
 %
 % Usage
-%   fit = trEPRTSim_fit(fitin,Bfield)
+%   sim = trEPRTSim_fit(par,Bfield)
 %
-%   fitin    - ?
+%   par     - vector
+%             simulation parameters
 %
-%   Bfield   - ?
+%   Bfield  - vector
+%             magnetic field axis the simulation is calculated for
 %
-%   fit      - ?
+%   sim     - vector 
+%             calculated spectrum
 %
 % See also TREPRTSIM
 
@@ -22,14 +25,14 @@ function fit = trEPRTSim_fit(fitin,Bfield)
 global spectrum
 
 % Calling simulation function
-[fit,~] = trEPRTSim_sim(fitin,Bfield);
+[sim,~] = trEPRTSim_sim(par,Bfield);
 
 
 % The momentarly parameters are displayed
-disp(num2str(fitin))
+disp(num2str(par))
 
 
 % The momentarly figure is plotted to see the improvement
 figure(1)
-plot(Bfield,[spectrum(:,2),fit]);
+plot(Bfield,[spectrum(:,2),sim]);
 pause(0.001);

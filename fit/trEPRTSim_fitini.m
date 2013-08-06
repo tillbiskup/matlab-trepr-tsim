@@ -139,7 +139,7 @@ while user_input ~= 4
     
     switch user_input
         case 1
-            par = input('New starting-parameters (as a vector): ');
+            par = input('New starting parameters (as a vector): ');
         case 2
             disp(['Lower boundaries: ',num2str(lb)])
             disp(['Upper boundaries: ',num2str(ub)])

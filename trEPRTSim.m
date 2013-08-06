@@ -73,7 +73,7 @@ global spectrum
 global inifactor
 
 
-filename = input('Enter filename :','s');
+filename = input('Enter filename: ','s');
 
 % The experimental data are read out and displayed by the function
 % <read_fsc2_data> Only the parameter frequency and field_params are used.
@@ -136,26 +136,20 @@ while user_input ~= 1
 
     
     % Initialization of those parts of the structures Sys and Exp (see
-    % EasySpin documentation) which are always the same frequency and 
-    % number_of_Points were read out by the function <read_fsc2_data>
+    % EasySpin documentation) which are always the same.
+    % MWfreq and npts are read by the function trEPRload
     g = 2.0034;
     Sys = struct('S', 1, 'g', [g g g]);
-    Exp = struct('mwFreq', frequency, 'nPoints', npts,'Harmonic',0);
+    Exp = struct('mwFreq',frequency,'nPoints',npts,'Harmonic',0);
     
     
-    % INITILIZATION OF THE FIT-PARAMETERS by using the sub-function
-    % <trEPRTSim_fitini> wich alows the user to select wich parameters to
-    % fit and returns the fit-parameter in fitini and the upper and lower
-    % boundaries in lb and ub (see lsqcurvefit documentation for upper and
-    % lower boundaries)
-    [fitin,lb,ub] = trEPRTSim_fitini;              
-       
+    % INITILIZATION OF THE FIT-PARAMETERS
+    [par,lb,ub] = trEPRTSim_fitini();
     
     % User is asked to define the number of iterations lsqcurvefit should
     % run with at the most (see lsqcurvefit documentation)
-    iterations = input('Number of iterations of fit-function ? : ');
+    iterations = input('Number of iterations for the fitting: ');
 
-    
     % THE FIT ITSELF : lsqcurvefit trys to fit the function <trEPRTSim_fit>
     % with the initialized fitparameters till it reaches the maximum number
     % of iterations or it reaches the termination tolerance on the function
@@ -163,29 +157,19 @@ while user_input ~= 1
     % documentation). The final or best parameters are returned in the
     % vector fitout 
     options = optimset('MaxIter',iterations, 'TolFun', 1.0e-10);
-    fitout = lsqcurvefit(@trEPRTSim_fit, fitin, Bfield, Signal, lb, ub, options);
+    par = lsqcurvefit(@trEPRTSim_fit, par, Bfield, Signal, lb, ub, options);
     
-    
-    % FINALFIT : by using the sub-function <trEPRTSim_final_fit> wich
-    % returns the fit-spectra of the final-parameters evaluated by
-    % lsqcurvefit. It also returns the parameter DeltaB to ajust the Bfield
-    % due to false measurement of the magnetic-field. The Bfield is
-    % directly corrected by this additive factor 
-    [finalfit,DeltaB] = trEPRTSim_sim(fitout,Bfield);
-    Bfield = Bfield+DeltaB;   % Bfield is beeing corrected 
-    
-    
-    % Calculating the difference between fit and signal
+    % Calculate spectrum with final fit parameters.
+    [finalfit,DeltaB] = trEPRTSim_sim(par,Bfield);
+    % Correcting magnetic field by field offset.
+    Bfield = Bfield+DeltaB;
+        
+    % Calculate difference between fit and signal
     difference = Signal-finalfit; 
-    
-    
-    % DISPLAYMENT: of the final parameters by using the subfuntion
-    % <trEPRTSim_displayment> wich writes the used parameter to the
-    % workspace and returns the char array results in which the workspace
-    % written parameters are included
-    results = trEPRTSim_displayment(fitout,g);
-    
-    
+        
+    % Print fit results
+    results = trEPRTSim_fitreport(par,Sys.g);
+        
     % PLOTTING: the final fit in comparison to the measured signal
     close(figure(1));
     figure('Name', ['Data from ' filename])

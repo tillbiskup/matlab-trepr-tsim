@@ -171,7 +171,7 @@ while user_input ~= 1
     % lsqcurvefit. It also returns the parameter DeltaB to ajust the Bfield
     % due to false measurement of the magnetic-field. The Bfield is
     % directly corrected by this additive factor 
-    [finalfit,DeltaB] = trEPRTSim_final_fit(fitout,Bfield);
+    [finalfit,DeltaB] = trEPRTSim_sim(fitout,Bfield);
     Bfield = Bfield+DeltaB;   % Bfield is beeing corrected 
     
     

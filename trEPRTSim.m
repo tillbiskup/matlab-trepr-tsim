@@ -72,17 +72,17 @@ global Exp
 global spectrum
 global inifactor
 
-
+% Check for dependencies
+[status, missing] = trEPRTSim_dependency();
+if (status == 1)
+     disp('There are files missing required for the fit:');
+     cellfun(@disp, missing);
+    return
+end
+    
 filename = input('Enter filename: ','s');
 
-% The experimental data are read out and displayed by the function
-% <read_fsc2_data> Only the parameter frequency and field_params are used.
-% frequency is the microwave-frequency and with field_params the number of
-% points (number_of_points) of the measurement and therefore the
-% fit-function are calculated
-
-%-% 2013-08-05 (TB) Changed to trEPRfsc2Load, as the original function
-%-% doesn't exist any more...
+% The experimental data are loaded by the function <trEPRload>.
 data = trEPRload(filename);
 
 % First column in "spectrum" is B0 axis
@@ -118,26 +118,25 @@ end
 npts = length(spectrum);
 	
 	
-% This while-loop is enclosing the whole progamm. user_input is a variable
-% which is  changed in a menu at the end of the programm where the user is
-% asked what he wants to do next. By  choosing 1 he will stop the programm
+% User_input is a variable that is changed at the end of the program
+% where the user is asked what he wants to do next. By choosing 1 the  
+% program ends.
 user_input = 0;
 while user_input ~= 1
+    
+    
+    % Signal and Bfield are read out from the loaded spectrum
+    % therefore it is possible to change their values without changing the
+    % original data    
+    Signal = spectrum(:,2);
+    Bfield = spectrum(:,1);
     
     disp(' ')  
     disp('Fitting is started')
     disp(' ')
     
-    % Signal and Bfield are read out from the loaded variable spectrum
-    % therewith it is possible to change this data without changing the
-    % original data    
-    Signal = spectrum(:,2);
-    Bfield = spectrum(:,1);
-
-    
-    % Initialization of those parts of the structures Sys and Exp (see
-    % EasySpin documentation) which are always the same.
-    % MWfreq and npts are read by the function trEPRload
+    % Initialization of those parts of Sys and Exp that are always 
+    % the same.
     g = 2.0034;
     Sys = struct('S', 1, 'g', [g g g]);
     Exp = struct('mwFreq',frequency,'nPoints',npts,'Harmonic',0);
@@ -153,7 +152,7 @@ while user_input ~= 1
     % THE FIT ITSELF : lsqcurvefit trys to fit the function <trEPRTSim_fit>
     % with the initialized fitparameters till it reaches the maximum number
     % of iterations or it reaches the termination tolerance on the function
-    % value called TolFun wich is in this case 1.0e-10 (see lsqcurvefit
+    % value called TolFun wich is 1.0e-10 (see lsqcurvefit
     % documentation). The final or best parameters are returned in the
     % vector fitout 
     options = optimset('MaxIter',iterations, 'TolFun', 1.0e-10);
@@ -179,10 +178,7 @@ while user_input ~= 1
     
     % USER-MENU: Giving the user the option to quit, to save the data, to
     % see and save the difference between signal and fit or to start the
-    % fitting again. The menu gives back the variable user_input, which is
-    % the same variable which is used by the while-loop wich is enclosing
-    % the whole programm.  The while-loop is running till the user selects
-    % to fit again "4" or to quit the programm "1"
+    % fitting again. The menu gives back the variable user_input.
     while (user_input ~= 1)
         text = sprintf('Chosse one of the following options?');
         user_input = menu(text,'Quit','Save figure and data','Plot and save difference','Fit again'); 

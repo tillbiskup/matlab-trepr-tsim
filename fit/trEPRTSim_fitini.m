@@ -29,20 +29,6 @@ function [par,lb,ub] = trEPRTSim_fitini()
 % inifactor defines the parameters to be fitted. 
 global inifactor
 
-% Initialisation of the fit-parameters using a menu.
-% inifactor defines how many parameters should be fitted.
-% inifactor == 1 --> lw
-% inifactor == 2 --> lw,DeltaB
-% inifactor == 3 --> lw,DeltaB,gx,gy,gz
-% inifactor == 4 --> lwD,lwE,DeltaB
-% inifactor == 5 --> lwD,lwE,DeltaB,gx,gy,gz
-text = sprintf(...
-    ['Choose wich parameters should be allowed to be fitted\n'...
-    '(D, E and polarisations are default)']);
-inifactor = menu(text,...
-    'lw','lw,DeltaB','lw,DeltaB,gx,gy,gz','lwD,lwE,DeltaB',...
-    'lwE,lwD,DeltaB,gx,gy,gz'); 
-
 % These parameters are always needed and don't depend on the chosen
 % inifactor
 D = 1.6   ;                     % in GHz
@@ -56,6 +42,20 @@ scale = 0.003;                  % scaling
 par = [D E Pol1 Pol2 Pol3 scale]; % initialisation
 lb = [1.5 0.3 0 0 0 0];             % lower boundaries
 ub = [2   1   1 1 1 1];             % upper boundaries
+
+% Initialisation of the fit-parameters using a menu.
+% inifactor defines how many parameters should be fitted.
+% inifactor == 1 --> lw
+% inifactor == 2 --> lw,DeltaB
+% inifactor == 3 --> lw,DeltaB,gx,gy,gz
+% inifactor == 4 --> lwD,lwE,DeltaB
+% inifactor == 5 --> lwD,lwE,DeltaB,gx,gy,gz
+text = sprintf(...
+    ['Choose wich parameters should be allowed to be fitted\n'...
+    '(D, E and polarisations are default)']);
+inifactor = menu(text,...
+    'lw','lw,DeltaB','lw,DeltaB,gx,gy,gz','lwD,lwE,DeltaB',...
+    'lwE,lwD,DeltaB,gx,gy,gz'); 
 
 
 % The starting-parameters wich depend on the inifactor are initialised.

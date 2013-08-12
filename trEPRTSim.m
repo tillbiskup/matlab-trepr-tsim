@@ -12,65 +12,15 @@
 %
 %
 %
-%   This file uses EasySpin written and maintained by the EPR group at the
-%   ETH Zuerich. 
-%   Contact : easyspin@esr.phys.chem.ethz.ch 
-%   EasySpin is freely dowloadable at <http://www.easyspin.ethz.ch/>
-%   <quotation source="http://www.easyspin.ethz.ch/">
-%   "EasySpin is a Matlab toolbox for solving problems in Electron Paramagnetic 
-%   Resonance (EPR) spectroscopy. 
-%   Lisence:
-%   You may download and work with EasySpin free of charge and without any
-%   restrictions. You may copy and distribute verbatim copies of EasySpin.
-%   You may not use or modify EasySpin or a part of it for other software
-%   which is not freely available at no cost. You may not reverse engineer
-%   or disassemble EasySpin. EasySpin comes without warranty of any kind. 
-%   If you use results obtained with EasySpin in any scientific
-%   publication, cite the appropriate articles. "
-%   </quotation>
-
+%   This file uses EasySpin: http://www.easyspin.org/
 
 
 %   DOCUMENTATION :
 % 	Idea of this programm is to fit an EPR spectra and therefore get the
 % 	zero-field-splitting-parameters  and the polarisation of the
 % 	measurement.
-%
-% 	The file awaits a probe-name of an EPR spectrum and loads a file of the
-% 	spectrum like <probe-name_spectrum.dat> and a file of the measurement
-% 	like <probe-name_1.dat> to get the xperimental data. It reads out the
-% 	parameter microwave-frequency and Bfield-start and -end by using the
-% 	function <read_fsc2_data> and initialices a Sys and a Exp structure
-% 	with the read out data (see EasySpin documentation). It calls the
-% 	sub-function <trEPRTSim_fitini> to initialice the user-chosen
-% 	fit-parameter. Afterwards it asks the user to give the number of
-% 	iterations the fit should run. Then it calls the matlab-function
-% 	<lsqcurvefit> which trys to change the fit-parameter so that the
-% 	measured signal and the fit-signal provided by the sub-function
-% 	<trEPRTSim_fit> are most possible equal. lsqcurvefit runs till it
-% 	reaches the user-provided maximum number of iterations or till the the
-% 	difference between fit and signal is smaller then 1.0e-10 and then
-% 	gives back the best possible fit-parameter. Now
-% 	<trEPRTSim_final_fit(fitout)> returns the final-fit with the best
-% 	parameter and gives back the parameter DeltaB which is needed to ajust
-% 	the Bfield  due to the false measurement of the magnetic-field. Then
-% 	the difference between the signal and the fit is calculated, the
-% 	final-parameters are beeing displayed and the final-fit is plotted in
-% 	comparison to the measured data signal. The user can now deside wether
-% 	to quit, save the data-results in an file called
-% 	<probename_simulation.dat>, in the form [Bfield Signal finalfit
-% 	difference], the plot in a file called <probename_simulation.fig> and
-% 	the final-parameter in a file called  <probename_simergebn.txt>  or
-% 	plot and save the difference between fit and signal or fit again.
 
 clear all close all
-% Sys and Exp are needed by EasySpin, spectrum is the measured signal and
-% inifactor defines which parameters should be fittet. All these parameters
-% are needed by some of the sub-functions and are therefore global
-global Sys
-global Exp
-global spectrum
-global inifactor
 
 % Check for dependencies
 [status, missing] = trEPRTSim_dependency();
@@ -115,6 +65,9 @@ if isempty(frequency)
     frequency = 9.67737;
 end
 
+% Convert Gauss -> mT
+spectrum(:,1) = spectrum(:,1)/10;
+
 npts = length(spectrum);
 	
 	
@@ -131,24 +84,30 @@ while user_input ~= 1
     Signal = spectrum(:,2);
     Bfield = spectrum(:,1);
     
-    disp(' ')  
-    disp('Fitting is started')
-    disp(' ')
-    
     % Initialization of those parts of Sys and Exp that are always 
     % the same.
-    g = 2.0034;
-    Sys = struct('S', 1, 'g', [g g g]);
-    Exp = struct('mwFreq',frequency,'nPoints',npts,'Harmonic',0);
+    [Sys,Exp] = trEPRTSim_simini();
     
-    
+    % Replace parameters taken from experimental data
+    Exp.mwFreq = frequency;
+    Exp.nPoints = npts;
+    Exp.Range = [Bfield(1) Bfield(end)];
+   
     % INITILIZATION OF THE FIT-PARAMETERS
-    [par,lb,ub] = trEPRTSim_fitini();
+    [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp);
+    
+    disp([inipar ; lb ; ub]);
+    disp([fitpar ; tofit]);
     
     % User is asked to define the number of iterations lsqcurvefit should
     % run with at the most (see lsqcurvefit documentation)
-    iterations = input('Number of iterations for the fitting: ');
+    %iterations = input('Number of iterations for the fitting: ');
+    iterations = 1;
 
+    disp(' ')  
+    disp('Fitting has started')
+    disp(' ')
+    
     % THE FIT ITSELF : lsqcurvefit trys to fit the function <trEPRTSim_fit>
     % with the initialized fitparameters till it reaches the maximum number
     % of iterations or it reaches the termination tolerance on the function
@@ -156,24 +115,27 @@ while user_input ~= 1
     % documentation). The final or best parameters are returned in the
     % vector fitout 
     options = optimset('MaxIter',iterations, 'TolFun', 1.0e-10);
-    par = lsqcurvefit(@trEPRTSim_fit, par, Bfield, Signal, lb, ub, options);
+    fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,Sys,Exp,spectrum,fitpar,tofit);
+    fittedpar = lsqcurvefit(fitfun, inipar, Bfield, Signal, lb, ub, options);
+    
+    [Sys,Exp] = trEPRTSim_parTransfer(fittedpar,fitpar,tofit,Sys,Exp);
     
     % Calculate spectrum with final fit parameters.
-    [finalfit,DeltaB] = trEPRTSim_sim(par,Bfield);
+    [finalfit] = trEPRTSim_sim(Sys,Exp);
     % Correcting magnetic field by field offset.
-    Bfield = Bfield+DeltaB;
+    % Bfield = Bfield+DeltaB;
         
     % Calculate difference between fit and signal
     difference = Signal-finalfit; 
         
     % Print fit results
-    results = trEPRTSim_fitreport(par,Sys.g);
+    results = trEPRTSim_fitreport(fittedpar,Sys.g,1);
         
     % PLOTTING: the final fit in comparison to the measured signal
     close(figure(1));
     figure('Name', ['Data from ' filename])
-    plot(Bfield,[Signal,finalfit]);
-    legend({'Original','Fit'}, 0);
+    plot(Bfield,[Signal,finalfit*Exp.scale]);
+    legend({'Original','Fit'},'Location','SouthEast');
     
     
     % USER-MENU: Giving the user the option to quit, to save the data, to

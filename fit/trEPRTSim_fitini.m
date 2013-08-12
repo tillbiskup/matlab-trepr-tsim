@@ -1,117 +1,118 @@
-function [par,lb,ub] = trEPRTSim_fitini()
+function [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp)
 % TREPRTSIM_FITINI Initialize fit parameters for fitting triplet spectra
 % with trEPRTSim using menus.
 %
 % Usage
-%   [par,lb,ub] = trEPRTSim_fitini();
+%   [inipar,lb,ub,tofit] = trEPRTSim_fitini(Sys,Exp);
 %
-%   par   - vector
-%           simulation parameters
+%   Sys    - struct
+%            EasySpin structure for defining spin system
 %
-%   lb    - vector
-%           lower boundaries of corresponding simulation parameters  
+%   Exp    - struct
+%            EasySpin structure for defining experimental parameters
 %
-%   ub    - vector
-%           upper boundaries of corresponding simulation parameters 
+%   inipar - vector
+%            simulation parameters that shall be fitted
+%
+%   lb     - vector
+%            lower boundaries of corresponding simulation parameters  
+%
+%   ub     - vector
+%            upper boundaries of corresponding simulation parameters 
+%
+%   fitpar - vector
+%            full set of possible simulation parameters
+%
+%   tofit  - vector
+%            boolean values
 %
 % See also TREPRTSIM
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-06
+% 2013-08-12
 
 
 % DOCUMENTATION : 
-% This function initialises the fit parameters depending on the variable
-% inifactor wich can be chosen. It returns the starting parameters in the
+% This function initialises the fit parameters depending on ...
+% It returns the starting parameters in the
 % variable par and the boundary conditions in the variables lb and ub. 
 
-% inifactor defines the parameters to be fitted. 
-global inifactor
+D      = Sys.D(3)*3/2;                   % in GHz
+E      = (Sys.D(1)+Sys.D(3)*3/6);        % in GHz
+scale  = 0.003;                          % scaling
+lw     = 3.0;                            % linewith in mTesla 
+lwD    = 80.0;                           % linewith of D
+lwE    = 70.0;                           % linewith of E
+DeltaB = 0;                              % DeltaB in mT
+gx     = 1e-5;                           % gStain in x
+gy     = 1e-5;                           % gStain in y
+gz     = 1e-5;                           % gStain in z
 
-% These parameters are always needed and don't depend on the chosen
-% inifactor
-D = 1.6   ;                     % in GHz
-E = 0.5;                        % in GHz
-Pol1 = 0.003  ;                 % polarisation1
-Pol2 = 0.4 ;                    % polarisation2
-Pol3 = 0.5 ;                    % polarisation3
-scale = 0.003;                  % scaling
-
-
-par = [D E Pol1 Pol2 Pol3 scale]; % initialisation
-lb = [1.5 0.3 0 0 0 0];             % lower boundaries
-ub = [2   1   1 1 1 1];             % upper boundaries
+% Define full set of available fit parameters
+fitpar = [D   E   Exp.Temperature scale lw lwD lwE DeltaB gx   gy   gz  ];
+% Corresponding lower and upper boundaries
+lb =     [1.5 0.3 0 0 0           0     1  1   1   -3     1e-8 1e-8 1e-8];
+ub =     [2   1   1 1 1           1     4  100 100  3     1e-3 1e-3 1e-3];
+% Which parameters to fit
+tofit =  [1   1   1 1 1           1     0    0   0   0       0    0    0];
 
 % Initialisation of the fit-parameters using a menu.
-% inifactor defines how many parameters should be fitted.
-% inifactor == 1 --> lw
-% inifactor == 2 --> lw,DeltaB
-% inifactor == 3 --> lw,DeltaB,gx,gy,gz
-% inifactor == 4 --> lwD,lwE,DeltaB
-% inifactor == 5 --> lwD,lwE,DeltaB,gx,gy,gz
+% choice defines how many parameters should be fitted.
+% choice == 1 --> lw
+% choice == 2 --> lw,DeltaB
+% choice == 3 --> lw,DeltaB,gx,gy,gz
+% choice == 4 --> lwD,lwE,DeltaB
+% choice == 5 --> lwD,lwE,DeltaB,gx,gy,gz
 text = sprintf(...
     ['Choose wich parameters should be allowed to be fitted\n'...
     '(D, E and polarisations are default)']);
-inifactor = menu(text,...
+choice = menu(text,...
     'lw','lw,DeltaB','lw,DeltaB,gx,gy,gz','lwD,lwE,DeltaB',...
     'lwE,lwD,DeltaB,gx,gy,gz'); 
 
 
-% The starting-parameters wich depend on the inifactor are initialised.
-% Therefore the variables par,lb and ub are changed by
-% concatenation.
-% par,lb and ub can be in the following order
-% inifactor == 1 --> [D E Pol1 Pol2 Pol3 scale lw]
-% inifactor == 2 --> [D E Pol1 Pol2 Pol3 scale lw DeltaB]
-% inifactor == 3 --> [D E Pol1 Pol2 Pol3 scale lw DeltaB gx gy gz]
-% inifactor == 4 --> [D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB]
-% inifactor == 5 --> [D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB gx gy gz]
+% The starting-parameters wich depend on the choice are initialised.
+% inipar,lb and ub can be in the following order
+% choice == 1 --> [D E Pol1 Pol2 Pol3 scale lw]
+% choice == 2 --> [D E Pol1 Pol2 Pol3 scale lw DeltaB]
+% choice == 3 --> [D E Pol1 Pol2 Pol3 scale lw DeltaB gx gy gz]
+% choice == 4 --> [D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB]
+% choice == 5 --> [D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB gx gy gz]
 
 % concatenation of lw
-if (inifactor == 1)||(inifactor == 2)||(inifactor == 3)
-    lw = 3.0;                       % linewith in mTesla 
-    
-    par = [par lw];             % initialisation
-    lb = [lb 1];                    % lower boundaries
-    ub = [ub 4];                    % upper boundaries
+if (choice == 1)||(choice == 2)||(choice == 3)
+    tofit(7) = 1;
 end
 
 % concatenation of lwD and lwE
-if (inifactor == 4)||(inifactor == 5)
-    lwD = 80.0;                     % linewith of D    
-    lwE = 70.0;                     % linewith of E 
-       
-    par = [par lwD lwE];        % initialization
-    lb = [lb 1   1];                % lower boundaries
-    ub = [ub 100 100];              % upper boundaries
+if (choice == 4)||(choice == 5)
+    tofit(7) = 0;
+    tofit(8:9) = ones(2,1);
 end
 
 % concatenation of DeltaB
-if (inifactor == 2)||(inifactor == 3)||(inifactor == 4)||(inifactor == 5)
-    DeltaB = 0;                     % DeltaB in Gauss
-    
-    par = [par DeltaB];         % initialisation
-    lb = [lb -30];                  % lower boundaries
-    ub = [ub 30];                   % upper boundaries
+if (choice == 2)||(choice == 3)||(choice == 4)||(choice == 5)
+    tofit(10) = 1;
 end
 
 % concatenation of gx,gy,gz
-if (inifactor == 3)||(inifactor == 5)
-    gx = 0.00001;                   % gStain in x
-    gy = 0.00001;                   % gStain in y
-    gz = 0.00001;                   % gStain in z
-           
-    par = [par gx gy gz];                   % initialisation
-    lb = [lb 0.00000001 0.00000001 0.00000001]; % lower boundaries
-    ub = [ub 0.001 0.001 0.001];                % upper boundaries
+if (choice == 3)||(choice == 5)
+    tofit(11:13) = ones(3,1);
 end
 
+% Convert tofit into boolean values
+tofit = logical(tofit);
 
-% Displayment of the starting-parameters in the order depending on
-% inifactor
-disp('The starting parameters are in the following order :')
-switch inifactor
+% Reduce inipar and boundaries to set of parameters that shall be fitted.
+inipar = fitpar(tofit);
+lb = lb(tofit);
+ub = ub(tofit);
+
+% Displayment of the starting parameters in the order depending on
+% choice
+disp('The starting parameters are in the following order: ')
+switch choice
     case 1
         disp('D E Pol1 Pol2 Pol3 scale lw');
     case 2
@@ -123,7 +124,7 @@ switch inifactor
     case 5
         disp('D E Pol1 Pol2 Pol3 scale lwD lwE DeltaB gx gy gz');
 end
-disp(par);
+disp(inipar);
 
 
 % Menu for changing the starting parameters, displaying the boundaries, 
@@ -139,7 +140,7 @@ while user_input ~= 4
     
     switch user_input
         case 1
-            par = input('New starting parameters (as a vector): ');
+            inipar = input('New starting parameters (as a vector): ');
         case 2
             disp(['Lower boundaries: ',num2str(lb)])
             disp(['Upper boundaries: ',num2str(ub)])

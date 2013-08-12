@@ -1,4 +1,4 @@
-function results = trEPRTSim_fitreport(par,g)
+function results = trEPRTSim_fitreport(par,g,inifactor)
 % TREPRTSIM_FITREPORT Report fit results and final parameter set.
 %
 % Usage
@@ -11,19 +11,18 @@ function results = trEPRTSim_fitreport(par,g)
 %             g factor used for conversion MHz -> mT
 %             In case of g being a vector, g_iso is calculated first
 %
+%   inifactor -scalar/Bullshit
+%
 %   results - string
 %
 % See also TREPRTSIM
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-06
+% 2013-08-12
 
 % This function concats all parameter that will be displayed in the return 
 % variable results and then displays the variable 
-
-% inifactor defines which parameters should be fitted
-global inifactor
 
 % In case g is not a scalar, but a vector, calculate g_iso
 if ~isscalar(g)

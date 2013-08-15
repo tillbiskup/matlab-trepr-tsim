@@ -14,7 +14,7 @@ function [Sys,Exp] = trEPRTSim_simini()
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-12
+% 2013-08-15
 
 % Initialization of those parts of Sys and Exp that are always
 % the same.
@@ -35,7 +35,9 @@ E = 0.5;                        % in GHz
 
 % Setting the polarisation vector and the D vector
 % (see EasySpin documentation)
-Exp.Temperature = [0.003 0.4 0.5] ;
+Exp.Temperature = [0.00 0.45 0.55] ;
+% Normalize populations
+Exp.Temperature = Exp.Temperature/sum(Exp.Temperature);
 Sys.D = [-D/3 + E, -D/3 - E, 2*D/3];
 
 end

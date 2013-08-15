@@ -129,8 +129,12 @@ while user_input ~= 1
     difference = Signal-finalfit; 
         
     % Print fit results
-    results = trEPRTSim_fitreport(fittedpar,Sys.g,1);
-        
+    report = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub);
+    
+    disp('');
+    
+    cellfun(@(x)fprintf('%s\n',x),report);
+    
     % PLOTTING: the final fit in comparison to the measured signal
     close(figure(1));
     figure('Name', ['Data from ' filename])
@@ -156,7 +160,7 @@ while user_input ~= 1
             % using c-code (see matlab documentation)  here the char-array
             % results is needed
             pointer = fopen([samplename,'_simergebn.txt'],'wt');
-            fprintf(pointer,results);
+            fprintf(pointer,report);
             fclose(pointer);
             
             % saving figure in the file <probename_simulation.fig>

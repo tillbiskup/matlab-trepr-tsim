@@ -33,7 +33,7 @@ function sim = trEPRTSim_fit(par,Bfield,Sys,Exp,spectrum,fitpar,tofit)
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-12
+% 2013-08-15
 
 % Set B0 range for simulation
 %Exp.Range = [Bfield(1) Bfield(end)];
@@ -53,6 +53,4 @@ disp(num2str(par))
 % The momentarly figure is plotted to see the improvement
 figure(1)
 plot(Bfield,[spectrum(:,2),sim]);
-figure(2)
-plot(Bfield,sim);
 pause(0.001);

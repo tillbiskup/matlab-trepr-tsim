@@ -38,6 +38,11 @@ function answer = cliMenu(options,varargin)
 % an error message telling the user that the chosen option doesn't exist,
 % followed by the menu again.
 %
+% Please note: Be short and comprehensive with your options' description,
+% particularly due to the rather limited length of a usual command line.
+% Restrict yourself to less than 60 characters for each description, if
+% ever possible. Have in mind: Somebody has to read (and understand) it...
+%
 % SEE ALSO: input, ginput, keyboard
 
 % (c) 2013, Till Biskup
@@ -63,10 +68,15 @@ if ~isempty(parser.Results.default) ...
     return;
 end
 
+% Determine maximum length of options for aligned display of description of
+% options
+maxLengthOption = max(cellfun(@(x)length(x),options(:,1)));
+
 % Create options of menu
 menuOptions = cell(size(options,2),1);
 for k=1:size(options,2)
-    menuOptions{k} = sprintf(' [%s] %s\\n',options{k,1},options{k,2});
+    menuOptions{k} = sprintf(' [%s]%s %s\\n',options{k,1},...
+        blanks(maxLengthOption-length(options{k,1})),options{k,2});
 end
 
 % Set menu title

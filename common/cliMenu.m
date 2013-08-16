@@ -77,8 +77,8 @@ end
 maxLengthOption = max(cellfun(@(x)length(x),options(:,1)));
 
 % Create options of menu
-menuOptions = cell(size(options,2),1);
-for k=1:size(options,2)
+menuOptions = cell(size(options,1),1);
+for k=1:size(options,1)
     menuOptions{k} = sprintf(' [%s]%s %s\\n',options{k,1},...
         blanks(maxLengthOption-length(options{k,1})),options{k,2});
 end

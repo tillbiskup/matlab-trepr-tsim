@@ -38,6 +38,10 @@ function answer = cliMenu(options,varargin)
 % an error message telling the user that the chosen option doesn't exist,
 % followed by the menu again.
 %
+% The (optional) default option is tested against the options provided. If
+% the default isn't contained in the options, the routine replies with an
+% error message and quits.
+%
 % Please note: Be short and comprehensive with your options' description,
 % particularly due to the rather limited length of a usual command line.
 % Restrict yourself to less than 60 characters for each description, if
@@ -46,7 +50,7 @@ function answer = cliMenu(options,varargin)
 % SEE ALSO: input, ginput, keyboard
 
 % (c) 2013, Till Biskup
-% 2013-08-15
+% 2013-08-16
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

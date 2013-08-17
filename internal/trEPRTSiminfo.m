@@ -59,7 +59,7 @@ function varargout = trEPRTSiminfo(varargin)
 % See also VER
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-05
+% 2013-08-17
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the trEPR toolbox SIM module.
@@ -78,9 +78,13 @@ function varargout = trEPRTSiminfo(varargin)
 % TOOLBOX MODULE!
 
 info = struct();
-info.maintainer = struct(...
-    'name','Deborah Meyer, Till Biskup',...
-    'email','deborah.meyer@physchem.uni-freiburg.de,till@till-biskup.de'...
+info.maintainer(1) = struct(...
+    'name','Deborah Meyer',...
+    'email','deborah.meyer@physchem.uni-freiburg.de'...
+    );
+info.maintainer(2) = struct(...
+    'name','Till Biskup',...
+    'email','till@till-biskup.de'...
     );
 info.url = 'http://till-biskup.de/en/software/matlab/trepr/';
 info.bugtracker = struct(...
@@ -153,7 +157,10 @@ else
     fprintf(' Platform:        %s\n',platform);
     fprintf('\n');
     fprintf(' Homepage:        %s\n',info.url);
-    fprintf(' Maintainer:      %s, <%s>\n',info.maintainer.name,info.maintainer.email);
+    for k=1:length(info.maintainer)
+        fprintf(' Maintainer:      %s, <%s>\n',info.maintainer(k).name,...
+            info.maintainer(k).email);
+    end
     fprintf('\n');
     fprintf(' Bug tracker:     %s\n',info.bugtracker.url);
     fprintf('\n');

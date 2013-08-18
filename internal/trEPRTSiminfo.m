@@ -59,7 +59,7 @@ function varargout = trEPRTSiminfo(varargin)
 % See also VER
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-17
+% 2013-08-18
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the trEPR toolbox SIM module.
@@ -106,7 +106,6 @@ contentsFile = [ path(1:end-8) 'Contents.m' ];
 % Read first two lines of "Contents.m"
 contentsFileHeader = cell(2,1);
 fid = fopen(contentsFile);
-k=1;
 for k=1:2
     contentsFileHeader{k} = fgetl(fid);
 end

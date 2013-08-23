@@ -52,5 +52,5 @@ disp(num2str(par))
 
 % The momentarly figure is plotted to see the improvement
 figure(1)
-plot(Bfield,[spectrum(:,2),sim]);
+plot(Bfield,[spectrum,sim]);
 pause(0.001);

@@ -30,7 +30,7 @@ function [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp)
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-12
+% 2013-08-22
 
 
 % DOCUMENTATION : 
@@ -38,19 +38,19 @@ function [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp)
 % It returns the starting parameters in the
 % variable par and the boundary conditions in the variables lb and ub. 
 
-D      = Sys.D(3)*3/2;                   % in GHz
-E      = (Sys.D(1)+Sys.D(3)*3/6);        % in GHz
-scale  = 0.003;                          % scaling
-lw     = 3.0;                            % linewith in mTesla 
-lwD    = 80.0;                           % linewith of D
-lwE    = 70.0;                           % linewith of E
-DeltaB = 0;                              % DeltaB in mT
-gx     = 1e-5;                           % gStain in x
-gy     = 1e-5;                           % gStain in y
-gz     = 1e-5;                           % gStain in z
+D           = Sys.D(3)*3/2;                   % in GHz
+E           = (Sys.D(1)+Sys.D(3)*3/6);        % in GHz
+scale       = 0.003;                          % scaling
+lw          = 3.0;                            % linewith in mTesla 
+DStrainD    = 80.0;                           % linewith of D
+DStrainE    = 70.0;                           % linewith of E
+DeltaB      = 0;                              % DeltaB in mT
+gStrainx    = 1e-5;                           % gStain in x
+gStrainy    = 1e-5;                           % gStain in y
+gStrainz    = 1e-5;                           % gStain in z
 
 % Define full set of available fit parameters
-fitpar = [D   E   Exp.Temperature scale lw lwD lwE DeltaB gx   gy   gz  ];
+fitpar = [D   E   Exp.Temperature scale lw DStrainD DStrainE DeltaB gStrainx   gStrainy   gStrainz  ];
 % Corresponding lower and upper boundaries
 lb =     [1.5 0.3 0 0 0           0     1  1   1   -3     1e-8 1e-8 1e-8];
 ub =     [2   1   1 1 1           1     4  100 100  3     1e-3 1e-3 1e-3];

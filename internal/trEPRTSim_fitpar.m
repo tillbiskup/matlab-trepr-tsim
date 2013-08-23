@@ -23,7 +23,7 @@ function fitpar = trEPRTSim_fitpar(varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-15
+% 2013-08-22
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -43,12 +43,12 @@ fitpar(4,:)  = {'p2','Exp.Temperature(2)','Population of level 2',''};
 fitpar(5,:)  = {'p3','Exp.Temperature(3)','Population of level 3',''};
 fitpar(6,:)  = {'scale','','Scaling factor between experiment and fit',''};
 fitpar(7,:)  = {'lw','','Overall inhomogeneous linewidth','mT'};
-fitpar(8,:)  = {'lwD','','D strain','?'};
-fitpar(9,:)  = {'lwE','','E strain','?'};
+fitpar(8,:)  = {'DStrainD','','D strain','MHz'};
+fitpar(9,:)  = {'DStrainE','','E strain','MHz'};
 fitpar(10,:) = {'DeltaB','','Frequency correction via field offset','mT'};
-fitpar(11,:) = {'gStrainx','','g strain in x direction','?'};
-fitpar(12,:) = {'gStrainy','','g strain in y direction','?'};
-fitpar(13,:) = {'gStrainz','','g strain in z direction','?'};
+fitpar(11,:) = {'gStrainx','','g strain in x direction','MHz'};
+fitpar(12,:) = {'gStrainy','','g strain in y direction','MHz'};
+fitpar(13,:) = {'gStrainz','','g strain in z direction','MHz'};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

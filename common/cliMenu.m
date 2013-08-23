@@ -14,8 +14,10 @@ function answer = cliMenu(options,varargin)
 %             The first column contains the character(s) to type, the
 %             second the description of each option.
 %
-%   answer  - string
+%   answer  - string | cell array of strings
 %             User input as string.
+%             In case multiple selections are allowed (see below), cell
+%             array of strings containing the selected options.
 %
 % Optional parameters
 %
@@ -34,6 +36,10 @@ function answer = cliMenu(options,varargin)
 %             Default option to use, if user just hits "return".
 %             Default: empty string (meaning no option).
 %
+%   multiple - boolean
+%              Option to use, if multiple answers should be possible
+%              Default: false
+%
 % If the user chooses an option that doesn't exist, the function displays
 % an error message telling the user that the chosen option doesn't exist,
 % followed by the menu again.
@@ -49,8 +55,8 @@ function answer = cliMenu(options,varargin)
 %
 % SEE ALSO: input, ginput, keyboard
 
-% (c) 2013, Till Biskup
-% 2013-08-16
+% (c) 2013, Till Biskup, Deborah Meyer
+% 2013-08-23
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -62,14 +68,31 @@ parser.addRequired('options',@(x)iscell(x) && size(x,2) == 2);
 parser.addParamValue('title','Please choose an option:',@ischar);
 parser.addParamValue('prompt','Your choice',@ischar);
 parser.addParamValue('default','',@ischar);
+parser.addParamValue('multiple',false,@islogical);
 parser.parse(options,varargin{:});
 
 % If default option, check whether it exists in the options given
-if ~isempty(parser.Results.default) ...
-        && ~any(strcmpi(parser.Results.options(:,1),parser.Results.default))
-    disp(['You chose "' parser.Results.default '" as default, ' ...
-        'but the option doesn''t exist.']);
-    return;
+% As we cannot set parser.Results, add variable "default"
+% TODO: Deal with multiple parameters
+if ~isempty(parser.Results.default)
+    if parser.Results.multiple
+        % Parse multiple options, i.e. split string into cell array
+        default = parseMultipleOptions(parser.Results.default);
+
+        notmapped = mapCellArrays(parser.Results.options(:,1),default);
+        if ~isempty(notmapped)
+            % Tell user that some default value doesn't exist in options
+            disp(['You chose "' parser.Results.default '" as default, ' ...
+                'but at least one option doesn''t exist.']);
+            return;
+        end
+    elseif ~any(strcmpi(parser.Results.options(:,1),parser.Results.default))
+        disp(['You chose "' parser.Results.default '" as default, ' ...
+            'but the option doesn''t exist.']);
+        return;
+    end
+else
+    default = parser.Results.default;
 end
 
 % Determine maximum length of options for aligned display of description of
@@ -84,14 +107,22 @@ for k=1:size(options,1)
 end
 
 % Set menu title
-menuTitle = [parser.Results.title '\n'];
+if parser.Results.multiple
+    menuTitle = 'Please choose one or more options:\n';
+else
+    menuTitle = [parser.Results.title '\n'];
+end
 
 % Set promt text
-if isempty(parser.Results.default)
+if isempty(default)
     menuPrompt = [parser.Results.prompt ': '];
 else
-    menuPrompt = [parser.Results.prompt ' (default: [' ...
-        parser.Results.default ']): '];
+    if iscell(default)
+        menuPrompt = [parser.Results.prompt ...
+            ' (default: [' strJoin(default,',') ']): '];
+    else
+        menuPrompt = [parser.Results.prompt ' (default: [' default ']): '];
+    end
 end
 
 % Set loop condition for while loop.
@@ -101,19 +132,71 @@ loop = true;
 while loop
     % Display menu in command line
     answer = input([menuTitle menuOptions{:} menuPrompt],'s');
-
+    
     % If user just hit "enter" key, set reply to default value if any
-    if isempty(answer) && ~isempty(parser.Results.default)
-        answer = parser.Results.default;
+    if isempty(answer) && ~isempty(default)
+        if parser.Results.multiple
+            answer = strJoin(default);
+        else
+            answer = default;
+        end
     end
     
     % Check whether reply is valid, otherwise start loop again
-    if any(strcmpi(options(:,1),answer))
-        loop = false;
+    if parser.Results.multiple
+        % Parse multiple options, i.e. split string into cell array
+        answer = parseMultipleOptions(answer);
+        
+        notmapped = mapCellArrays(parser.Results.options(:,1),answer);
+        if isempty(notmapped)
+            loop = false;
+        else
+            % Tell user that some default value doesn't exist in options
+            disp(['You chose "' strJoin(answer) '", ' ...
+                'but at least one option doesn''t exist.']);
+            return;
+        end
     else
-        disp(' ');
-        disp(['Option "' answer '" not understood.']);
-        disp(' ');
-        loop = true;
+        if any(strcmpi(options(:,1),answer))
+            loop = false;
+        else
+            disp(' ');
+            disp(['Option "' answer '" not understood.']);
+            disp(' ');
+            loop = true;
+        end
     end
+end
+
+end
+
+function options = parseMultipleOptions(options)
+% PARSEMULTIPLEOPTIONS Split string into cell array of substrings.
+
+% Define possible delimiters
+delimiter = {',',';',' ','|'};
+% Find matches of delimiters in options
+matches = cellfun(@(x)any(strfind(options,x)),delimiter);
+if any(matches)
+    % Split options according to first match in deliminter
+    options = regexp(options,delimiter{find(matches,1)},'split');
+    % Remove leading and trailing whitespace
+    options = strtrim(options);
+end
+end
+
+function notmapped = mapCellArrays(fullset,subset)
+% MAPCELLARRAYS Map subset to fullset and return indices of subset that
+% cannot be mapped to fullset.
+
+% Initialise variables
+subsetExists = logical(length(subset));
+
+% Loop over subset and try to map to fullset
+for k=1:length(subset)
+    subsetExists(k) = any(strcmpi(subset(k),fullset));
+end
+
+% Return indices of unmapped subset entries (if any)
+notmapped = find(~subsetExists);
 end

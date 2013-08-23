@@ -35,8 +35,8 @@ filename = input('Enter filename: ','s');
 % The experimental data are loaded by the function <trEPRload>.
 data = trEPRload(filename);
 
-% First column in "spectrum" is B0 axis
-spectrum(:,1) = data.axes.y.values;
+% Convert Gauss -> mT
+Bfield = (data.axes.y.values)/10;
 
 % Check whether data are 2D or 1D, and in case of 2D, take maximum
 if min(size(data.data)) > 1
@@ -52,9 +52,9 @@ if min(size(data.data)) > 1
     end
     % Take maximum
     [~,idxMax] = max(max(data.data));
-    spectrum(:,2) = data.data(:,idxMax);
+    spectrum = data.data(:,idxMax);
 else
-    spectrum(:,2) = data.data;
+    spectrum = data.data;
 end
 
 frequency = data.parameters.bridge.MWfrequency.value;
@@ -65,9 +65,6 @@ if isempty(frequency)
     frequency = 9.67737;
 end
 
-% Convert Gauss -> mT
-spectrum(:,1) = spectrum(:,1)/10;
-
 npts = length(spectrum);
 	
 	
@@ -76,13 +73,6 @@ npts = length(spectrum);
 % program ends.
 user_input = 0;
 while user_input ~= 1
-    
-    
-    % Signal and Bfield are read out from the loaded spectrum
-    % therefore it is possible to change their values without changing the
-    % original data    
-    Signal = spectrum(:,2);
-    Bfield = spectrum(:,1);
     
     % Initialization of those parts of Sys and Exp that are always 
     % the same.
@@ -116,7 +106,7 @@ while user_input ~= 1
     % vector fitout 
     options = optimset('MaxIter',iterations, 'TolFun', 1.0e-10);
     fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,Sys,Exp,spectrum,fitpar,tofit);
-    fittedpar = lsqcurvefit(fitfun, inipar, Bfield, Signal, lb, ub, options);
+    fittedpar = lsqcurvefit(fitfun, inipar, Bfield, spectrum, lb, ub, options);
     
     [Sys,Exp] = trEPRTSim_parTransfer(fittedpar,fitpar,tofit,Sys,Exp);
     
@@ -126,7 +116,7 @@ while user_input ~= 1
     % Bfield = Bfield+DeltaB;
         
     % Calculate difference between fit and signal
-    difference = Signal-finalfit; 
+    difference = spectrum-finalfit; 
         
     % Print fit results
     report = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub);
@@ -138,7 +128,7 @@ while user_input ~= 1
     % PLOTTING: the final fit in comparison to the measured signal
     close(figure(1));
     figure('Name', ['Data from ' filename])
-    plot(Bfield,[Signal,finalfit*Exp.scale]);
+    plot(Bfield,[spectrum,finalfit*Exp.scale]);
     legend({'Original','Fit'},'Location','SouthEast');
     
     
@@ -170,7 +160,7 @@ while user_input ~= 1
             % the double array savingdata which has the form 
             % [Bfield Signal finalfit difference]
             savingdata(:,1) = Bfield;
-            savingdata(:,2) = Signal;
+            savingdata(:,2) = spectrum;
             savingdata(:,3) = finalfit;
             savingdata(:,4) = difference;
             save([samplename,'_simulation.dat'], 'savingdata', '-ascii');

@@ -14,12 +14,15 @@ function [Sys,Exp] = trEPRTSim_simini()
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-15
+% 2013-08-23
 
 % Initialization of those parts of Sys and Exp that are always
 % the same.
 g = 2.0034;
-Sys = struct('S', 1, 'g', [g g g]);
+Sys = struct(...
+    'S', 1,...
+    'g', [g g g] ...
+    );
 Exp = struct(...
     'mwFreq',9.70,...
     'nPoints',361,...
@@ -28,7 +31,7 @@ Exp = struct(...
     );
 
 % These parameters are always needed and don't depend on the chosen
-% choice
+% value of the variable 'choice'
 D = 1.6;                        % in GHz
 E = 0.5;                        % in GHz
 

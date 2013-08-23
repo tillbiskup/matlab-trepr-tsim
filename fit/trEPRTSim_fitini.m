@@ -1,4 +1,4 @@
-function [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp)
+ function [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp)
 % TREPRTSIM_FITINI Initialize fit parameters for fitting triplet spectra
 % with trEPRTSim using menus.
 %

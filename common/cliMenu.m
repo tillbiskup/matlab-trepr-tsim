@@ -90,6 +90,8 @@ if ~isempty(parser.Results.default)
         disp(['You chose "' parser.Results.default '" as default, ' ...
             'but the option doesn''t exist.']);
         return;
+    else
+        default = parser.Results.default;
     end
 else
     default = parser.Results.default;
@@ -107,7 +109,8 @@ for k=1:size(options,1)
 end
 
 % Set menu title
-if parser.Results.multiple
+if parser.Results.multiple ...
+        && strcmp(parser.Results.title,'Please choose an option:')
     menuTitle = 'Please choose one or more options:\n';
 else
     menuTitle = [parser.Results.title '\n'];
@@ -152,9 +155,10 @@ while loop
             loop = false;
         else
             % Tell user that some default value doesn't exist in options
+            disp(' ');
             disp(['You chose "' strJoin(answer) '", ' ...
                 'but at least one option doesn''t exist.']);
-            return;
+            disp(' ');
         end
     else
         if any(strcmpi(options(:,1),answer))
@@ -170,7 +174,7 @@ end
 
 end
 
-function options = parseMultipleOptions(options)
+function parsedOptions = parseMultipleOptions(options)
 % PARSEMULTIPLEOPTIONS Split string into cell array of substrings.
 
 % Define possible delimiters
@@ -181,7 +185,9 @@ if any(matches)
     % Split options according to first match in deliminter
     options = regexp(options,delimiter{find(matches,1)},'split');
     % Remove leading and trailing whitespace
-    options = strtrim(options);
+    parsedOptions = strtrim(options);
+else
+    parsedOptions{1} = options;
 end
 end
 

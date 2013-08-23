@@ -71,6 +71,8 @@ parser.addParamValue('default','',@ischar);
 parser.addParamValue('multiple',false,@islogical);
 parser.parse(options,varargin{:});
 
+answer = parser.Results.default;
+
 % If default option, check whether it exists in the options given
 % As we cannot set parser.Results, add variable "default"
 % TODO: Deal with multiple parameters
@@ -78,11 +80,11 @@ if ~isempty(parser.Results.default)
     if parser.Results.multiple
         % Parse multiple options, i.e. split string into cell array
         default = parseMultipleOptions(parser.Results.default);
-
+        
         notmapped = mapCellArrays(parser.Results.options(:,1),default);
         if ~isempty(notmapped)
             % Tell user that some default value doesn't exist in options
-            disp(['You chose "' parser.Results.default '" as default, ' ...
+            disp(['ERROR: You chose "' parser.Results.default '" as default, ' ...
                 'but at least one option doesn''t exist.']);
             return;
         end
@@ -200,7 +202,7 @@ subsetExists = logical(length(subset));
 
 % Loop over subset and try to map to fullset
 for k=1:length(subset)
-    subsetExists(k) = any(strcmpi(subset(k),fullset));
+    subsetExists(k) = any(strcmpi(subset(k),strtrim(fullset)));
 end
 
 % Return indices of unmapped subset entries (if any)

@@ -23,7 +23,7 @@ function fitpar = trEPRTSim_fitpar(varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-22
+% 2013-08-23
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -36,8 +36,8 @@ parser.parse(varargin{:});
 
 fitpar = cell(13,4);
 
-fitpar(1,:)  = {'D','Sys.D(3)*3/2','Zero field splitting parameter','MHz'};
-fitpar(2,:)  = {'E','Sys.D(1)+Sys.D(2)*3/6','Zero field splitting parameter','MHz'};
+fitpar(1,:)  = {'D','Sys.D(3)*3/2','Zero field splitting parameter D','MHz'};
+fitpar(2,:)  = {'E','Sys.D(1)+Sys.D(2)*3/6','Zero field splitting parameter E','MHz'};
 fitpar(3,:)  = {'p1','Exp.Temperature(1)','Population of level 1',''};
 fitpar(4,:)  = {'p2','Exp.Temperature(2)','Population of level 2',''};
 fitpar(5,:)  = {'p3','Exp.Temperature(3)','Population of level 3',''};

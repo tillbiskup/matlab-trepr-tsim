@@ -19,14 +19,13 @@ if answer == 'f'
 
 % Get fitparameters
 parameters = trEPRTSim_fitpar();
-fitpar = parameters(:,1);
 fitpardescription = parameters(:,3);
-option = [fitpar fitpardescription];
+option = [strtrim(cellstr(num2str((1:length(fitpardescription))'))) fitpardescription];
 
 %Chose fit parameters
 answer = cliMenu(option,...
-    'title','Please chose one or more fit parmeters',...
-    'default','D, E, scale, lw','multiple',true);
+    'title','Please chose one or more fit parameters',...
+    'default','1, 2, 6, 7','multiple',true);
 
 display(answer);
 

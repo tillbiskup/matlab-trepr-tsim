@@ -1,8 +1,8 @@
-function [Sys,Exp] = trEPRTSim_parTransfer(par,fitpar,tofit,Sys,Exp)
-% TREPRTSIM_PARTRANSFER Transfer fitted parameters back to Sys,Exp structs.
+function [Sys,Exp] = trEPRTSim_par2SysExp(par,fitpar,tofit,Sys,Exp)
+% TREPRTSIM_PAR2SYSEXP Transfer fitted parameters back to Sys,Exp structs.
 %
 % Usage
-%   [Sys,Exp] = trEPRTSim_parTransfer(par,fitpar,tofit,Sys,Exp)
+%   [Sys,Exp] = trEPRTSim_par2SysExp(par,fitpar,tofit,Sys,Exp)
 %
 %   par     - vector
 %             simulation parameters that shall be fitted
@@ -22,7 +22,7 @@ function [Sys,Exp] = trEPRTSim_parTransfer(par,fitpar,tofit,Sys,Exp)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-12
+% 2013-08-27
 
 % Merge parameters to be fitted into vector of all possible fit parameters
 fitpar(tofit) = par(1:length(find(tofit)));

@@ -108,7 +108,7 @@ while user_input ~= 1
     fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,Sys,Exp,spectrum,fitpar,tofit);
     fittedpar = lsqcurvefit(fitfun, inipar, Bfield, spectrum, lb, ub, options);
     
-    [Sys,Exp] = trEPRTSim_parTransfer(fittedpar,fitpar,tofit,Sys,Exp);
+    [Sys,Exp] = trEPRTSim_par2SysExp(fittedpar,fitpar,tofit,Sys,Exp);
     
     % Calculate spectrum with final fit parameters.
     [finalfit] = trEPRTSim_sim(Sys,Exp);

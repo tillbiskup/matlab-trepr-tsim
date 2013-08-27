@@ -39,7 +39,7 @@ function sim = trEPRTSim_fit(par,Bfield,Sys,Exp,spectrum,fitpar,tofit)
 %Exp.Range = [Bfield(1) Bfield(end)];
 
 % Set Sys and Exp according to parameters that shall be fitted
-[Sys,Exp] = trEPRTSim_parTransfer(par,fitpar,tofit,Sys,Exp);
+[Sys,Exp] = trEPRTSim_par2SysExp(par,fitpar,tofit,Sys,Exp);
 
 % Calling simulation function
 [sim] = trEPRTSim_sim(Sys,Exp);

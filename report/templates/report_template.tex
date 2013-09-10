@@ -1,0 +1,90 @@
+\documentclass[10pt]{article}
+% Set page size etcetera
+\usepackage[paper=a4paper,margin=2.5cm]{geometry}
+
+% German packages
+\usepackage[ngerman]{babel} % General German package/settings
+\usepackage{icomma} % Use comma, not point, in decimals
+
+% Input and font encoding stuff
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Additional math and symbols
+\usepackage{amsmath}
+\usepackage{amsfonts,amssymb}
+\usepackage[version=3]{mhchem}
+
+% Graphics package
+\usepackage{graphicx}
+
+% Additional packages for tables with columns aligned at the decimal, and Captions
+\usepackage{dcolumn}
+\usepackage[small]{caption}
+
+% package for commenting whole sections
+\usepackage{comment}
+
+% Change text indent of paragraphs and separation of paragraphs
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1em} % "em" is the length of a dash, "ex" would be the height of the "x"
+
+
+% Title stuff
+\title{}
+\author{@@User@@}
+\date{} % Define as empty to remove it from the title
+
+% Redefine enumerate labels
+\renewcommand{\labelenumi}{\alph{enumi})}
+
+
+\begin{document}
+\maketitle % Print title
+\thispagestyle{empty} % No page number on first page (optional)
+
+\newpage
+
+% And here goes the "real" stuff
+
+\section{Nutzerinteraktion @@k@@, @@fit oder sim@@}
+
+Abbildung vom Spektrum
+
+
+Abbildung der Residuen
+
+
+\begin{tabular}{l@{\qquad}D{.}{,}{-1}D{.}{,}{-1}D{.}{,}{-1}D{.}{,}{-1}}
+\hline
+\\[-1.5ex]
+Parameter & 
+\multicolumn{1}{c@{\qquad}}{lower boundary} & 
+\multicolumn{1}{c@{\qquad}}{upper boundary} &
+\multicolumn{1}{c@{\qquad}}{starting value} &
+\multicolumn{1}{c}{ending value}
+\\
+\\[-1.5ex]
+\hline
+\\[-1.5ex]
+Zero field splitting parameter D & -463,38 & -584,50 & 179,50 & 22,3
+\\[1.5ex]
+Zero field splitting parameter E & -133,30 & -166,36 & 264,22 & 22,3
+\\[1.5ex]
+Population of level 1 & -394,36 & -393,50 & 213,72 & 22,3
+\\[1.5ex]
+\hline
+\end{tabular}
+
+\newpage
+
+\section{Nutzerinteraktion @@k@@, @@fit oder sim@@}
+
+Abbildung vom Spektrum
+
+
+Abbildung der Residuen
+
+
+Tabelle mit Parametern
+\end{document}

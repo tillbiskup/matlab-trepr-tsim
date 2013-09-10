@@ -1,5 +1,9 @@
 # Can ignore specific files
 .DS_Store
+*.pdf
+*.aux
+*.toc
+*.log
 
 # Use wildcards as well
 *~

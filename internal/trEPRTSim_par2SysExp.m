@@ -19,32 +19,33 @@ function [Sys,Exp] = trEPRTSim_par2SysExp(par,fitpar,tofit,Sys,Exp)
 %   Exp     - struct
 %             EasySpin structure for defining experimental parameters
 %
-% See also TREPRTSIM
+% See also TREPRTSIM, TREPRTSIM_SYSEXP2PAR
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-27
+% 2013-09-10
 
 % Merge parameters to be fitted into vector of all possible fit parameters
 fitpar(tofit) = par(1:length(find(tofit)));
 
-% Initialization of the parameters
 % [D   E   Exp.Temperature scale lw lwD lwE DeltaB gx   gy   gz  ]
-Exp.Temperature = fitpar(3:5);
 Sys.D = [...
     -fitpar(1)/3 + fitpar(2),...
     -fitpar(1)/3 - fitpar(2),...
     2*fitpar(1)/3 ...
     ];
+Exp.Temperature = fitpar(3:5);
 Exp.scale = fitpar(6);
 Sys.lw = fitpar(7);
+
 if any(tofit(8:9))
     Sys.DStrain = fitpar(8:9);
-end
-if any(tofit(11:13))
-    Sys.gStrain = fitpar(11:13);
 end
 
 % Adjusting field offset
 Exp.Range = Exp.Range+fitpar(10);
+
+if any(tofit(11:13))
+    Sys.gStrain = fitpar(11:13);
+end
 
 end

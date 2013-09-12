@@ -106,6 +106,8 @@ while user_input ~= 1
             conf.fitopt.(fitoptFieldNames{k});
     end
     clear fitoptFieldNames k;
+    dataset.TSim.fit.routine = conf.routines.fit;
+    dataset.TSim.sim.routine = conf.routines.sim;
     
     % Replace parameters taken from experimental data
     dataset.TSim.sim.Exp.mwFreq = ...

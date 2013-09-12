@@ -57,12 +57,11 @@ else
     spectrum = data.data;
 end
 
-frequency = data.parameters.bridge.MWfrequency.value;
 % In case we couldn't read a frequency value from the (too old) fsc2 file,
 % assume some reasonable value... (that works with the provided example
 % files).
-if isempty(frequency)
-    frequency = 9.67737;
+if isempty(data.parameters.bridge.MWfrequency.value)
+    data.parameters.bridge.MWfrequency.value = 9.67737;
 end
 
 	
@@ -79,7 +78,7 @@ while user_input ~= 1
     for k=1:length(dataFieldNames)
         dataset.(dataFieldNames{k}) = data.(dataFieldNames{k});
     end
-    clear dataFieldNames;
+    clear dataFieldNames k;
     TSim = trEPRTSim_dataStructure();
     % Merge TSim into dataset
     TSimFieldNames = fieldnames(TSim);
@@ -109,7 +108,8 @@ while user_input ~= 1
     clear fitoptFieldNames k;
     
     % Replace parameters taken from experimental data
-    dataset.TSim.sim.Exp.mwFreq = frequency;
+    dataset.TSim.sim.Exp.mwFreq = ...
+        dataset.parameters.bridge.MWfrequency.value;
     dataset.TSim.sim.Exp.nPoints = length(spectrum);
     dataset.TSim.sim.Exp.Range = ...
         [dataset.axes.y.values(1) dataset.axes.y.values(end)];

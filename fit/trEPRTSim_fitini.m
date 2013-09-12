@@ -21,7 +21,8 @@ function dataset = trEPRTSim_fitini(dataset)
 % variable par and the boundary conditions in the variables lb and ub. 
 
 % Define full set of available fit parameters
-fitpar = trEPRTSim_SysExp2par(dataset.TSim.sim.Sys,dataset.TSim.sim.Exp);
+dataset = trEPRTSim_SysExp2par(dataset);
+fitpar = dataset.TSim.fit.fitini.fitpar;
 
 % Corresponding lower and upper boundaries
 lb = dataset.TSim.fit.fitini.lb;

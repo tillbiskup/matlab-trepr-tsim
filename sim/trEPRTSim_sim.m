@@ -25,14 +25,15 @@ parser.addRequired('dataset',@(x)isstruct(x));
 parser.addParamValue('routine','pepper',@ischar);
 parser.parse(dataset,varargin{:});
 
+% Define simulation routine
 routine = str2func(parser.Results.routine);
 
 % Convert D and E from GHz in MHz
 % ATTENTION: Check whether this is necessary or wrong!
 dataset.TSim.sim.Sys.D = dataset.TSim.sim.Sys.D * 1e3;
 
-% Calculating the spectrum using Easyspin's pepper function. sim is the
-% return variable.
+% Calculating the spectrum using Easyspin's pepper function. The result is
+% returned in the field "calculated" of the dataset.
 dataset.calculated(:,1) = routine(dataset.TSim.sim.Sys,dataset.TSim.sim.Exp);
 
 end

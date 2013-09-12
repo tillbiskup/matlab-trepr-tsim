@@ -1,4 +1,4 @@
-function report = trEPRTSim_fitreport(dataset) %(tofit,inipar,fittedpar,lb,ub)
+function report = trEPRTSim_fitreport(dataset)
 % TREPRTSIM_FITREPORT Report fit results and final parameter set.
 %
 % Usage

@@ -23,9 +23,6 @@ function sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-08-15
 
-% Set B0 range for simulation
-%Exp.Range = [Bfield(1) Bfield(end)];
-
 % Set Sys and Exp according to parameters that shall be fitted
 dataset = trEPRTSim_par2SysExp(par,dataset);
 
@@ -35,10 +32,13 @@ dataset = trEPRTSim_sim(dataset);
 % Scaling of spectrum
 sim = dataset.TSim.sim.Exp.scale*dataset.calculated;
 
-% The momentarly parameters are displayed
+% The current fit parameters are displayed on the command line
 disp(num2str(par))
 
-% The momentarly figure is plotted to see the improvement
+% The current fit is plotted together with the experimental data to see the
+% improvement of the fitting process.
 figure(1)
 plot(Bfield,[spectrum,sim]);
 pause(0.001);
+
+end

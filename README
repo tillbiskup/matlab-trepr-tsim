@@ -1,0 +1,7 @@
+TSim module - trEPR Toolbox TSim module
+ - a module for the trEPR toolbox for simulating triplet spectra  
+
+For more information type "trEPRTSiminfo" at the Matlab(r) command line.
+
+To start simulating/fitting, use the function "trEPRTSim_cli".
+

@@ -9,6 +9,9 @@ fitoptions = optimset(...
     'TolFun', 1.0e-10 ...
     );
 
+% Read startingvalues from config file
+ conf = trEPRTSim_conf;
+ 
 % Chose wether it shall be simulated or fitted
 answer = cliMenu({'f','Fit';'s','Simulate'},'default','f','title',...
     'Do you wish to simulate or to fit?');
@@ -50,16 +53,23 @@ while outerloop
                     answer = cliMenu(option,...
                         'title','Please chose one or more fit parameters',...
                         'default','1, 2, 6, 7','multiple',true);
-                    
+                      
                     display(answer);
-                    
+                   
+                    % Create tofit and so on...
+                    [inipar,lb,ub,tofit] = trEPRTSim_fitini_1(answer);
+                     
                     %Hier käme:Display chosen fittingparameters with values, upper and lower bounderies
-                    % Baue tofit
+                    
+                     startingvalueloop = true;
+                while startingvalueloop == 1
                     
                     %Ask for different things
                     option = {...
                         'p','Fit different parameters';...
-                        'v','Change starting values and/or boundary values';...
+                        's','Change starting values';... 
+                        'u','Change upper boundary values';...
+                        'l','Change lower boundary values';...
                         'c','Continue';...
                         'q','Quit'};
                     answer = cliMenu(option,'title',...
@@ -71,16 +81,35 @@ while outerloop
                         case 'p'
                             % Parameters
                             fitiniloop = 1;
+                            startingvalueloop = 0;
+                        case 's'
+                            % Starting values
+                            fitiniloop = 1;
+                            % hier käme: ändere starting values
+                            
+                        case 'u'
+                            % Upper Boundary values
+                            fitiniloop = 1;
+                            % hier käme: ändere upper boundary values
+                        case 'l'
+                            % Lower Boundary values
+                            fitiniloop = 1;    
+                            % hier käme: ändere lower boundary values
                         case 'c'
                             % Continue
                             fitiniloop = 0;
+                            startingvalueloop = 0;
                         case 'q'
                             % Quit
                             return;
                         otherwise
                             % Shall never happen
                             disp('booo!');
+                   
                     end
+                    
+                    
+                end 
                 end
                 
                 fitloop = 1;

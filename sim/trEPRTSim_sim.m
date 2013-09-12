@@ -17,7 +17,7 @@ function sim = trEPRTSim_sim(Sys,Exp,varargin)
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-27
+% 2013-09-10
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -36,8 +36,8 @@ routine = str2func(parser.Results.routine);
 % ATTENTION: Check whether this is necessary or wrong!
 Sys.D = Sys.D * 1e3;
 
-% Calculating the spectrum using Easyspin's pepper function and scaling it 
-% with the given scaling factor. sim is the return variable.
+% Calculating the spectrum using Easyspin's pepper function. sim is the
+% return variable.
 sim(:,1) = routine(Sys,Exp);
 
 end

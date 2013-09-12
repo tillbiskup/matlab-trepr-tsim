@@ -30,7 +30,7 @@
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-22
+% 2013-09-12
 
 
 % DOCUMENTATION : 
@@ -38,24 +38,30 @@
 % It returns the starting parameters in the
 % variable par and the boundary conditions in the variables lb and ub. 
 
+conf = trEPRTSim_conf;
+
 D           = Sys.D(3)*3/2;                   % in GHz
 E           = (Sys.D(1)+Sys.D(3)*3/6);        % in GHz
-scale       = 0.003;                          % scaling
-lw          = 3.0;                            % linewith in mTesla 
-DStrainD    = 80.0;                           % linewith of D
-DStrainE    = 70.0;                           % linewith of E
-DeltaB      = 0;                              % DeltaB in mT
-gStrainx    = 1e-5;                           % gStain in x
-gStrainy    = 1e-5;                           % gStain in y
-gStrainz    = 1e-5;                           % gStain in z
+scale       = conf.Exp.scale;                 % scaling
+lw          = conf.Sys.lw;                    % linewith in mTesla 
+DStrainD    = conf.Sys.DStrain(1);            % linewith of D
+DStrainE    = conf.Sys.DStrain(2);            % linewith of E
+DeltaB      = conf.Exp.DeltaB;                % DeltaB in mT
+gStrainx    = conf.Sys.gStrain(1);            % gStain in x
+gStrainy    = conf.Sys.gStrain(2);            % gStain in y
+gStrainz    = conf.Sys.gStrain(3);            % gStain in z
 
 % Define full set of available fit parameters
 fitpar = [D   E   Exp.Temperature scale lw DStrainD DStrainE DeltaB gStrainx   gStrainy   gStrainz  ];
 % Corresponding lower and upper boundaries
-lb =     [1.5 0.3 0 0 0           0     1  1   1   -3     1e-8 1e-8 1e-8];
-ub =     [2   1   1 1 1           1     4  100 100  3     1e-3 1e-3 1e-3];
+lb = conf.fitini.lb;
+ub = conf.fitini.ub;
+% lb =     [1.5 0.3 0 0 0           0     1  1   1   -3     1e-8 1e-8 1e-8];
+% ub =     [2   1   1 1 1           1     4  100 100  3     1e-3 1e-3 1e-3];
 % Which parameters to fit
-tofit =  [1   1   1 1 1           1     0    0   0   0       0    0    0];
+tofit = conf.fitini.tofit;
+%tofit =  [1   1   1 1 1           1     0    0   0   0       0    0    0];
+
 
 % Initialisation of the fit-parameters using a menu.
 % choice defines how many parameters should be fitted.

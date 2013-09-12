@@ -1,17 +1,11 @@
-function report = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub)
+function report = trEPRTSim_fitreport(dataset) %(tofit,inipar,fittedpar,lb,ub)
 % TREPRTSIM_FITREPORT Report fit results and final parameter set.
 %
 % Usage
 %   report  = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub)
 %
-%   par     - vector
-%             simulation parameters
-%
-%   g       - scalar / vector
-%             g factor used for conversion MHz -> mT
-%             In case of g being a vector, g_iso is calculated first
-%
-%   inifactor -scalar/Bullshit
+%   dataset - struct
+%             Full trEPR toolbox dataset including TSim structure
 %
 %   report  - cell array
 %
@@ -19,11 +13,11 @@ function report = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub)
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-15
+% 2013-09-12
 
 % Get fit parameters and their definitions
 fitparDef = trEPRTSim_fitpar();
-fittedparDef = fitparDef(tofit,:);
+fittedparDef = fitparDef(dataset.TSim.fit.fitini.tofit,:);
 
 % Get length of parameter names for nice typesetting  of table below
 lengthofparameternames = cellfun(@(x)length(x),fittedparDef(:,1));
@@ -40,7 +34,11 @@ else
 end
 for k=1:size(fittedparDef,1)
     report{end+1,1} = sprintf('%s\t%e\t%e\t%e\t%e\t%s',...
-        fittedparDef{k,1},inipar(k),lb(k),ub(k),fittedpar(k),...
+        fittedparDef{k,1},...
+        dataset.TSim.fit.inipar(k),...
+        dataset.TSim.fit.fitini.lb(k),...
+        dataset.TSim.fit.fitini.ub(k),...
+        dataset.TSim.fit.fittedpar(k),...
         fittedparDef{k,4}); %#ok<AGROW>
 end
 

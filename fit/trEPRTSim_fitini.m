@@ -1,30 +1,12 @@
- function [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp)
+function dataset = trEPRTSim_fitini(dataset)
 % TREPRTSIM_FITINI Initialize fit parameters for fitting triplet spectra
 % with trEPRTSim using menus.
 %
 % Usage
-%   [inipar,lb,ub,tofit] = trEPRTSim_fitini(Sys,Exp);
+%   dataset = trEPRTSim_fitini(dataset);
 %
-%   Sys    - struct
-%            EasySpin structure for defining spin system
-%
-%   Exp    - struct
-%            EasySpin structure for defining experimental parameters
-%
-%   inipar - vector
-%            simulation parameters that shall be fitted
-%
-%   lb     - vector
-%            lower boundaries of corresponding simulation parameters  
-%
-%   ub     - vector
-%            upper boundaries of corresponding simulation parameters 
-%
-%   fitpar - vector
-%            full set of possible simulation parameters
-%
-%   tofit  - vector
-%            boolean values
+%   dataset - struct
+%             Full trEPR toolbox dataset including TSim structure
 %
 % See also TREPRTSIM
 
@@ -38,30 +20,15 @@
 % It returns the starting parameters in the
 % variable par and the boundary conditions in the variables lb and ub. 
 
-conf = trEPRTSim_conf;
-
-D           = Sys.D(3)*3/2;                   % in GHz
-E           = (Sys.D(1)+Sys.D(3)*3/6);        % in GHz
-scale       = conf.Exp.scale;                 % scaling
-lw          = conf.Sys.lw;                    % linewith in mTesla 
-DStrainD    = conf.Sys.DStrain(1);            % linewith of D
-DStrainE    = conf.Sys.DStrain(2);            % linewith of E
-DeltaB      = conf.Exp.DeltaB;                % DeltaB in mT
-gStrainx    = conf.Sys.gStrain(1);            % gStain in x
-gStrainy    = conf.Sys.gStrain(2);            % gStain in y
-gStrainz    = conf.Sys.gStrain(3);            % gStain in z
-
 % Define full set of available fit parameters
-fitpar = [D   E   Exp.Temperature scale lw DStrainD DStrainE DeltaB gStrainx   gStrainy   gStrainz  ];
-% Corresponding lower and upper boundaries
-lb = conf.fitini.lb;
-ub = conf.fitini.ub;
-% lb =     [1.5 0.3 0 0 0           0     1  1   1   -3     1e-8 1e-8 1e-8];
-% ub =     [2   1   1 1 1           1     4  100 100  3     1e-3 1e-3 1e-3];
-% Which parameters to fit
-tofit = conf.fitini.tofit;
-%tofit =  [1   1   1 1 1           1     0    0   0   0       0    0    0];
+fitpar = trEPRTSim_SysExp2par(dataset.TSim.sim.Sys,dataset.TSim.sim.Exp);
 
+% Corresponding lower and upper boundaries
+lb = dataset.TSim.fit.fitini.lb;
+ub = dataset.TSim.fit.fitini.ub;
+
+% Which parameters to fit
+tofit = dataset.TSim.fit.fitini.tofit;
 
 % Initialisation of the fit-parameters using a menu.
 % choice defines how many parameters should be fitted.
@@ -156,3 +123,10 @@ while user_input ~= 4
     end
     
 end
+
+% Put parameters back to dataset
+dataset.TSim.fit.inipar = inipar;
+dataset.TSim.fit.fitini.fitpar = fitpar;
+dataset.TSim.fit.fitini.tofit = tofit;
+dataset.TSim.fit.fitini.lb = lb;
+dataset.TSim.fit.fitini.ub = ub;

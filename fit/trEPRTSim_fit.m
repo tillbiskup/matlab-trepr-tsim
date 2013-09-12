@@ -1,9 +1,9 @@
-function sim = trEPRTSim_fit(par,Bfield,Sys,Exp,spectrum,fitpar,tofit)
+function sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
 % TREPRTSIM_FIT Calculate fit calling trEPRTSim_sim and display iterative
 % results.
 %
 % Usage
-%   sim = trEPRTSim_fit(par,Bfield)
+%   sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
 %
 %   par      - vector
 %              simulation parameters
@@ -11,23 +11,11 @@ function sim = trEPRTSim_fit(par,Bfield,Sys,Exp,spectrum,fitpar,tofit)
 %   Bfield   - vector
 %              magnetic field axis the simulation is calculated for
 %
-%   Sys      - struct
-%              EasySpin structure for defining spin system
-%
-%   Exp      - struct
-%              EasySpin structure for defining experimental parameters
-%
 %   spectrum - vector
 %              y values of the experimental spectrum (for plotting)
 %
-%   fitpar   - vector
-%              full set of possible simulation parameters
-%
-%   tofit    - vector 
-%              boolean values determining which parameters to fit
-%
-%   sim      - vector
-%              calculated spectrum
+%   dataset  - struct
+%              Full trEPR toolbox dataset including TSim structure
 %
 % See also TREPRTSIM
 
@@ -39,13 +27,13 @@ function sim = trEPRTSim_fit(par,Bfield,Sys,Exp,spectrum,fitpar,tofit)
 %Exp.Range = [Bfield(1) Bfield(end)];
 
 % Set Sys and Exp according to parameters that shall be fitted
-[Sys,Exp] = trEPRTSim_par2SysExp(par,fitpar,tofit,Sys,Exp);
+dataset = trEPRTSim_par2SysExp(par,dataset);
 
 % Calling simulation function
-[sim] = trEPRTSim_sim(Sys,Exp);
+dataset = trEPRTSim_sim(dataset);
 
 % Scaling of spectrum
-sim = Exp.scale*sim;
+sim = dataset.TSim.sim.Exp.scale*dataset.calculated;
 
 % The momentarly parameters are displayed
 disp(num2str(par))

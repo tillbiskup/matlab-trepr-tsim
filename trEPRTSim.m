@@ -16,11 +16,11 @@
 
 
 %   DOCUMENTATION :
-% 	Idea of this programm is to fit an EPR spectra and therefore get the
-% 	zero-field-splitting-parameters  and the polarisation of the
+% 	Idea of this programm is to fit an EPR spectrum and therefore to get
+% 	the zero-field-splitting parameters and the polarisation of the
 % 	measurement.
 
-clear all close all
+clear all; close all;
 
 % Check for dependencies
 [status, missing] = trEPRTSim_dependency();
@@ -36,7 +36,7 @@ filename = input('Enter filename: ','s');
 data = trEPRload(filename);
 
 % Convert Gauss -> mT
-Bfield = (data.axes.y.values)/10;
+data = trEPRconvertUnits(data,'g2mt');
 
 % Check whether data are 2D or 1D, and in case of 2D, take maximum
 if min(size(data.data)) > 1
@@ -65,8 +65,6 @@ if isempty(frequency)
     frequency = 9.67737;
 end
 
-npts = length(spectrum);
-	
 	
 % User_input is a variable that is changed at the end of the program
 % where the user is asked what he wants to do next. By choosing 1 the  
@@ -74,25 +72,65 @@ npts = length(spectrum);
 user_input = 0;
 while user_input ~= 1
     
+    % Create data structure
+    dataset = trEPRdataStructure('structure');
+    % Merge data into dataset
+    dataFieldNames = fieldnames(data);
+    for k=1:length(dataFieldNames)
+        dataset.(dataFieldNames{k}) = data.(dataFieldNames{k});
+    end
+    clear dataFieldNames;
+    TSim = trEPRTSim_dataStructure();
+    % Merge TSim into dataset
+    TSimFieldNames = fieldnames(TSim);
+    for k=1:length(TSimFieldNames)
+        dataset.(TSimFieldNames{k}) = TSim.(TSimFieldNames{k});
+    end
+    clear TSim TSimFieldNames k;
+    
     % Initialization of those parts of Sys and Exp that are always 
     % the same.
-    [Sys,Exp] = trEPRTSim_simini();
+    conf = trEPRTSim_conf;
+    dataset.TSim.sim.Sys = conf.Sys;
+    dataset.TSim.sim.Exp = conf.Exp;
+    % Merge fitini into TSim structure
+    fitiniFieldNames = fieldnames(conf.fitini);
+    for k=1:length(fitiniFieldNames)
+        dataset.TSim.fit.fitini.(fitiniFieldNames{k}) = ...
+            conf.fitini.(fitiniFieldNames{k});
+    end
+    clear fitiniFieldNames k;
+    % Merge fitopt into TSim structure
+    fitoptFieldNames = fieldnames(conf.fitopt);
+    for k=1:length(fitoptFieldNames)
+        dataset.TSim.fit.fitopt.(fitoptFieldNames{k}) = ...
+            conf.fitopt.(fitoptFieldNames{k});
+    end
+    clear fitoptFieldNames k;
     
     % Replace parameters taken from experimental data
-    Exp.mwFreq = frequency;
-    Exp.nPoints = npts;
-    Exp.Range = [Bfield(1) Bfield(end)];
+    dataset.TSim.sim.Exp.mwFreq = frequency;
+    dataset.TSim.sim.Exp.nPoints = length(spectrum);
+    dataset.TSim.sim.Exp.Range = ...
+        [dataset.axes.y.values(1) dataset.axes.y.values(end)];
    
     % INITILIZATION OF THE FIT-PARAMETERS
-    [inipar,lb,ub,fitpar,tofit] = trEPRTSim_fitini(Sys,Exp);
+    dataset = trEPRTSim_fitini(dataset);
     
-    disp([inipar ; lb ; ub]);
-    disp([fitpar ; tofit]);
+    disp([...
+        dataset.TSim.fit.inipar ; ...
+        dataset.TSim.fit.fitini.lb ; ...
+        dataset.TSim.fit.fitini.ub ...
+        ]);
+    disp([...
+        dataset.TSim.fit.fitini.fitpar ; ...
+        dataset.TSim.fit.fitini.tofit ...
+        ]);
     
     % User is asked to define the number of iterations lsqcurvefit should
     % run with at the most (see lsqcurvefit documentation)
     %iterations = input('Number of iterations for the fitting: ');
-    iterations = 1;
+%     iterations = 1;
 
     disp(' ')  
     disp('Fitting has started')
@@ -104,22 +142,35 @@ while user_input ~= 1
     % value called TolFun wich is 1.0e-10 (see lsqcurvefit
     % documentation). The final or best parameters are returned in the
     % vector fitout 
-    options = optimset('MaxIter',iterations, 'TolFun', 1.0e-10);
-    fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,Sys,Exp,spectrum,fitpar,tofit);
-    fittedpar = lsqcurvefit(fitfun, inipar, Bfield, spectrum, lb, ub, options);
+    options = optimset(dataset.TSim.fit.fitopt);
+    fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,spectrum,dataset);
+    dataset.TSim.fit.fittedpar = lsqcurvefit(fitfun, ...
+        dataset.TSim.fit.inipar, ...
+        dataset.axes.y.values, ...
+        spectrum, ...
+        dataset.TSim.fit.fitini.lb, ...
+        dataset.TSim.fit.fitini.ub, ...
+        options);
     
-    [Sys,Exp] = trEPRTSim_par2SysExp(fittedpar,fitpar,tofit,Sys,Exp);
+    dataset = trEPRTSim_par2SysExp(...
+        dataset.TSim.fit.fittedpar,...
+        dataset);
     
     % Calculate spectrum with final fit parameters.
-    [finalfit] = trEPRTSim_sim(Sys,Exp);
+    dataset = trEPRTSim_sim(dataset);
     % Correcting magnetic field by field offset.
     % Bfield = Bfield+DeltaB;
         
     % Calculate difference between fit and signal
-    difference = spectrum-finalfit; 
+    difference = spectrum-dataset.calculated; 
         
     % Print fit results
-    report = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub);
+    report = trEPRTSim_fitreport(...
+        dataset.TSim.fit.fitini.tofit,...
+        dataset.TSim.fit.inipar,...
+        dataset.TSim.fit.fittedpar,...
+        dataset.TSim.fit.fitini.lb,...
+        dataset.TSim.fit.fitini.ub);
     
     disp('');
     
@@ -128,7 +179,9 @@ while user_input ~= 1
     % PLOTTING: the final fit in comparison to the measured signal
     close(figure(1));
     figure('Name', ['Data from ' filename])
-    plot(Bfield,[spectrum,finalfit*Exp.scale]);
+    plot(...
+        dataset.axes.y.values,...
+        [spectrum,dataset.calculated*dataset.TSim.sim.Exp.scale]);
     legend({'Original','Fit'},'Location','SouthEast');
     
     
@@ -159,9 +212,9 @@ while user_input ~= 1
             % saving data in the file <probename_simulation.dat> by using
             % the double array savingdata which has the form 
             % [Bfield Signal finalfit difference]
-            savingdata(:,1) = Bfield;
+            savingdata(:,1) = dataset.axes.y.values;
             savingdata(:,2) = spectrum;
-            savingdata(:,3) = finalfit;
+            savingdata(:,3) = dataset.calculated;
             savingdata(:,4) = difference;
             save([samplename,'_simulation.dat'], 'savingdata', '-ascii');
         end
@@ -170,7 +223,7 @@ while user_input ~= 1
         % DIFFERENCE SEEING AND SAVING == 3
         if user_input == 3
             figure('Name', ['Difference-data from' filename])
-            plot(Bfield,difference);
+            plot(dataset.axes.y.values,difference);
             legend({'Difference'}, 0);
             % saving difference-figure
             saveas(gcf,[samplename,'_difference_sim_sig.fig']);

@@ -5,3 +5,6 @@ For more information type "trEPRTSiminfo" at the Matlab(r) command line.
 
 To start simulating/fitting, use the function "trEPRTSim_cli".
 
+The module is based on a set of routines originally written by Moritz Kirste at Freie Universitaet Berlin in 2005.
+
+

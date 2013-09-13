@@ -19,7 +19,6 @@ function sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
 %
 % See also TREPRTSIM
 
-% (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-08-15
 

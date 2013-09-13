@@ -11,7 +11,6 @@ function report = trEPRTSim_fitreport(dataset)
 %
 % See also TREPRTSIM
 
-% (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-09-12
 

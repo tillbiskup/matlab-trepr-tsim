@@ -1,4 +1,4 @@
-function dataset = trEPRTSim_sim(dataset,varargin) %(Sys,Exp,varargin)
+function dataset = trEPRTSim_sim(dataset,varargin)
 % TREPRTSIM_SIM Simulate spectrum using the EasySpin function pepper.
 %
 % This file uses EasySpin. See http://www.easyspin.org/ 
@@ -13,7 +13,7 @@ function dataset = trEPRTSim_sim(dataset,varargin) %(Sys,Exp,varargin)
 
 % (c) 2005, Moritz Kirste
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-12
+% 2013-09-13
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

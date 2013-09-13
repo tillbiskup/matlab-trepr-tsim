@@ -1,5 +1,5 @@
 function dataset = trEPRTSim_SysExp2par(dataset)
-% TREPRTSIM_SYSEXP2PAR Transfer fitted parameters back to Sys,Exp structs.
+% TREPRTSIM_SYSEXP2PAR Transfer Sys,Exp structs to fit parameters.
 %
 % Usage
 %   dataset = trEPRTSim_SysExp2par(dataset)

@@ -71,53 +71,10 @@ end
 user_input = 0;
 while user_input ~= 1
     
-    % Create data structure
-    dataset = trEPRdataStructure('structure');
-    % Merge data into dataset
-    dataFieldNames = fieldnames(data);
-    for k=1:length(dataFieldNames)
-        dataset.(dataFieldNames{k}) = data.(dataFieldNames{k});
-    end
-    clear dataFieldNames k;
-    TSim = trEPRTSim_dataStructure();
-    % Merge TSim into dataset
-    TSimFieldNames = fieldnames(TSim);
-    for k=1:length(TSimFieldNames)
-        dataset.(TSimFieldNames{k}) = TSim.(TSimFieldNames{k});
-    end
-    clear TSim TSimFieldNames k;
-    
-    % Initialization of those parts of Sys and Exp that are always 
-    % the same.
-    conf = trEPRTSim_conf;
-    dataset.TSim.sim.Sys = conf.Sys;
-    dataset.TSim.sim.Exp = conf.Exp;
-    % Merge fitini into TSim structure
-    fitiniFieldNames = fieldnames(conf.fitini);
-    for k=1:length(fitiniFieldNames)
-        dataset.TSim.fit.fitini.(fitiniFieldNames{k}) = ...
-            conf.fitini.(fitiniFieldNames{k});
-    end
-    clear fitiniFieldNames k;
-    % Merge fitopt into TSim structure
-    fitoptFieldNames = fieldnames(conf.fitopt);
-    for k=1:length(fitoptFieldNames)
-        dataset.TSim.fit.fitopt.(fitoptFieldNames{k}) = ...
-            conf.fitopt.(fitoptFieldNames{k});
-    end
-    clear fitoptFieldNames k;
-    dataset.TSim.fit.routine = conf.routines.fit;
-    dataset.TSim.sim.routine = conf.routines.sim;
-    
-    % Replace parameters taken from experimental data
-    dataset.TSim.sim.Exp.mwFreq = ...
-        dataset.parameters.bridge.MWfrequency.value;
-    dataset.TSim.sim.Exp.nPoints = length(spectrum);
-    dataset.TSim.sim.Exp.Range = ...
-        [dataset.axes.y.values(1) dataset.axes.y.values(end)];
-   
+    dataset = trEPRTSim_dataset(data);
+
     % INITILIZATION OF THE FIT-PARAMETERS
-    dataset = trEPRTSim_fitini(dataset);
+    dataset = trEPRTSim_fitini_mk(dataset);
     
     disp([...
         dataset.TSim.fit.inipar ; ...
@@ -162,7 +119,7 @@ while user_input ~= 1
     dataset = trEPRTSim_sim(dataset);
     % Correcting magnetic field by field offset.
     % Bfield = Bfield+DeltaB;
-        
+    
     % Calculate difference between fit and signal
     difference = spectrum-dataset.calculated; 
         

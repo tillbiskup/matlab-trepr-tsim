@@ -4,7 +4,7 @@
 % Integral part of the TSim module of the trEPR toolbox.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-13
+% 2013-09-16
 
 % For the time being, erase everything in the workspace... (quite rude)
 clear all; close all;
@@ -160,14 +160,13 @@ end
                             
                             switch lower(answer)
                                 case 'p'
-                                    % Parameters
+                                    % Change parameters
                                     fitiniloop = 1;
                                     valueloop = 0;
                                 case 'i'
-                                    % Starting values
+                                    % Change initial values
                                     fitiniloop = 1;
                                     valueloop = 1;
-                                    % hier käme: ändere starting values
                                     iniparloop = true;
                                     while iniparloop
                                         disp('Please enter the initial values in the following order:');
@@ -181,10 +180,9 @@ end
                                         end
                                     end
                                 case 'l'
-                                    % Lower Boundary values
+                                    % Lower boundary values
                                     fitiniloop = 1;
                                     valueloop = 1;
-                                    % hier käme: ändere lower boundary values
                                     lbloop = true;
                                     while lbloop
                                         disp('Please enter the lower boundaries in the following order:');
@@ -201,7 +199,6 @@ end
                                     % Upper Boundary values
                                     fitiniloop = 1;
                                     valueloop = 1;
-                                    % hier käme: ändere upper boundary values
                                     ubloop = true;
                                     while ubloop
                                         disp('Please enter the upper boundaries in the following order:');
@@ -293,6 +290,11 @@ end
                             
                         end
                         
+                        % Enter purpose
+                        disp('Enter a purpose:');
+                        purpose = input('> ','s');
+                        dataset.TSim.remarks.purpose = purpose;
+                  
                         % Finally: START FITTING! YEAH!
                         % Took us six bloody weeks to come to this point...
                         options = optimset(dataset.TSim.fit.fitopt);
@@ -311,28 +313,34 @@ end
                         
                         % Calculate spectrum with final fit parameters.
                         dataset = trEPRTSim_sim(dataset);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    % Calculate difference between fit and signal
-    difference = spectrum-dataset.calculated; 
-        
-    % Print fit results
-    report = trEPRTSim_fitreport(dataset);
-    
-    disp('');
-    
-    cellfun(@(x)fprintf('%s\n',x),report);
-    
-    % PLOTTING: the final fit in comparison to the measured signal
-    close(figure(1));
-    figure('Name', ['Data from ' filename])
-    plot(...
-        dataset.axes.y.values,...
-        [spectrum,dataset.calculated*dataset.TSim.sim.Exp.scale]);
-    legend({'Original','Fit'},'Location','SouthEast');
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                        
+                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                        
+                        % Calculate difference between fit and signal
+                        difference = spectrum-dataset.calculated;
+                        
+                        % Print fit results
+                        report = trEPRTSim_fitreport(dataset);
+                        
+                        disp('');
+                        
+                        cellfun(@(x)fprintf('%s\n',x),report);
+                        
+                        % PLOTTING: the final fit in comparison to the measured signal
+                        close(figure(1));
+                        figure('Name', ['Data from ' filename])
+                        plot(...
+                            dataset.axes.y.values,...
+                            [spectrum,dataset.calculated*dataset.TSim.sim.Exp.scale]);
+                        legend({'Original','Fit'},'Location','SouthEast');
+                        
+                        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                        
+                        % Enter comment
+                        disp('Enter a comment:');
+                        comment = input('> ','s');
+                        dataset.TSim.remarks.comment = comment;
+                        
                         
                         % Write history
                         % (Orwell style - we're creating our own)
@@ -492,6 +500,11 @@ end
                     
                 end
                 
+                % Enter purpose
+                disp('Enter a purpose:');
+                purpose = input('> ','s');
+                dataset.TSim.remarks.purpose = purpose;
+                
                 % Hier wird simuliert
                 % Calculate spectrum
                 dataset = trEPRTSim_sim(dataset);
@@ -500,6 +513,12 @@ end
                 plot(dataset.axes.y.values,dataset.calculated);
                 xlabel('{\it magnetic field} / mT');
                 ylabel('{\it intensity} / a.u.');
+                
+                % Enter comment
+                disp('Enter a comment:');
+                comment = input('> ','s');
+                dataset.TSim.remarks.comment = comment;
+                
                         
                 % Write history
                 % (Orwell style - we're creating our own)

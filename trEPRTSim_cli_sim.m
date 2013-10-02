@@ -16,7 +16,7 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-16
+% 2013-10-02
 
 
 if nargin % If we have input arguments
@@ -63,21 +63,27 @@ while simouterloop == 1
                 disp('Sorry, not fully implemented yet... come back later.');
                 disp(' ');
                 siminiloop = 1;
-                 simvalueloop = true;
-                 while simvalueloop
-                     disp('Please enter the new values of the simulation parameters in the following order:');
-                     trEPRTSim_parDisplay(dataset,'simpar');
-                     simpar = input('> ','s');
-                     simpar = str2num(simpar); %#ok<ST2NM>
-                     display(simpar);
-                     simvalueloop = false;
-                 end
+                simvalueloop = true;
+                while simvalueloop
+                    disp('Please enter the new values of the simulation parameters in the following order:');
+                    trEPRTSim_parDisplay(dataset,'simpar');
+                    simpar = input('> ','s');
+                    simpar = str2num(simpar); %#ok<ST2NM>
+                    display(simpar);
+                    simvalueloop = false;
+                end
             case 'p'
                 % Display all possible simulation parameters with
                 % their values
-                disp('All possible simulation parameters:')
-                trEPRTSim_parDisplay(dataset,'simall');
                 
+                 option = [ ...
+                strtrim(cellstr(num2str((1:length(fitpardescription))')))...
+                fitpardescription ...
+                ];
+                
+                disp('Possible additional simulation parameters:')
+                trEPRTSim_parDisplay(dataset,'simall');
+            
                 display(' ');
                 % Change parameters
                 addParams = input('Additional parameters: ','s');
@@ -169,11 +175,24 @@ while simouterloop == 1
                 saveloop = false;
             case 'f'
                 % Start fit
-                saveloop = false;
-                simouterloop = false;
-                [dataset,command] = trEPRTSim_cli_fit(dataset);
+                command = 'fit';
+                return;
+%                 saveloop = false;
+%                 simouterloop = false;
+%                 [dataset,command] = trEPRTSim_cli_fit(dataset);
             case 'q'
                 % Quit
+                % Suggest reasonable filename
+                [path,name,~] = fileparts(filename);
+                suggestedFilename = fullfile(...
+                    path,[name '_sim-' datestr(now,30) '.tez']);
+                saveFilename = suggestedFilename;
+                % Save dataset
+                [status] = trEPRsave(saveFilename,dataset);
+                if ~isempty(status)
+                    disp('Some problems with saving data');
+                end
+                clear status saveFilename suggestedFilename;
                 command = 'exit';
                 disp('Goodbye!');
                 return;

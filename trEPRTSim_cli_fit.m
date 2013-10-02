@@ -383,6 +383,17 @@ while fitdataloop == 1
                         saveloop = true;
                     case 'q'
                         % Quit
+                        % Suggest reasonable filename
+                        [path,name,~] = fileparts(filename);
+                        suggestedFilename = fullfile(...
+                            path,[name '_fit-' datestr(now,30) '.tez']);
+                        saveFilename = suggestedFilename;
+                        % Save dataset
+                        [status] = trEPRsave(saveFilename,dataset);
+                        if ~isempty(status)
+                            disp('Some problems with saving data');
+                        end
+                        clear status saveFilename suggestedFilename;
                         command = 'exit';
                         disp('Goodbye!');
                         return;
@@ -401,6 +412,11 @@ while fitdataloop == 1
                         fitloop = true;
                     case 'n'
                         % New fit
+                        % TODO: Overwrite inipar
+                        conf = trEPRTSim_conf();
+                        dataset.TSim.sim.Sys = conf.Sys;
+                        dataset = trEPRTSim_SysExp2par(dataset);
+                        
                         saveloop = false;
                         fitloop = false;
                     case 'd'
@@ -410,12 +426,8 @@ while fitdataloop == 1
                         fitouterloop = false;
                     case 's'
                         % Simulation (with fit values as starting point)
-                        saveloop = false;
-                        fitouterloop = false;
-                        fitloop = false;
-                        fitdataloop = false;
-                        [dataset] = trEPRTSim_cli_sim(dataset);
-                        break;
+                        command = 'sim';
+                        return;
                     otherwise
                         % Shall never happen
                         disp(['You did bullshit... '...

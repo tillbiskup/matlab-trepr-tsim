@@ -110,7 +110,7 @@ switch lower(command)
             end
             fprintf('\n');
         end
-         case 'simpar'
+    case 'simpar'
         % Display parameters from Sys and Exp structure
         SysFields = (fieldnames(dataset.TSim.sim.Sys))';
         simpar = [SysFields,SimExpFields];

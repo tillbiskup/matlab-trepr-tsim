@@ -12,7 +12,7 @@ function dataset = trEPRTSim_sim(dataset,varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-13
+% 2013-10-02
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -26,10 +26,6 @@ parser.parse(dataset,varargin{:});
 
 % Define simulation routine
 routine = str2func(parser.Results.routine);
-
-% Convert D and E from GHz in MHz
-% ATTENTION: Check whether this is necessary or wrong!
-dataset.TSim.sim.Sys.D = dataset.TSim.sim.Sys.D * 1e3;
 
 % Calculating the spectrum using Easyspin's pepper function. The result is
 % returned in the field "calculated" of the dataset.

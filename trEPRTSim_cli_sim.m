@@ -60,13 +60,21 @@ while simouterloop == 1
             case 'v'
                 % Change values
                 
-                disp('Sorry, not implemented yet... come back later.');
+                disp('Sorry, not fully implemented yet... come back later.');
                 disp(' ');
-                
                 siminiloop = 1;
+                 simvalueloop = true;
+                 while simvalueloop
+                     disp('Please enter the new values of the simulation parameters in the following order:');
+                     trEPRTSim_parDisplay(dataset,'simpar');
+                     simpar = input('> ','s');
+                     simpar = str2num(simpar); %#ok<ST2NM>
+                     display(simpar);
+                     simvalueloop = false;
+                 end
             case 'p'
                 % Display all possible simulation parameters with
-                % their initial values
+                % their values
                 disp('All possible simulation parameters:')
                 trEPRTSim_parDisplay(dataset,'simall');
                 
@@ -87,6 +95,7 @@ while simouterloop == 1
             case 'q'
                 % Quit
                 command = 'exit';
+                disp('Goodbye!');
                 return;
             otherwise
                 % Shall never happen
@@ -164,9 +173,10 @@ while simouterloop == 1
                 simouterloop = false;
                 [dataset,command] = trEPRTSim_cli_fit(dataset);
             case 'q'
-                % quit
+                % Quit
                 command = 'exit';
-               return;
+                disp('Goodbye!');
+                return;
             otherwise
                 % Shall never happen
                 simouterloop = true;

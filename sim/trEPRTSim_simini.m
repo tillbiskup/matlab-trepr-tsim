@@ -13,6 +13,9 @@ function dataset = trEPRTSim_simini(dataset)
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-09-13
 
+% Idea: why don't we create a tosim, analogous to tofit
+
+
 % Create minimal Sys structure for simulation
 % In particular, remove competing fields causing trouble with "pepper".
 if isfield(dataset.TSim.sim.Sys,'lw')

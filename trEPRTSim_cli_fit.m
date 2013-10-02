@@ -16,9 +16,7 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-16
-
-
+% 2013-10-02
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -119,7 +117,7 @@ while fitdataloop == 1
                 'default','1, 2, 6, 7','multiple',true);
             
             display(' ');
-            
+
             % Convert answer into tofit parameter in dataset
             dataset.TSim.fit.fitini.tofit = ...
                 zeros(1,length(dataset.TSim.fit.fitini.tofit));
@@ -301,9 +299,11 @@ while fitdataloop == 1
                 dataset.TSim.fit.fitini.ub, ...
                 options);
             
+            
             dataset = trEPRTSim_par2SysExp(...
                 dataset.TSim.fit.fittedpar,...
                 dataset);
+            
             
             % Calculate spectrum with final fit parameters.
             dataset = trEPRTSim_sim(dataset);
@@ -340,6 +340,8 @@ while fitdataloop == 1
             % (Orwell style - we're creating our own)
             dataset = trEPRTSim_history('write',dataset);
             
+          
+            
             saveloop = true;
             while saveloop
                 
@@ -355,7 +357,7 @@ while fitdataloop == 1
                     'How to continue?','default','f');
                 
                 display(' ');
-                
+               
                 switch lower(answer)
                     case 'a'
                         % Suggest reasonable filename
@@ -388,10 +390,12 @@ while fitdataloop == 1
                         % Write fit results to initial values
                         dataset.TSim.fit.inipar = ...
                             dataset.TSim.fit.fittedpar;
+                        
                         % Write parameters back to Sys, Exp
                         dataset = trEPRTSim_par2SysExp(...
                             dataset.TSim.fit.fittedpar,...
                             dataset);
+                        
                         % Fit again
                         saveloop = false;
                         fitloop = true;

@@ -11,11 +11,14 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 %   command - string
 %             one of 'sim', 'fit' or 'simall'
 %             'sim'    - display simulation parameters currently
-%                        initialized
+%                        initialized, including their value
 %
 %             'fit'    - display fit parameters currently initialized
 %
 %             'simall' - display all possible simulation parameters
+%
+%             'simpar' - display simulation parameters currently
+%                        initialized, excluding their value
 %
 % See also TREPRTSIM
 
@@ -107,6 +110,13 @@ switch lower(command)
             end
             fprintf('\n');
         end
+         case 'simpar'
+        % Display parameters from Sys and Exp structure
+        SysFields = (fieldnames(dataset.TSim.sim.Sys))';
+        simpar = [SysFields,SimExpFields];
+             display(simpar);
+             fprintf('%s', simpar)
+
     otherwise
         disp('Booo!');
         return;

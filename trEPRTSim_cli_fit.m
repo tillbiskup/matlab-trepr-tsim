@@ -336,7 +336,8 @@ while fitdataloop
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % Calculate difference between fit and signal
-            difference = spectrum-dataset.calculated;
+            difference = spectrum-...
+                dataset.calculated*dataset.TSim.sim.Exp.scale;
             
             % Print fit results
             report = trEPRTSim_fitreport(dataset);
@@ -348,10 +349,14 @@ while fitdataloop
             % PLOTTING: the final fit in comparison to the measured signal
             close(figure(1));
             figure('Name', ['Data from ' filename])
+            subplot(6,1,[1 5]);
             plot(...
                 dataset.axes.y.values,...
                 [spectrum,dataset.calculated*dataset.TSim.sim.Exp.scale]);
             legend({'Original','Fit'},'Location','SouthEast');
+            subplot(6,1,6);
+            plot(dataset.axes.y.values,difference);
+            xlabel('{\it magnetic field} / mT')
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
@@ -383,7 +388,7 @@ while fitdataloop
                 switch lower(answer)
                     case 'a'
                         % Suggest reasonable filename
-                        [path,name,ext] = fileparts(filename);
+                        [path,name,~] = fileparts(filename);
                         suggestedFilename = fullfile(path,[name '_fit.tez']);
                         % The "easy" way: consequently use CLI
                         saveFilename = input(...

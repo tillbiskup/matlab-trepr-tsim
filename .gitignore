@@ -4,6 +4,7 @@
 *.aux
 *.toc
 *.log
+*.tez
 
 # Use wildcards as well
 *~

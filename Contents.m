@@ -1,2 +1,2 @@
 % trEPR Toolbox TSim module
-% Version 0.0.2 03-Oct-2013
+% Version 0.0.3 03-Oct-2013

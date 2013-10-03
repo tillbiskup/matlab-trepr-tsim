@@ -44,7 +44,7 @@ switch lower(command)
         % Display parameters from Sys structure
         SysFields = fieldnames(dataset.TSim.sim.Sys);
         % Remove spin multiplicity from display
-        SysFields(cellcmpi(SysFields,{'S'})) = [];
+        SysFields(ismember(SysFields,{'S'})) = [];
         maxLengthSysFields = max(cellfun(@(x)length(x),SysFields));
         maxLengthFields = max(maxLengthSysFields,maxLengthExpFields);
         for k=1:length(SysFields)

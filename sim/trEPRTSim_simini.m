@@ -32,7 +32,7 @@ if isempty(dataset.TSim.sim.addsimpar)
     end
 end
 
-if cellcmpi(dataset.TSim.sim.addsimpar,{'lw'})
+if ismember(dataset.TSim.sim.addsimpar,{'lw'})
     % Remove competing fields causing trouble with "pepper"
     if isfield(dataset.TSim.sim.Sys,'DStrain')
         dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
@@ -50,13 +50,13 @@ else
     end
 end
 
-if any(cellcmpi(dataset.TSim.sim.addsimpar,{'DStrainD','DStrainE'}))
+if any(ismember(dataset.TSim.sim.addsimpar,{'DStrainD','DStrainE'}))
     if ~isfield(dataset.TSim.sim.Sys,'DStrain')
         dataset.TSim.sim.Sys.DStrain = conf.Sys.DStrain;
     end
 end
 
-if any(cellcmpi(dataset.TSim.sim.addsimpar,{'gStrainx','gStrainy','gStrainz'}))
+if any(ismember(dataset.TSim.sim.addsimpar,{'gStrainx','gStrainy','gStrainz'}))
     if ~isfield(dataset.TSim.sim.Sys,'gStrain')
         dataset.TSim.sim.Sys.gStrain = conf.Sys.gStrain;
     end

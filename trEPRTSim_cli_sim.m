@@ -67,7 +67,7 @@ while simouterloop == 1
                 addsimpar = simpar(~[simpar{:,5}],:);
                 
                 addsimpar2change = addsimpar(...
-                    cellcmpi(addsimpar(:,1),dataset.TSim.sim.addsimpar),:);
+                    ismember(addsimpar(:,1),dataset.TSim.sim.addsimpar),:);
                 if ~isempty(addsimpar2change)
                     par2change = [simpar([simpar{:,5}],:) ; addsimpar2change];
                 else
@@ -112,9 +112,9 @@ while simouterloop == 1
                     switch par2change{k,1}
                         case {'D','E'}
                             D = par2changeValues{...
-                                cellcmpi(par2change(:,1),{'D'})};
+                                ismember(par2change(:,1),{'D'})};
                             E = par2changeValues{...
-                                cellcmpi(par2change(:,1),{'E'})};
+                                ismember(par2change(:,1),{'E'})};
                             Sys.D = [-D/3+E -D/3-E 2*D/3];
                         otherwise
                             eval([par2change{k,2} '=' ...
@@ -136,12 +136,12 @@ while simouterloop == 1
                     ];
                 
                 % Get default value, depending on "addsimpar" value
-                if isempty(find(cellcmpi(addsimpar(:,1),dataset.TSim.sim.addsimpar),1))
+                if isempty(find(ismember(addsimpar(:,1),dataset.TSim.sim.addsimpar),1))
                     defaultAddSimPar = ...
                         num2str(length(addsimpardescription)+1);
                 else
                     defaultAddSimPar = ...
-                        num2str(find(cellcmpi(addsimpar(:,1),...
+                        num2str(find(ismember(addsimpar(:,1),...
                         dataset.TSim.sim.addsimpar))');
                 end
                 

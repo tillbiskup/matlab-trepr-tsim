@@ -4,7 +4,7 @@
 % Integral part of the TSim module of the trEPR toolbox.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-02
+% 2013-10-03
 
 % For the time being, erase everything in the workspace... (quite rude)
 clear all; close all;
@@ -15,6 +15,9 @@ if (status == 1)
      disp('There are files missing required for the fit:');
      cellfun(@disp, missing);
     return
+else
+    % Remove unwanted variables from workspace
+    clear status missing
 end
 
 % % Read initial values from config file
@@ -69,4 +72,6 @@ while outerloop
     end
 end
 
+% Remove unnecessary variables from workspace
+clear action answer command outerloop
 

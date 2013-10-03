@@ -16,7 +16,7 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-02
+% 2013-10-03
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -28,8 +28,6 @@ else
     dataset = trEPRTSim_dataset();
  
 end
-
-
 
 fitdataloop = 1;
 while fitdataloop == 1
@@ -87,6 +85,7 @@ while fitdataloop == 1
     % In case we couldn't read a frequency value from the (too old) fsc2 file,
     % assume some reasonable value... (that works with the provided example
     % files).
+    % TODO: Convert this into an optional user input
     if isempty(data.parameters.bridge.MWfrequency.value)
         data.parameters.bridge.MWfrequency.value = 9.67737;
     end
@@ -112,6 +111,7 @@ while fitdataloop == 1
                 fitpardescription ...
                 ];
             % Choose fit parameters
+            % TODO: Read default values from configuration!
             answer = cliMenu(option,...
                 'title','Please chose one or more fit parameters',...
                 'default','1, 2, 6, 7','multiple',true);
@@ -129,7 +129,7 @@ while fitdataloop == 1
             valueloop = true;
             while valueloop == 1
                 
-                % Hier käme: Display chosen fitting parameters with
+                % Hier kaeme: Display chosen fitting parameters with
                 % values, upper and lower boundaries
                 % trEPRTSim_parDisplay(dataset,'fit');
                 

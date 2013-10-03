@@ -6,9 +6,9 @@ function fitpar = trEPRTSim_fitpar(varargin)
 %   fitpar = trEPRTSim_fitpar();
 %   fitpar = trEPRTSim_fitpar(<parameter>,<value>);
 %
-%   fitpar - nx3 cell array OR struct
-%            variable name, evaluation string, and description for each
-%            parameter 
+%   fitpar - nx4 cell array OR struct
+%            variable name, evaluation string, description, unit for each
+%            parameter.
 %
 %            If you prefer to get a struct rather than a cell array, use
 %            the optional parameter described below. The struct consists of
@@ -23,7 +23,7 @@ function fitpar = trEPRTSim_fitpar(varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-23
+% 2013-10-02
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

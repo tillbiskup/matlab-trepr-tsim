@@ -11,21 +11,55 @@ function dataset = trEPRTSim_simini(dataset)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-13
+% 2013-10-03
 
 % Idea: why don't we create a tosim, analogous to tofit
+ 
+% Get values from configuration
+conf = trEPRTSim_conf();
 
+if isempty(dataset.TSim.sim.addsimpar)
+    % Create minimal Sys structure for simulation
+    % In particular, remove competing fields causing trouble with "pepper".
+    if isfield(dataset.TSim.sim.Sys,'lw')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lw');
+    end
+    if isfield(dataset.TSim.sim.Sys,'DStrain')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
+    end
+    if isfield(dataset.TSim.sim.Sys,'gStrain')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'gStrain');
+    end
+end
 
-% Create minimal Sys structure for simulation
-% In particular, remove competing fields causing trouble with "pepper".
-if isfield(dataset.TSim.sim.Sys,'lw')
-    dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lw');
+if cellcmpi(dataset.TSim.sim.addsimpar,{'lw'})
+    % Remove competing fields causing trouble with "pepper"
+    if isfield(dataset.TSim.sim.Sys,'DStrain')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
+    end
+    if isfield(dataset.TSim.sim.Sys,'gStrain')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'gStrain');
+    end
+    if ~isfield(dataset.TSim.sim.Sys,'lw')
+        dataset.TSim.sim.Sys.lw = conf.Sys.lw;
+    end
+else
+    % Remove competing fields causing trouble with "pepper"
+    if isfield(dataset.TSim.sim.Sys,'lw')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lw');
+    end
 end
-if isfield(dataset.TSim.sim.Sys,'DStrain')
-    dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
+
+if any(cellcmpi(dataset.TSim.sim.addsimpar,{'DStrainD','DStrainE'}))
+    if ~isfield(dataset.TSim.sim.Sys,'DStrain')
+        dataset.TSim.sim.Sys.DStrain = conf.Sys.DStrain;
+    end
 end
-if isfield(dataset.TSim.sim.Sys,'gStrain')
-    dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'gStrain');
+
+if any(cellcmpi(dataset.TSim.sim.addsimpar,{'gStrainx','gStrainy','gStrainz'}))
+    if ~isfield(dataset.TSim.sim.Sys,'gStrain')
+        dataset.TSim.sim.Sys.gStrain = conf.Sys.gStrain;
+    end
 end
 
 % Set scale to 1

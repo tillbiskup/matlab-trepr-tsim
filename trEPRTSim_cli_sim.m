@@ -1,5 +1,6 @@
 function [dataset, command] = trEPRTSim_cli_sim(varargin)
-% TREPRTSIM_CLI_FIT Subfunction of the trEPRTSim CLI handling the fitting part.
+% TREPRTSIM_CLI_SIM Subfunction of the trEPRTSim CLI handling the
+% simulation part.
 %
 % Usage
 %   trEPRTsim_cli_sim
@@ -14,10 +15,8 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 %   command  - string
 %              Additional information what to do (bypassing certain loops)
 
-
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-02
-
+% 2013-10-03
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -25,20 +24,19 @@ if nargin % If we have input arguments
     end
 else
     % Create (empty) dataset
-    % TODO: Handle missing parameters, such as field range, ...
     dataset = trEPRTSim_dataset();
  
     % Initialize minimal simulation parameters
     dataset = trEPRTSim_simini(dataset);   
 end
 
-
 simouterloop = true;
 while simouterloop == 1
     
-    
     siminiloop = true;
     while siminiloop == 1
+        
+        disp(' ');
         
         % Display minimal set of simulation parameters with
         % their initial values
@@ -47,7 +45,8 @@ while simouterloop == 1
         
         disp(' ');
         
-        % Werte ändern oder Zahl der Parameter ändern oder simulieren
+        % Change values, numbers of simulation parameters, or start
+        % simulation (changing simulation routine not implemented yet)
         option ={...
             'v','Change values of chosen simulation parameters';...
             'p','Choose additional simulation parameters';...
@@ -55,41 +54,110 @@ while simouterloop == 1
             's','Start simulation';...
             'q','Quit'};
         answer = cliMenu(option, 'default','s');
+
+        disp(' ');
         
         switch lower(answer)
             case 'v'
                 % Change values
                 
-                disp('Sorry, not fully implemented yet... come back later.');
-                disp(' ');
-                siminiloop = 1;
-                simvalueloop = true;
-                while simvalueloop
-                    disp('Please enter the new values of the simulation parameters in the following order:');
-                    trEPRTSim_parDisplay(dataset,'simpar');
-                    simpar = input('> ','s');
-                    simpar = str2num(simpar); %#ok<ST2NM>
-                    display(simpar);
-                    simvalueloop = false;
+                % Get simulation parameters
+                simpar = trEPRTSim_simpar;
+                % Select only the additional ones
+                addsimpar = simpar(~[simpar{:,5}],:);
+                
+                addsimpar2change = addsimpar(...
+                    cellcmpi(addsimpar(:,1),dataset.TSim.sim.addsimpar),:);
+                if ~isempty(addsimpar2change)
+                    par2change = [simpar([simpar{:,5}],:) ; addsimpar2change];
+                else
+                    par2change = simpar([simpar{:,5}],:);
                 end
+
+                % Temporarily get Sys,Exp as direct structures
+                Sys = dataset.TSim.sim.Sys;
+                Exp = dataset.TSim.sim.Exp;
+                
+                par2changeValues = cell(1,length(par2change));
+                for k=1:length(par2change)
+                    par2changeValues{k} = eval(par2change{k,2});
+                end
+                
+                disp('Please enter new values for the parameters:');
+                for k=1:length(par2change)
+                    prompt = sprintf('%s [%s]: ',par2change{k,1},...
+                        num2str(par2changeValues{k}));
+                    simvalueloop = true;
+                    while simvalueloop
+                        simpar = input(prompt,'s');
+                        % If simpar is empty, exit while loop (meaning no
+                        % change to Sys,Exp)
+                        if isempty(simpar)
+                            break;
+                        end
+                        simpar = str2num(simpar); %#ok<ST2NM>
+                        % Only in case that conversion into numeric
+                        % value(s) was successful, add it to the
+                        % appropriate field of the Sys/Exp structure
+                        if ~isnan(simpar)
+                            par2changeValues{k} = simpar;
+                            % Exit simvalueloop
+                            simvalueloop = 0;
+                        end
+                    end
+                end
+                % Assign (changed) values back to Sys and Exp
+                % Need to do that after all values are present
+                for k=1:length(par2change)
+                    switch par2change{k,1}
+                        case {'D','E'}
+                            D = par2changeValues{...
+                                cellcmpi(par2change(:,1),{'D'})};
+                            E = par2changeValues{...
+                                cellcmpi(par2change(:,1),{'E'})};
+                            Sys.D = [-D/3+E -D/3-E 2*D/3];
+                        otherwise
+                            eval([par2change{k,2} '=' ...
+                                ['[' num2str(par2changeValues{k}) ']'] ';']);
+                    end
+                end
+                dataset.TSim.sim.Sys = Sys;
+                dataset.TSim.sim.Exp = Exp;
+                clear Sys Exp
             case 'p'
-                % Display all possible simulation parameters with
-                % their values
+                % Get simulation parameters
+                simpar = trEPRTSim_simpar;
+                % Select only the additional ones
+                addsimpar = simpar(~[simpar{:,5}],:);
+                addsimpardescription = addsimpar(:,3);
+                option = [ ...
+                    strtrim(cellstr(num2str((1:length(addsimpardescription)+1)')))...
+                    [addsimpardescription ; 'No additional parameters'] ...
+                    ];
                 
-                 option = [ ...
-                strtrim(cellstr(num2str((1:length(fitpardescription))')))...
-                fitpardescription ...
-                ];
+                % Get default value, depending on "addsimpar" value
+                if isempty(find(cellcmpi(addsimpar(:,1),dataset.TSim.sim.addsimpar),1))
+                    defaultAddSimPar = ...
+                        num2str(length(addsimpardescription)+1);
+                else
+                    defaultAddSimPar = ...
+                        num2str(find(cellcmpi(addsimpar(:,1),...
+                        dataset.TSim.sim.addsimpar))');
+                end
                 
-                disp('Possible additional simulation parameters:')
-                trEPRTSim_parDisplay(dataset,'simall');
-            
-                display(' ');
-                % Change parameters
-                addParams = input('Additional parameters: ','s');
+                answer = cliMenu(option,...
+                    'title','Please chose one or more additional simulation parameters',...
+                    'default',defaultAddSimPar,'multiple',true);
                 
-                disp('Sorry, not implemented yet... come back later.');
-                disp(' ');
+                if str2double(answer) < length(addsimpardescription)+1
+                    dataset.TSim.sim.addsimpar = ...
+                        addsimpar(str2double(answer),1);
+                else
+                    dataset.TSim.sim.addsimpar = {};
+                end
+                
+                % Change parameters                
+                dataset = trEPRTSim_simini(dataset);
                 
                 siminiloop = 1;
             case 'r'
@@ -115,8 +183,7 @@ while simouterloop == 1
     purpose = input('> ','s');
     dataset.TSim.remarks.purpose = purpose;
     
-    % Hier wird simuliert
-    % Calculate spectrum
+    % Calculate spectrum (actual simulation)
     dataset = trEPRTSim_sim(dataset);
     
     figure(1);
@@ -128,7 +195,6 @@ while simouterloop == 1
     disp('Enter a comment:');
     comment = input('> ','s');
     dataset.TSim.remarks.comment = comment;
-    
     
     % Write history
     % (Orwell style - we're creating our own)
@@ -174,18 +240,21 @@ while simouterloop == 1
                 simouterloop = 1;
                 saveloop = false;
             case 'f'
-                % Start fit
+                % Start fit - give therefore control back to caller
                 command = 'fit';
                 return;
-%                 saveloop = false;
-%                 simouterloop = false;
-%                 [dataset,command] = trEPRTSim_cli_fit(dataset);
             case 'q'
                 % Quit
+                % Automatically save dataset to default filename
                 % Suggest reasonable filename
-                [path,name,~] = fileparts(filename);
-                suggestedFilename = fullfile(...
-                    path,[name '_sim-' datestr(now,30) '.tez']);
+                if exist('filename','var')
+                    [path,name,~] = fileparts(filename);
+                    suggestedFilename = fullfile(...
+                        path,[name '_sim-' datestr(now,30) '.tez']);
+                else
+                    suggestedFilename = fullfile(...
+                        pwd,['sim-' datestr(now,30) '.tez']);
+                end
                 saveFilename = suggestedFilename;
                 % Save dataset
                 [status] = trEPRsave(saveFilename,dataset);
@@ -198,10 +267,10 @@ while simouterloop == 1
                 return;
             otherwise
                 % Shall never happen
+                disp('Something very strange happened...')
                 simouterloop = true;
         end
     end
 end
- 
 
 end

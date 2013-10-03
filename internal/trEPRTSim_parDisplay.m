@@ -23,7 +23,7 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-13
+% 2013-10-03
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -43,15 +43,27 @@ switch lower(command)
     case 'sim'
         % Display parameters from Sys structure
         SysFields = fieldnames(dataset.TSim.sim.Sys);
+        % Remove spin multiplicity from display
+        SysFields(cellcmpi(SysFields,{'S'})) = [];
         maxLengthSysFields = max(cellfun(@(x)length(x),SysFields));
         maxLengthFields = max(maxLengthSysFields,maxLengthExpFields);
         for k=1:length(SysFields)
-            fprintf('%s%s ',SysFields{k},...
-                blanks(maxLengthFields-length(SysFields{k})));
-            for m = 1:length(dataset.TSim.sim.Sys.(SysFields{k}))
-                fprintf('%10.4f ',dataset.TSim.sim.Sys.(SysFields{k})(m));
-            end
+            if strcmpi(SysFields{k},'D')
+                fprintf('D%s ',blanks(maxLengthFields-1));
+                fprintf('%10.4f ',dataset.TSim.sim.Sys.D(3)*3/2);
+                fprintf('\n');
+                fprintf('E%s ',blanks(maxLengthFields-1));
+                fprintf('%10.4f ',dataset.TSim.sim.Sys.D(1)+...
+                    dataset.TSim.sim.Sys.D(2)*3/6);
+                fprintf('\n');
+            else
+                fprintf('%s%s ',SysFields{k},...
+                    blanks(maxLengthFields-length(SysFields{k})));
+                for m = 1:length(dataset.TSim.sim.Sys.(SysFields{k}))
+                    fprintf('%10.4f ',dataset.TSim.sim.Sys.(SysFields{k})(m));
+                end
             fprintf('\n');
+            end
         end
         % Display selected parameters from Exp structure
         for k=1:length(SimExpFields)
@@ -94,12 +106,21 @@ switch lower(command)
         maxLengthSysFields = max(cellfun(@(x)length(x),SysFields));
         maxLengthFields = max(maxLengthSysFields,maxLengthExpFields);
         for k=1:length(SysFields)
-            fprintf('%s%s ',SysFields{k},...
-                blanks(maxLengthFields-length(SysFields{k})));
-            for m = 1:length(conf.Sys.(SysFields{k}))
-                fprintf('%10.4f ',conf.Sys.(SysFields{k})(m));
+            if strcmpi(SysFields{k},'D')
+                fprintf('D%s ',blanks(maxLengthFields-1));
+                fprintf('%10.4f ',conf.Sys.D(3)*3/2);
+                fprintf('\n');
+                fprintf('E%s ',blanks(maxLengthFields-1));
+                fprintf('%10.4f ',conf.Sys.D(1)+conf.Sys.D(2)*3/6);
+                fprintf('\n');
+            else
+                fprintf('%s%s ',SysFields{k},...
+                    blanks(maxLengthFields-length(SysFields{k})));
+                for m = 1:length(conf.Sys.(SysFields{k}))
+                    fprintf('%10.4f ',conf.Sys.(SysFields{k})(m));
+                end
+                fprintf('\n');
             end
-            fprintf('\n');
         end
         % Display selected parameters from Exp structure
         for k=1:length(SimExpFields)
@@ -114,9 +135,7 @@ switch lower(command)
         % Display parameters from Sys and Exp structure
         SysFields = (fieldnames(dataset.TSim.sim.Sys))';
         simpar = [SysFields,SimExpFields];
-             display(simpar);
-             fprintf('%s', simpar)
-
+        fprintf('%s', strJoin(simpar,', '));
     otherwise
         disp('Booo!');
         return;

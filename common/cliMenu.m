@@ -56,7 +56,7 @@ function answer = cliMenu(options,varargin)
 % SEE ALSO: input, ginput, keyboard
 
 % (c) 2013, Till Biskup, Deborah Meyer
-% 2013-08-23
+% 2013-10-03
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -180,7 +180,7 @@ function parsedOptions = parseMultipleOptions(options)
 % PARSEMULTIPLEOPTIONS Split string into cell array of substrings.
 
 % Define possible delimiters
-delimiter = {',',';',' ','|'};
+delimiter = {',',';','  ',' ','|'};
 % Find matches of delimiters in options
 matches = cellfun(@(x)any(strfind(options,x)),delimiter);
 if any(matches)

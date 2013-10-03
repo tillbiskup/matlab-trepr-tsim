@@ -18,7 +18,7 @@ function dataset = trEPRTSim_dataset(varargin)
 % See also TREPRTSIM_DATASTRUCTURE, TREPRDATASTRUCTURE
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-13
+% 2013-10-03
 
 dataset = struct();
 
@@ -28,7 +28,7 @@ if nargin
         disp('Wrong format of input argument');
         return;
     end
-    [m,~] = trEPRdataStructure('check',varargin{1});
+    [m,~] = trEPRdataStructure('check',varargin{1},'quiet');
     if ~isempty(m)
         disp('Input argument misses (necessary) fields.');
         return;

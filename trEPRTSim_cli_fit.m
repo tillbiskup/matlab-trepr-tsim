@@ -1,5 +1,6 @@
 function [dataset, command] = trEPRTSim_cli_fit(varargin)
-% TREPRTSIM_CLI_FIT Subfunction of the trEPRTSim CLI handling the fitting part.
+% TREPRTSIM_CLI_FIT Subfunction of the trEPRTSim CLI handling the fitting
+% part. 
 %
 % Usage
 %   trEPRTsim_cli_fit
@@ -13,7 +14,6 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 %
 %   command  - string
 %              Additional information what to do (bypassing certain loops)
-
 
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-10-03
@@ -29,8 +29,8 @@ else
  
 end
 
-fitdataloop = 1;
-while fitdataloop == 1
+fitdataloop = true;
+while fitdataloop
     
     disp(' ');
     % fitting was chosen
@@ -59,38 +59,66 @@ while fitdataloop == 1
     % Convert Gauss -> mT
     data = trEPRconvertUnits(data,'g2mt');
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % AND THERE GOES THE NICE, BEAUTIFUL AND SHINY NEW CLI...
+    % Some necessary tests of the dataset loaded, such as 1D or 2D,
+    % preprocessing, and selecting slice (in case of 2D)
     
     % Check whether data are 2D or 1D, and in case of 2D, take maximum
     if min(size(data.data)) > 1
-        % For the time being, perform a pretrigger offset compensation on the
-        % data... (should be done by the user manually or within the toolbox,
-        % respectively.)
+        disp(' ');
+        disp('2D data detected');
+        % For the time being, perform a pretrigger offset compensation on
+        % the data... (should be done by the user manually or within the
+        % toolbox, respectively.)
+        disp(' ');
+        disp('Perform pretrigger offset compensation (POC)');
         data.data = trEPRPOC(...
             data.data,data.parameters.transient.triggerPosition);
         % In case of fsc2 data, perform BGC
         if isfield(data,'file') && isfield(data.file,'format') ...
                 && strcmpi(data.file.format,'fsc2')
+            disp(' ');
+            disp('Perform simple background correction (BGC)');
             data.data = trEPRBGC(data.data);
         end
         % Take maximum
+        disp(' ');
+        disp('Take slice at maximum (if unhappy, provide 1D dataset)');
         [~,idxMax] = max(max(data.data));
         spectrum = data.data(:,idxMax);
     else
         spectrum = data.data;
     end
+    disp(' ');
     
-    % In case we couldn't read a frequency value from the (too old) fsc2 file,
-    % assume some reasonable value... (that works with the provided example
-    % files).
-    % TODO: Convert this into an optional user input
+    % In case we couldn't read a frequency value from the (too old) fsc2
+    % file, ask user to provide a reasonable value...
     if isempty(data.parameters.bridge.MWfrequency.value)
-        data.parameters.bridge.MWfrequency.value = 9.67737;
+        disp(' ');
+        disp('Dataset is missing MW frequency value. Please provide one.');
+        MWfreqloop = true;
+        MWfreqDefault = 9.70;
+        while MWfreqloop
+            MWfreq = input(...
+                sprintf('MW frequency in GHz [%f]: ',MWfreqDefault),'s');
+            if isempty(MWfreq)
+                MWfreq = MWfreqDefault;
+                data.parameters.bridge.MWfrequency.value = MWfreq;
+                data.parameters.bridge.MWfrequency.unit = 'GHz';
+                MWfreqloop = false;
+            end
+            if ~isnan(str2double(MWfreq))
+                data.parameters.bridge.MWfrequency.value = ...
+                    str2double(MWfreq);
+                data.parameters.bridge.MWfrequency.unit = 'GHz';
+                MWfreqloop = false;
+            end
+        end
+        disp(' ');
     end
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Create dataset merging parameters from experimental
     % dataset.
@@ -100,11 +128,11 @@ while fitdataloop == 1
     parameters = trEPRTSim_fitpar();
     fitpardescription = parameters(:,3);
     
-    fitouterloop = 1;
-    while fitouterloop == 1
+    fitouterloop = true;
+    while fitouterloop
         
         fitiniloop = true;
-        while fitiniloop == 1
+        while fitiniloop
             
             option = [ ...
                 strtrim(cellstr(num2str((1:length(fitpardescription))')))...
@@ -127,7 +155,7 @@ while fitdataloop == 1
             dataset = trEPRTSim_fitini(dataset);
             
             valueloop = true;
-            while valueloop == 1
+            while valueloop
                 
                 % Hier kaeme: Display chosen fitting parameters with
                 % values, upper and lower boundaries
@@ -149,12 +177,12 @@ while fitdataloop == 1
                 switch lower(answer)
                     case 'p'
                         % Change parameters
-                        fitiniloop = 1;
-                        valueloop = 0;
+                        fitiniloop = true;
+                        valueloop = false;
                     case 'i'
                         % Change initial values
-                        fitiniloop = 1;
-                        valueloop = 1;
+                        fitiniloop = true;
+                        valueloop = false;
                         iniparloop = true;
                         while iniparloop
                             disp('Please enter the initial values in the following order:');
@@ -169,8 +197,8 @@ while fitdataloop == 1
                         end
                     case 'l'
                         % Lower boundary values
-                        fitiniloop = 1;
-                        valueloop = 1;
+                        fitiniloop = true;
+                        valueloop = true;
                         lbloop = true;
                         while lbloop
                             disp('Please enter the lower boundaries in the following order:');
@@ -182,11 +210,11 @@ while fitdataloop == 1
                                 dataset.TSim.fit.fitini.lb = lb;
                                 lbloop = false;
                             end
-                        end
+                        end % lbloop
                     case 'u'
                         % Upper Boundary values
-                        fitiniloop = 1;
-                        valueloop = 1;
+                        fitiniloop = true;
+                        valueloop = true;
                         ubloop = true;
                         while ubloop
                             disp('Please enter the upper boundaries in the following order:');
@@ -198,11 +226,11 @@ while fitdataloop == 1
                                 dataset.TSim.fit.fitini.ub = ub;
                                 ubloop = false;
                             end
-                        end
+                        end % ubloop
                     case 'c'
                         % Continue
-                        fitiniloop = 0;
-                        valueloop = 0;
+                        fitiniloop = false;
+                        valueloop = false;
                     case 'q'
                         % Quit
                         command = 'exit';
@@ -213,15 +241,15 @@ while fitdataloop == 1
                         disp('booo!');
                         
                 end
-            end
-        end
+            end % valueloop
+        end % fitiniloop
         
-        fitloop = 1;
-        while fitloop == 1
+        fitloop = true;
+        while fitloop
             
-            fitoptionloop = 1;
-            while fitoptionloop == 1
-                % Hier käme: Display fittingoptions (lsqcurvefit, levenberg-marquardt,
+            fitoptionloop = true;
+            while fitoptionloop
+                % TODO: Display fitting options (lsqcurvefit, levenberg-marquardt,
                 % Tolfun,... all die dinge werden momentan gar nicht genutzt,
                 % number of iterations, maxiter)
                 % and simulation routine (pepper,...)
@@ -255,7 +283,7 @@ while fitdataloop == 1
                         if ~isempty(MaxIter)
                             dataset.TSim.fit.fitopt.MaxIter = MaxIter;
                         end
-                        fitoptionloop = 1;
+                        fitoptionloop = true;
                     case 't'
                         % Change MaxIter
                         TolFun = input(...
@@ -264,13 +292,13 @@ while fitdataloop == 1
                         if ~isempty(MaxIter)
                             dataset.TSim.fit.fitopt.TolFun = TolFun;
                         end
-                        fitoptionloop = 1;
+                        fitoptionloop = true;
                         %                                 case 'r'
                         %                                     fitoptionloop = 1;
                         %                                     disp('Not yet implemented.');
                         %                                     fitoptionloop = 1;
                     case 'f'
-                        fitoptionloop = 0;
+                        fitoptionloop = false;
                     case 'q'
                         % Quit
                         command = 'exit';
@@ -279,7 +307,6 @@ while fitdataloop == 1
                     otherwise
                         disp('WTF!');
                 end
-                
             end
             
             % Enter purpose
@@ -299,16 +326,14 @@ while fitdataloop == 1
                 dataset.TSim.fit.fitini.ub, ...
                 options);
             
-            
             dataset = trEPRTSim_par2SysExp(...
                 dataset.TSim.fit.fittedpar,...
                 dataset);
             
-            
             % Calculate spectrum with final fit parameters.
             dataset = trEPRTSim_sim(dataset);
             
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % Calculate difference between fit and signal
             difference = spectrum-dataset.calculated;
@@ -328,19 +353,16 @@ while fitdataloop == 1
                 [spectrum,dataset.calculated*dataset.TSim.sim.Exp.scale]);
             legend({'Original','Fit'},'Location','SouthEast');
             
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
             % Enter comment
             disp('Enter a comment:');
             comment = input('> ','s');
             dataset.TSim.remarks.comment = comment;
             
-            
             % Write history
             % (Orwell style - we're creating our own)
             dataset = trEPRTSim_history('write',dataset);
-            
-          
             
             saveloop = true;
             while saveloop
@@ -434,9 +456,10 @@ while fitdataloop == 1
                             'however you managed. '...
                             'Congratulations!']);
                 end
-            end
-        end
-    end
-end
+            end % saveloop
+        end % fitloop
+    end % fitouterloop
+end % fitdataloop
+
 end
 

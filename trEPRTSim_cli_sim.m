@@ -31,10 +31,10 @@ else
 end
 
 simouterloop = true;
-while simouterloop == 1
+while simouterloop
     
     siminiloop = true;
-    while siminiloop == 1
+    while siminiloop
         
         disp(' ');
         
@@ -102,7 +102,7 @@ while simouterloop == 1
                         if ~isnan(simpar)
                             par2changeValues{k} = simpar;
                             % Exit simvalueloop
-                            simvalueloop = 0;
+                            simvalueloop = false;
                         end
                     end
                 end
@@ -136,7 +136,8 @@ while simouterloop == 1
                     ];
                 
                 % Get default value, depending on "addsimpar" value
-                if isempty(find(ismember(addsimpar(:,1),dataset.TSim.sim.addsimpar),1))
+                if isempty(find(ismember(addsimpar(:,1),...
+                        dataset.TSim.sim.addsimpar),1))
                     defaultAddSimPar = ...
                         num2str(length(addsimpardescription)+1);
                 else
@@ -159,13 +160,13 @@ while simouterloop == 1
                 % Change parameters                
                 dataset = trEPRTSim_simini(dataset);
                 
-                siminiloop = 1;
+                siminiloop = true;
             case 'r'
                 % Change simulation routine
-                siminiloop = 1;
+                siminiloop = true;
             case 's'
                 % Simulate
-                siminiloop = 0;
+                siminiloop = false;
             case 'q'
                 % Quit
                 command = 'exit';
@@ -175,8 +176,7 @@ while simouterloop == 1
                 % Shall never happen
                 disp('Moron!');
         end
-        
-    end
+    end % siminiloop
     
     % Enter purpose
     disp('Enter a purpose:');
@@ -234,7 +234,7 @@ while simouterloop == 1
                 end
                 clear status saveFilename suggestedFilename;
                 saveloop = true;
-                simouterloop = 1;
+                simouterloop = true;
             case 'n'
                 % New simulation
                 simouterloop = 1;
@@ -270,7 +270,7 @@ while simouterloop == 1
                 disp('Something very strange happened...')
                 simouterloop = true;
         end
-    end
-end
+    end % saveloop
+end % simouterloop
 
 end

@@ -16,7 +16,7 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-03
+% 2013-10-04
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -28,6 +28,9 @@ else
     dataset = trEPRTSim_dataset();
  
 end
+
+% Get config values
+conf = trEPRTSim_conf();
 
 fitdataloop = true;
 while fitdataloop
@@ -118,6 +121,13 @@ while fitdataloop
         disp(' ');
     end
     
+    % If MWfrequency is a vector and not a scalar, average
+    if ~isscalar(data.parameters.bridge.MWfrequency.value)
+        data.parameters.bridge.MWfrequency.value = ...
+            mean(data.parameters.bridge.MWfrequency.value);
+    end
+
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Create dataset merging parameters from experimental
@@ -139,10 +149,9 @@ while fitdataloop
                 fitpardescription ...
                 ];
             % Choose fit parameters
-            % TODO: Read default values from configuration!
             answer = cliMenu(option,...
                 'title','Please chose one or more fit parameters',...
-                'default','1, 2, 6, 7','multiple',true);
+                'default',num2str(find(conf.fitini.tofit)),'multiple',true);
             
             display(' ');
 
@@ -357,6 +366,7 @@ while fitdataloop
             subplot(6,1,6);
             plot(dataset.axes.y.values,difference);
             xlabel('{\it magnetic field} / mT')
+            subplot(6,1,[1 5]);
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
@@ -376,7 +386,8 @@ while fitdataloop
                 option = {...
                     'a','Save dataset';...
                     'f','Fit again with fitted values as starting point';...
-                    'n','Start new fit from beginning';...
+                    'n','Start new fit with initial values from config';...
+                    'b','Start new fit with same initial values as before';...
                     'd','Start a fit with new data';...
                     's','Start a simulation';...
                     'q','Quit'};
@@ -438,12 +449,19 @@ while fitdataloop
                         saveloop = false;
                         fitloop = true;
                     case 'n'
-                        % New fit
-                        % TODO: Overwrite inipar
-                        conf = trEPRTSim_conf();
+                        % New fit with default initial parameters from
+                        % config
                         dataset.TSim.sim.Sys = conf.Sys;
                         dataset = trEPRTSim_SysExp2par(dataset);
                         
+                        saveloop = false;
+                        fitloop = false;
+                    case 'b'
+                        % New fit with same initial parameters as before
+                        % Write parameters back to Sys, Exp
+                        dataset = trEPRTSim_par2SysExp(...
+                            dataset.TSim.fit.inipar,...
+                            dataset);
                         saveloop = false;
                         fitloop = false;
                     case 'd'

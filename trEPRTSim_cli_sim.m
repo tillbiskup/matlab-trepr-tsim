@@ -16,7 +16,7 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-03
+% 2013-10-04
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -186,7 +186,7 @@ while simouterloop
     % Calculate spectrum (actual simulation)
     dataset = trEPRTSim_sim(dataset);
     
-    figure(1);
+    figure();
     plot(dataset.axes.y.values,dataset.calculated);
     xlabel('{\it magnetic field} / mT');
     ylabel('{\it intensity} / a.u.');
@@ -208,7 +208,7 @@ while simouterloop
             'f','Start a fit';...
             'q','Quit'};
         answer = cliMenu(option,'title',...
-            'How to continue?','default','q');
+            'How to continue?','default','n');
         
         display(' ')
         

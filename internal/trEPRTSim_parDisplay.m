@@ -23,7 +23,7 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-03
+% 2013-10-04
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -53,8 +53,8 @@ switch lower(command)
                 fprintf('%10.4f ',dataset.TSim.sim.Sys.D(3)*3/2);
                 fprintf('\n');
                 fprintf('E%s ',blanks(maxLengthFields-1));
-                fprintf('%10.4f ',dataset.TSim.sim.Sys.D(1)+...
-                    dataset.TSim.sim.Sys.D(2)*3/6);
+                fprintf('%10.4f ',(dataset.TSim.sim.Sys.D(1)-...
+                    dataset.TSim.sim.Sys.D(2))/2);
                 fprintf('\n');
             else
                 fprintf('%s%s ',SysFields{k},...
@@ -111,7 +111,7 @@ switch lower(command)
                 fprintf('%10.4f ',conf.Sys.D(3)*3/2);
                 fprintf('\n');
                 fprintf('E%s ',blanks(maxLengthFields-1));
-                fprintf('%10.4f ',conf.Sys.D(1)+conf.Sys.D(2)*3/6);
+                fprintf('%10.4f ',(conf.Sys.D(1)-conf.Sys.D(2))/2);
                 fprintf('\n');
             else
                 fprintf('%s%s ',SysFields{k},...

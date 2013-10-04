@@ -26,7 +26,6 @@ else
     % Create (empty) dataset
     % TODO: Handle missing parameters, such as field range, ...
     dataset = trEPRTSim_dataset();
- 
 end
 
 % Get config values

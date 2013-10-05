@@ -2,6 +2,9 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 % TREPRTSIM_CLI_SIM Subfunction of the trEPRTSim CLI handling the
 % simulation part.
 %
+% If the user decides at some point to start a fit with the given
+% simulation parameters, control is handed back to the caller.
+%
 % Usage
 %   trEPRTsim_cli_sim
 %   trEPRTSim_cli_sim(dataset)
@@ -16,7 +19,7 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-04
+% 2013-10-05
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -85,26 +88,9 @@ while simouterloop
                 
                 disp('Please enter new values for the parameters:');
                 for k=1:length(par2change)
-                    prompt = sprintf('%s [%s]: ',par2change{k,1},...
-                        num2str(par2changeValues{k}));
-                    simvalueloop = true;
-                    while simvalueloop
-                        simpar = input(prompt,'s');
-                        % If simpar is empty, exit while loop (meaning no
-                        % change to Sys,Exp)
-                        if isempty(simpar)
-                            break;
-                        end
-                        simpar = str2num(simpar); %#ok<ST2NM>
-                        % Only in case that conversion into numeric
-                        % value(s) was successful, add it to the
-                        % appropriate field of the Sys/Exp structure
-                        if ~isnan(simpar)
-                            par2changeValues{k} = simpar;
-                            % Exit simvalueloop
-                            simvalueloop = false;
-                        end
-                    end
+                    par2changeValues{k} = cliInput(par2change{k,1},...
+                        'default',num2str(par2changeValues{k}),...
+                        'numeric',true);
                 end
                 % Assign (changed) values back to Sys and Exp
                 % Need to do that after all values are present
@@ -125,6 +111,8 @@ while simouterloop
                 dataset.TSim.sim.Exp = Exp;
                 clear Sys Exp
             case 'p'
+                % Choose additional simulation parameters
+                
                 % Get simulation parameters
                 simpar = trEPRTSim_simpar;
                 % Select only the additional ones
@@ -165,7 +153,7 @@ while simouterloop
                 % Change simulation routine
                 siminiloop = true;
             case 's'
-                % Simulate
+                % Start simulation
                 siminiloop = false;
             case 'q'
                 % Quit

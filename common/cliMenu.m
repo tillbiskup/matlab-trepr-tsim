@@ -75,7 +75,6 @@ answer = parser.Results.default;
 
 % If default option, check whether it exists in the options given
 % As we cannot set parser.Results, add variable "default"
-% TODO: Deal with multiple parameters
 if ~isempty(parser.Results.default)
     if parser.Results.multiple
         % Parse multiple options, i.e. split string into cell array

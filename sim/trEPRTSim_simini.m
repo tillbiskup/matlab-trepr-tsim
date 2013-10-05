@@ -8,6 +8,27 @@ function dataset = trEPRTSim_simini(dataset)
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
+% If none of the additional simulation parameters (that are not necessary
+% to perform a simulation) are selected, the Sys and Exp structures are
+% cleaned from that parameters.
+%
+% If combinations of parameters are selected that would lead to errors from
+% the simulation function (EasySpin's pepper function for the time being),
+% the competing fields are silently removed in the following order: DStrain
+% overrides gStrain.
+%
+% If additional simulation parameters are selected, the default values are
+% loaded from the configuration. If only one element of a vector in the
+% spin system structure is selected as additional parameter, the values for
+% the remaining elements are set to zero (e.g., for 'Dstrain' and
+% 'gStrain').
+%
+% Scaling is set to 1.
+%
+% Experimental parameters (MW frequency, field range) are written to the
+% main parameters section of the dataset in case the dataset contains no
+% experimental data.
+%
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
@@ -90,16 +111,19 @@ end
 % Set scale to 1
 dataset.TSim.sim.Exp.scale = 1;
 
-% Write fields in trEPR datastructure using simulation parameters
-% magnetic field
-dataset.axes.y.values = linspace(...
-    dataset.TSim.sim.Exp.Range(1),...
-    dataset.TSim.sim.Exp.Range(2),...
-    dataset.TSim.sim.Exp.nPoints ...
-    );
-dataset.axes.y.unit = 'mT';
-% Microwave frequency
-dataset.parameters.bridge.MWfrequency.value = dataset.TSim.sim.Exp.mwFreq;
-dataset.parameters.bridge.MWfrequency.unit = 'GHz';
+% Write fields in trEPR datastructure using simulation parameters - but
+% only if dataset contains no experimental data.
+if isempty(dataset.data)
+    % magnetic field
+    dataset.axes.y.values = linspace(...
+        dataset.TSim.sim.Exp.Range(1),...
+        dataset.TSim.sim.Exp.Range(2),...
+        dataset.TSim.sim.Exp.nPoints ...
+        );
+    dataset.axes.y.unit = 'mT';
+    % Microwave frequency
+    dataset.parameters.bridge.MWfrequency.value = dataset.TSim.sim.Exp.mwFreq;
+    dataset.parameters.bridge.MWfrequency.unit = 'GHz';
+end
 
 end

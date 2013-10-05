@@ -15,6 +15,9 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 %
 %             'fit'    - display fit parameters currently initialized
 %
+%             'fitpar' - display fit parameters currently initialized,
+%                        including values, lower and upper boundaries
+%
 %             'simall' - display all possible simulation parameters
 %
 %             'simpar' - display simulation parameters currently
@@ -23,7 +26,7 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-04
+% 2013-10-05
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -98,6 +101,27 @@ switch lower(command)
                 fprintf('%10.4f ',dataset.TSim.sim.Exp.(FitExpFields{k})(m));
             end
             fprintf('\n');
+        end
+    case 'fitpar'
+        % TODO: Display lb, ub
+        % TODO: Display only those parameters that were chosen
+        % Hint: Use fit.fitparameters etc
+        parameters = trEPRTSim_fitpar;
+        parameters = parameters(dataset.TSim.fit.fitini.tofit,:);
+        maxLengthFields = max(cellfun(@(x)length(x),parameters(:,1)));
+        % Set minimum length for maxLengthFields to hold heading
+        if maxLengthFields < 4
+            maxLengthFields = 4;
+        end
+        % Print headline
+        fprintf('Name%s  start\t\tlb\t\tub\n',...
+            blanks(maxLengthFields-4));
+        for k=1:size(parameters,1)
+            fprintf('%s%s  %10.5f\t%10.5f\t%10.5f\n',parameters{k,1},...
+                blanks(maxLengthFields-length(parameters{k,1})),...
+                dataset.TSim.fit.inipar(k),...
+                dataset.TSim.fit.fitini.lb(k),...
+                dataset.TSim.fit.fitini.ub(k));
         end
     case 'simall'
         % Display parameters from Sys structure

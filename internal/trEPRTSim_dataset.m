@@ -18,7 +18,7 @@ function dataset = trEPRTSim_dataset(varargin)
 % See also TREPRTSIM_DATASTRUCTURE, TREPRDATASTRUCTURE
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-03
+% 2013-10-04
 
 dataset = struct();
 
@@ -58,6 +58,14 @@ for k=1:length(fitiniFieldNames)
         conf.fitini.(fitiniFieldNames{k});
 end
 clear fitiniFieldNames k;
+
+% Convert tofit into logical vector
+dataset.TSim.fit.fitini.tofit = logical(dataset.TSim.fit.fitini.tofit);
+
+% Create proper "fitparameters" cell array using information from 'tofit'
+parameters = trEPRTSim_fitpar();
+dataset.TSim.fit.fitini.fitparameters = ...
+    parameters(dataset.TSim.fit.fitini.tofit);
 
 % Merge fitopt into TSim structure
 fitoptFieldNames = fieldnames(conf.fitopt);

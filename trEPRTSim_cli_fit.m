@@ -14,6 +14,19 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 %
 %   command  - string
 %              Additional information what to do (bypassing certain loops)
+%
+% Please note: Currently, only datasets can be read that don't need
+% additional parameters for trEPRload, i.e. only datasets contained in a
+% single file can be read from within this function.
+%
+% However, creating a single file containing the dataset of interest is
+% quite easy using the following two lines:
+%
+%   data = trEPRload(<dir>,'combine',true);
+%   trEPRsave(<filename>,data);
+%
+% This will read all files in the directory <dir>, combine them and write
+% the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-10-04
@@ -136,6 +149,9 @@ while fitdataloop
     % Get fit parameters
     parameters = trEPRTSim_fitpar();
     fitpardescription = parameters(:,3);
+            
+    % Initialize fit parameters in dataset
+    dataset = trEPRTSim_fitini(dataset);
     
     fitouterloop = true;
     while fitouterloop
@@ -150,7 +166,8 @@ while fitdataloop
             % Choose fit parameters
             answer = cliMenu(option,...
                 'title','Please chose one or more fit parameters',...
-                'default',num2str(find(conf.fitini.tofit)),'multiple',true);
+                'default',num2str(find(dataset.TSim.fit.fitini.tofit)),...
+                'multiple',true);
             
             display(' ');
 
@@ -167,9 +184,11 @@ while fitdataloop
                 
                 % Hier kaeme: Display chosen fitting parameters with
                 % values, upper and lower boundaries
-                % trEPRTSim_parDisplay(dataset,'fit');
+                trEPRTSim_parDisplay(dataset,'fitpar');
                 
-                %Ask for different things
+                display(' ');
+                
+                % Ask for different things
                 option = {...
                     'p','Fit different parameters';...
                     'i','Change initial values';...
@@ -190,51 +209,43 @@ while fitdataloop
                     case 'i'
                         % Change initial values
                         fitiniloop = true;
-                        valueloop = false;
-                        iniparloop = true;
-                        while iniparloop
-                            disp('Please enter the initial values in the following order:');
-                            disp(parameters(dataset.TSim.fit.fitini.tofit,1)');
-                            inipar = input('> ','s');
-                            inipar = str2num(inipar); %#ok<ST2NM>
-                            if ~any(isnan(inipar)) && ...
-                                    (length(inipar) == length(dataset.TSim.fit.inipar))
-                                dataset.TSim.fit.inipar = inipar;
-                                iniparloop = false;
-                            end
+                        valueloop = true;
+                        
+                        disp('Please enter new values for the initial values:');
+                        for k=1:length(dataset.TSim.fit.inipar)
+                            dataset.TSim.fit.inipar(k) = cliInput(...
+                                dataset.TSim.fit.fitini.fitparameters{k},...
+                                'default',num2str(dataset.TSim.fit.inipar(k)),...
+                                'numeric',true);
                         end
+                        % Transfer parameters from inipar to fitpar
+                        dataset.TSim.fit.fitini.fitpar(...
+                            dataset.TSim.fit.fitini.tofit) = ...
+                            dataset.TSim.fit.inipar;
                     case 'l'
                         % Lower boundary values
                         fitiniloop = true;
                         valueloop = true;
-                        lbloop = true;
-                        while lbloop
-                            disp('Please enter the lower boundaries in the following order:');
-                            disp(parameters(dataset.TSim.fit.fitini.tofit,1)');
-                            lb = input('> ','s');
-                            lb = str2num(lb); %#ok<ST2NM>
-                            if ~any(isnan(lb)) && ...
-                                    (length(lb) == length(dataset.TSim.fit.inipar))
-                                dataset.TSim.fit.fitini.lb = lb;
-                                lbloop = false;
-                            end
-                        end % lbloop
+                        
+                        disp('Please enter new values for the lower boundaries:');
+                        for k=1:length(dataset.TSim.fit.fitini.lb)
+                            dataset.TSim.fit.fitini.lb(k) = cliInput(...
+                                dataset.TSim.fit.fitini.fitparameters{k},...
+                                'default',num2str(dataset.TSim.fit.fitini.lb(k)),...
+                                'numeric',true);
+                        end
                     case 'u'
                         % Upper Boundary values
                         fitiniloop = true;
                         valueloop = true;
-                        ubloop = true;
-                        while ubloop
-                            disp('Please enter the upper boundaries in the following order:');
-                            disp(parameters(dataset.TSim.fit.fitini.tofit,1)');
-                            ub = input('> ','s');
-                            ub = str2num(ub); %#ok<ST2NM>
-                            if ~any(isnan(ub)) && ...
-                                    (length(ub) == length(dataset.TSim.fit.inipar))
-                                dataset.TSim.fit.fitini.ub = ub;
-                                ubloop = false;
-                            end
-                        end % ubloop
+                        
+                        disp('Please enter new values for the upper boundaries:');
+                        for k=1:length(dataset.TSim.fit.fitini.ub)
+                            dataset.TSim.fit.fitini.ub(k) = cliInput(...
+                                dataset.TSim.fit.fitini.fitparameters{k},...
+                                'default',num2str(dataset.TSim.fit.fitini.ub(k)),...
+                                'numeric',true);
+                        end
                     case 'c'
                         % Continue
                         fitiniloop = false;
@@ -249,6 +260,12 @@ while fitdataloop
                         disp('booo!');
                         
                 end
+            
+                % Initialize fit parameters in dataset
+                dataset = trEPRTSim_fitini(dataset);
+                
+                disp(' ');
+                
             end % valueloop
         end % fitiniloop
         
@@ -451,6 +468,8 @@ while fitdataloop
                         % New fit with default initial parameters from
                         % config
                         dataset.TSim.sim.Sys = conf.Sys;
+                        dataset.TSim.sim.Exp.Temperature = ...
+                            conf.Exp.Temperature;
                         dataset = trEPRTSim_SysExp2par(dataset);
                         
                         saveloop = false;

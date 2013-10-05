@@ -43,12 +43,12 @@ fitpar(4,:)  = {'p2','Exp.Temperature(2)','Population of level 2',''};
 fitpar(5,:)  = {'p3','Exp.Temperature(3)','Population of level 3',''};
 fitpar(6,:)  = {'scale','','Scaling factor between experiment and fit',''};
 fitpar(7,:)  = {'lw','','Overall inhomogeneous linewidth','mT'};
-fitpar(8,:)  = {'DStrainD','','D strain','MHz'};
-fitpar(9,:)  = {'DStrainE','','E strain','MHz'};
+fitpar(8,:)  = {'DStrainD','Sys.DStrain(1)','D strain','MHz'};
+fitpar(9,:)  = {'DStrainE','Sys.DStrain(2)','E strain','MHz'};
 fitpar(10,:) = {'DeltaB','','Frequency correction via field offset','mT'};
-fitpar(11,:) = {'gStrainx','','g strain in x direction','MHz'};
-fitpar(12,:) = {'gStrainy','','g strain in y direction','MHz'};
-fitpar(13,:) = {'gStrainz','','g strain in z direction','MHz'};
+fitpar(11,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction','MHz'};
+fitpar(12,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction','MHz'};
+fitpar(13,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction','MHz'};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

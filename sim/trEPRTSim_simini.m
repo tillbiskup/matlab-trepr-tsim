@@ -113,6 +113,7 @@ dataset.TSim.sim.Exp.scale = 1;
 
 % Write fields in trEPR datastructure using simulation parameters - but
 % only if dataset contains no experimental data.
+dataset.data
 if isempty(dataset.data)
     % magnetic field
     dataset.axes.y.values = linspace(...

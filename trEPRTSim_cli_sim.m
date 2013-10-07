@@ -19,7 +19,7 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-05
+% 2013-10-07
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -110,6 +110,9 @@ while simouterloop
                 dataset.TSim.sim.Sys = Sys;
                 dataset.TSim.sim.Exp = Exp;
                 clear Sys Exp
+                
+                % Change parameters                
+                dataset = trEPRTSim_simini(dataset);
             case 'p'
                 % Choose additional simulation parameters
                 

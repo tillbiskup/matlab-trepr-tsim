@@ -10,14 +10,20 @@ function dataset = trEPRTSim_SysExp2par(dataset)
 % See also TREPRTSIM, TREPRTSIM_PAR2SYSEXP
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-12
+% 2013-10-07
 
 dataset.TSim.fit.fitini.fitpar(1)   = dataset.TSim.sim.Sys.D(3)*3/2;
 dataset.TSim.fit.fitini.fitpar(2)   = ...
     dataset.TSim.sim.Sys.D(1)+dataset.TSim.fit.fitini.fitpar(1)/3;
 dataset.TSim.fit.fitini.fitpar(3:5) = dataset.TSim.sim.Exp.Temperature;
-dataset.TSim.fit.fitini.fitpar(6)   = dataset.TSim.sim.Exp.scale;
-dataset.TSim.fit.fitini.fitpar(7)   = dataset.TSim.sim.Sys.lw;
+
+if isfield(dataset.TSim.sim.Exp,'scale')
+    dataset.TSim.fit.fitini.fitpar(6)   = dataset.TSim.sim.Exp.scale;
+end
+
+if isfield(dataset.TSim.sim.Sys,'lw')
+    dataset.TSim.fit.fitini.fitpar(7)   = dataset.TSim.sim.Sys.lw;
+end
 
 if isfield(dataset.TSim.sim.Sys,'DStrain')
     dataset.TSim.fit.fitini.fitpar(8:9) = dataset.TSim.sim.Sys.DStrain;

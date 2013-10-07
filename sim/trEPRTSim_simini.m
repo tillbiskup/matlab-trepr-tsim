@@ -32,9 +32,7 @@ function dataset = trEPRTSim_simini(dataset)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-04
-
-% Idea: why don't we create a tosim, analogous to tofit
+% 2013-10-07
  
 % Get values from configuration
 conf = trEPRTSim_conf();
@@ -113,7 +111,6 @@ dataset.TSim.sim.Exp.scale = 1;
 
 % Write fields in trEPR datastructure using simulation parameters - but
 % only if dataset contains no experimental data.
-dataset.data
 if isempty(dataset.data)
     % magnetic field
     dataset.axes.y.values = linspace(...

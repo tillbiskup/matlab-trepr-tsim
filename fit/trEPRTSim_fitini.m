@@ -18,7 +18,7 @@ function dataset = trEPRTSim_fitini(dataset)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-05
+% 2013-10-07
 
 % Convert tofit into boolean values
 dataset.TSim.fit.fitini.tofit = logical(dataset.TSim.fit.fitini.tofit);
@@ -66,4 +66,14 @@ for k=1:length(dataset.TSim.fit.inipar)
         disp(' ');
         disp('Warning: Some boundaries have been adjusted.');
     end
+end
+
+% Check field values against experimental values
+if dataset.TSim.sim.Exp.Range(1) ~= min(dataset.axes.y.values) || ...
+        dataset.TSim.sim.Exp.Range(2) ~= max(dataset.axes.y.values)
+    dataset.TSim.sim.Exp.Range = [min(dataset.axes.y.values) ...
+        max(dataset.axes.y.values)];
+    dataset.TSim.sim.Exp.nPoints = length(dataset.axes.y.values);
+end
+
 end

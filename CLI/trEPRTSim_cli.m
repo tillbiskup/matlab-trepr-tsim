@@ -4,7 +4,7 @@
 % Integral part of the TSim module of the trEPR toolbox.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-03
+% 2013-10-07
 
 % For the time being, erase everything in the workspace... (quite rude)
 clear all; close all;
@@ -44,7 +44,15 @@ outerloop = true;
 while outerloop
     switch lower(action)
         case {'fit','f'}
-            [dataset,command] = trEPRTSim_cli_fit();
+            if exist('dataset','var')
+                if exist('command','var')
+                    [dataset,command] = trEPRTSim_cli_fit(dataset,command);
+                else
+                    [dataset,command] = trEPRTSim_cli_fit(dataset);
+                end
+            else
+                [dataset,command] = trEPRTSim_cli_fit();
+            end
             switch lower(command)
                 case 'exit'
                     outerloop = false;

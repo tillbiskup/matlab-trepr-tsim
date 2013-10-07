@@ -29,7 +29,7 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-04
+% 2013-10-07
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
@@ -142,9 +142,14 @@ while fitdataloop
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % Create dataset merging parameters from experimental
-    % dataset.
-    dataset = trEPRTSim_dataset(data);
+    dataset.TSim.sim.Sys
+    
+    % Merging parameters from experimental dataset.
+    data.TSim = dataset.TSim;
+    dataset = data;
+    clear data;
+    
+    dataset.TSim.sim.Exp
     
     % Get fit parameters
     parameters = trEPRTSim_fitpar();

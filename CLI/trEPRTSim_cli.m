@@ -4,7 +4,7 @@
 % Integral part of the TSim module of the trEPR toolbox.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-07
+% 2013-10-08
 
 % For the time being, erase everything in the workspace... (quite rude)
 clear all; close all;
@@ -19,9 +19,6 @@ else
     % Remove unwanted variables from workspace
     clear status missing
 end
-
-% % Read initial values from config file
-% conf = trEPRTSim_conf;
 
 % Chose wether it shall be simulated or fitted
 answer = cliMenu({'f','Fit';'s','Simulate';'q','Quit'},'default','f','title',...

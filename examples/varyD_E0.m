@@ -11,7 +11,7 @@
 % investigations of the parameters.
 
 % (c) 2013, Till Biskup, <till@till-biskup.de>
-% 2013-10-16
+% 2013-10-18
 
 % Prepare dataset for simulation
 dataset = trEPRTSim_dataset();
@@ -26,7 +26,7 @@ dataset.TSim.sim.Exp.nPoints = 551;
 % Population
 dataset.TSim.sim.Exp.Temperature = [0 0.45 0.55];
 % isotropic line width
-dataset.TSim.sim.Sys.lw = 0.2; % in mT
+dataset.TSim.sim.Sys.lw = 0.5; % in mT
 
 % Get range for D
 D = 1000 : 100 : 5000; % in MHz
@@ -55,6 +55,10 @@ for k = 1:length(D)
     % as kind of a progress bar
     fprintf('.');
     
+    % Insert line breaks for many spectra
+    if ~mod(k,50)
+        fprintf('\n');
+    end
 end
 
 % Line feed (just for better display)

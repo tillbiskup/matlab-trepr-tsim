@@ -10,7 +10,7 @@ function dataset = trEPRTSim_SysExp2par(dataset)
 % See also TREPRTSIM, TREPRTSIM_PAR2SYSEXP
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-07
+% 2013-11-22
 
 dataset.TSim.fit.fitini.fitpar(1)   = dataset.TSim.sim.Sys.D(3)*3/2;
 dataset.TSim.fit.fitini.fitpar(2)   = ...
@@ -22,20 +22,20 @@ if isfield(dataset.TSim.sim.Exp,'scale')
 end
 
 if isfield(dataset.TSim.sim.Sys,'lw')
-    dataset.TSim.fit.fitini.fitpar(7)   = dataset.TSim.sim.Sys.lw;
+    dataset.TSim.fit.fitini.fitpar(7:8)   = dataset.TSim.sim.Sys.lw;
 end
 
 if isfield(dataset.TSim.sim.Sys,'DStrain')
-    dataset.TSim.fit.fitini.fitpar(8:9) = dataset.TSim.sim.Sys.DStrain;
+    dataset.TSim.fit.fitini.fitpar(9:10) = dataset.TSim.sim.Sys.DStrain;
 else
-    dataset.TSim.fit.fitini.fitpar(8:9) = 0;
+    dataset.TSim.fit.fitini.fitpar(9:10) = 0;
 end
 if isfield(dataset.TSim.sim.Sys,'gStrain')
-    dataset.TSim.fit.fitini.fitpar(11:13) = dataset.TSim.sim.Sys.gStrain;
+    dataset.TSim.fit.fitini.fitpar(12:14) = dataset.TSim.sim.Sys.gStrain;
 else
-    dataset.TSim.fit.fitini.fitpar(11:13) = 0;
+    dataset.TSim.fit.fitini.fitpar(12:14) = 0;
 end
 % Cannot get field offset, therefore, set it to zero
-dataset.TSim.fit.fitini.fitpar(10) = 0;
+dataset.TSim.fit.fitini.fitpar(11) = 0;
 
 end

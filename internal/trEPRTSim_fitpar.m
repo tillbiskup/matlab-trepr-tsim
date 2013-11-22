@@ -23,7 +23,7 @@ function fitpar = trEPRTSim_fitpar(varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-02
+% 2013-11-22
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -42,13 +42,14 @@ fitpar(3,:)  = {'p1','Exp.Temperature(1)','Population of level 1',''};
 fitpar(4,:)  = {'p2','Exp.Temperature(2)','Population of level 2',''};
 fitpar(5,:)  = {'p3','Exp.Temperature(3)','Population of level 3',''};
 fitpar(6,:)  = {'scale','','Scaling factor between experiment and fit',''};
-fitpar(7,:)  = {'lw','','Overall inhomogeneous linewidth','mT'};
-fitpar(8,:)  = {'DStrainD','Sys.DStrain(1)','D strain','MHz'};
-fitpar(9,:)  = {'DStrainE','Sys.DStrain(2)','E strain','MHz'};
-fitpar(10,:) = {'DeltaB','','Frequency correction via field offset','mT'};
-fitpar(11,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction','MHz'};
-fitpar(12,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction','MHz'};
-fitpar(13,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction','MHz'};
+fitpar(7,:)  = {'lwGauss','','Overall inhomogeneous linewidth Gaussian','mT'};
+fitpar(8,:)  = {'lwLorentz','','Overall inhomogeneous linewidth Lorentzian','mT'};
+fitpar(9,:)  = {'DStrainD','Sys.DStrain(1)','D strain','MHz'};
+fitpar(10,:)  = {'DStrainE','Sys.DStrain(2)','E strain','MHz'};
+fitpar(11,:) = {'DeltaB','','Frequency correction via field offset','mT'};
+fitpar(12,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction','MHz'};
+fitpar(13,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction','MHz'};
+fitpar(14,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction','MHz'};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

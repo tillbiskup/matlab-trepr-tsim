@@ -413,7 +413,7 @@ while fitdataloop
                     's','Start a simulation';...
                     'q','Quit'};
                 answer = cliMenu(option,'title',...
-                    'How to continue?','default','f');
+                    'How to continue?','default','b');
                 
                 display(' ');
                

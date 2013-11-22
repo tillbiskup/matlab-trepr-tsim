@@ -13,7 +13,7 @@ function dataset = trEPRTSim_par2SysExp(par,dataset)
 % See also TREPRTSIM, TREPRTSIM_SYSEXP2PAR
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-12
+% 2013-11-22
 
 % Merge parameters to be fitted into vector of all possible fit parameters
 dataset.TSim.fit.fitini.fitpar(dataset.TSim.fit.fitini.tofit) = ...
@@ -27,20 +27,20 @@ dataset.TSim.sim.Sys.D = [...
     ];
 dataset.TSim.sim.Exp.Temperature = dataset.TSim.fit.fitini.fitpar(3:5);
 dataset.TSim.sim.Exp.scale = dataset.TSim.fit.fitini.fitpar(6);
-dataset.TSim.sim.Sys.lw = dataset.TSim.fit.fitini.fitpar(7);
+dataset.TSim.sim.Sys.lw = dataset.TSim.fit.fitini.fitpar(7:8);
 
-if any(dataset.TSim.fit.fitini.tofit(8:9))
-    dataset.TSim.sim.Sys.DStrain = dataset.TSim.fit.fitini.fitpar(8:9);
+if any(dataset.TSim.fit.fitini.tofit(9:10))
+    dataset.TSim.sim.Sys.DStrain = dataset.TSim.fit.fitini.fitpar(9:10);
 elseif isfield(dataset.TSim.sim.Sys,'DStrain')
     dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
 end
 
 % Adjusting field offset
 dataset.TSim.sim.Exp.Range = ...
-    dataset.TSim.sim.Exp.Range+dataset.TSim.fit.fitini.fitpar(10);
+    dataset.TSim.sim.Exp.Range+dataset.TSim.fit.fitini.fitpar(11);
 
-if any(dataset.TSim.fit.fitini.tofit(11:13))
-    dataset.TSim.sim.Sys.gStrain = dataset.TSim.fit.fitini.fitpar(11:13);
+if any(dataset.TSim.fit.fitini.tofit(12:14))
+    dataset.TSim.sim.Sys.gStrain = dataset.TSim.fit.fitini.fitpar(12:14);
 elseif isfield(dataset.TSim.sim.Sys,'gStrain')
     dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'gStrain');
 end

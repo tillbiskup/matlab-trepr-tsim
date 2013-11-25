@@ -23,7 +23,7 @@ function fitpar = trEPRTSim_fitpar(varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-11-22
+% 2013-11-25
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -34,22 +34,27 @@ parser.StructExpand  = true; % Enable passing arguments in a structure
 parser.addParamValue('struct',logical(false),@islogical);
 parser.parse(varargin{:});
 
-fitpar = cell(13,4);
+fitpar = cell(17,4);
 
-fitpar(1,:)  = {'D','Sys.D(3)*3/2','Zero field splitting parameter D','MHz'};
-fitpar(2,:)  = {'E','Sys.D(1)+Sys.D(2)*3/6','Zero field splitting parameter E','MHz'};
-fitpar(3,:)  = {'p1','Exp.Temperature(1)','Population of level 1',''};
-fitpar(4,:)  = {'p2','Exp.Temperature(2)','Population of level 2',''};
-fitpar(5,:)  = {'p3','Exp.Temperature(3)','Population of level 3',''};
-fitpar(6,:)  = {'scale','','Scaling factor between experiment and fit',''};
-fitpar(7,:)  = {'lwGauss','','Overall inhomogeneous linewidth Gaussian','mT'};
-fitpar(8,:)  = {'lwLorentz','','Overall inhomogeneous linewidth Lorentzian','mT'};
-fitpar(9,:)  = {'DStrainD','Sys.DStrain(1)','D strain','MHz'};
-fitpar(10,:)  = {'DStrainE','Sys.DStrain(2)','E strain','MHz'};
-fitpar(11,:) = {'DeltaB','','Frequency correction via field offset','mT'};
-fitpar(12,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction','MHz'};
-fitpar(13,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction','MHz'};
-fitpar(14,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction','MHz'};
+fitpar(1,:)  = {'gx','Sys.g(1)','gx value',''};
+fitpar(2,:)  = {'gy','Sys.g(2)','gy value',''};
+fitpar(3,:)  = {'gz','Sys.g(3)','gz value',''};
+fitpar(4,:)  = {'D','Sys.D(3)*3/2','Zero field splitting parameter D','MHz'};
+
+%% Definition of E was wrong! 25.11.13
+fitpar(5,:)  = {'E','(Sys.D(1) - Sys.D(2))*3/6','Zero field splitting parameter E','MHz'};
+fitpar(6,:)  = {'p1','Exp.Temperature(1)','Population of level 1',''};
+fitpar(7,:)  = {'p2','Exp.Temperature(2)','Population of level 2',''};
+fitpar(8,:)  = {'p3','Exp.Temperature(3)','Population of level 3',''};
+fitpar(9,:)  = {'scale','','Scaling factor between experiment and fit',''};
+fitpar(10,:)  = {'lwGauss','','Overall inhomogeneous linewidth Gaussian','mT'};
+fitpar(11,:)  = {'lwLorentz','','Overall inhomogeneous linewidth Lorentzian','mT'};
+fitpar(12,:)  = {'DStrainD','Sys.DStrain(1)','D strain','MHz'};
+fitpar(13,:)  = {'DStrainE','Sys.DStrain(2)','E strain','MHz'};
+fitpar(14,:) = {'DeltaB','','Frequency correction via field offset','mT'};
+fitpar(15,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction','MHz'};
+fitpar(16,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction','MHz'};
+fitpar(17,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction','MHz'};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

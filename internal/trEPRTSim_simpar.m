@@ -23,7 +23,7 @@ function simpar = trEPRTSim_simpar(varargin)
 % See also TREPRTSIM, TREPRTSIM_FITPAR
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-11-22
+% 2013-11-29
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -47,10 +47,10 @@ simpar(8,:)  = {'Range','Exp.Range','Lower and upper boundaries of field axis','
 simpar(9,:)  = {'p1','Exp.Temperature(1)','Population of level 1','',true};
 simpar(10,:) = {'p2','Exp.Temperature(2)','Population of level 2','',true};
 simpar(11,:) = {'p3','Exp.Temperature(3)','Population of level 3','',true};
-simpar(12,:) = {'lwGaussian','Sys.lw(1)','Overall inhomogeneous linewidth Gaussian (careful when using strains!)','mT',false};
-simpar(13,:) = {'lwLorentzian','Sys.lw(2)','Overall inhomogeneous linewidth Lorentzian (careful when using strains!)','mT',false};
-simpar(14,:) = {'DStrainD','Sys.DStrain(1)','D strain (don''t use with g strain!)','MHz',false};
-simpar(15,:) = {'DStrainE','Sys.DStrain(2)','E strain (don''t use with g strain!)','MHz',false};
+simpar(12,:) = {'lwGauss','Sys.lw(1)','Overall inhomogeneous linewidth Gaussian (careful when using strains!)','mT',false};
+simpar(13,:) = {'lwLorentz','Sys.lw(2)','Overall homogeneous linewidth Lorentzian (careful when using strains!)','mT',false};
+simpar(14,:) = {'DStrainD','Sys.DStrain(1)','local inhomogenous linewidth, D strain (don''t use with g strain!)','MHz',false};
+simpar(15,:) = {'DStrainE','Sys.DStrain(2)','local inhomogenous linewidth, E strain (don''t use with g strain!)','MHz',false};
 simpar(16,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction (don''t use with D strain!)','MHz',false};
 simpar(17,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction (don''t use with D strain!)','MHz',false};
 simpar(18,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction (don''t use with D strain!)','MHz',false};

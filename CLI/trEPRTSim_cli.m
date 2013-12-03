@@ -20,6 +20,7 @@ else
     clear status missing
 end
 
+
 % Chose wether it shall be simulated or fitted
 answer = cliMenu({'f','Fit';'s','Simulate';'q','Quit'},'default','f','title',...
     'Do you wish to simulate or to fit?');
@@ -36,6 +37,8 @@ switch answer
         % Shall never happen
         action = '';
 end
+
+
 
 outerloop = true;
 while outerloop

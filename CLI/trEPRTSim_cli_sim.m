@@ -1,4 +1,4 @@
-function [dataset, command] = trEPRTSim_cli_sim(varargin)
+function [simdataset, command] = trEPRTSim_cli_sim(varargin)
 % TREPRTSIM_CLI_SIM Subfunction of the trEPRTSim CLI handling the
 % simulation part.
 %
@@ -7,10 +7,10 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 %
 % Usage
 %   trEPRTsim_cli_sim
-%   trEPRTSim_cli_sim(dataset)
-%   dataset = trEPRTSim_cli_sim
-%   dataset = trEPRTSim_cli_sim(dataset)
-%   [dataset,<command>] = trEPRTSim_cli_sim(dataset,<command>)
+%   trEPRTSim_cli_sim(expdataset)
+%   expdataset = trEPRTSim_cli_sim
+%   expdataset = trEPRTSim_cli_sim(expdataset)
+%   [expdataset,<command>] = trEPRTSim_cli_sim(expdataset,<command>)
 %
 %   dataset  - struct
 %              Full trEPR toolbox dataset including TSim structure
@@ -19,22 +19,94 @@ function [dataset, command] = trEPRTSim_cli_sim(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-07
+% 2013-12-03
 
 if nargin % If we have input arguments
     if isstruct(varargin{1})
-        dataset = varargin{1};
+        expdataset = varargin{1};
+        simdataset = expdataset;
+        
+        % Optional display of experimental data to look at while
+        % simulating
+        option = {'y','Yes';'n','No'};
+        answer = cliMenu(option, 'title','Do you wish to display your experimental data?','default','y');
+        
+        disp(' ');
+        
+        switch lower(answer)
+            case 'y'
+                
+                % Plotting of the already loaded experimental spectrum
+                close(figure(1));
+                plot(expdataset.axes.y.values,expdataset.data)
+                legend({'Originaldata'},'Location','SouthEast');
+                
+            case 'n'
+                % do nothing
+        end
+        
     end
 else
     % Create (empty) dataset
-    dataset = trEPRTSim_dataset();
- 
-    % Initialize minimal simulation parameters
-    dataset = trEPRTSim_simini(dataset);   
+    simdataset = trEPRTSim_dataset();
+    
+
+    % Optional Loading of potential experimental data to look at while
+    % simulating
+    option = {'y', 'Yes';'n','No'};
+    answer = cliMenu(option,'title','Do you wish to load experimental data?','default','n');
+    
+    disp(' ');
+    
+    switch lower(answer)
+        case 'y'
+            
+            filename = '';
+            while isempty(filename)
+                filename = input(sprintf('%s\n%s',...
+                    'Please enter the filename of the experimental data',...
+                    'you wish to fit (''q'' to quit): '),'s');
+                if strcmpi(filename,'q')
+                    % Quit
+                    command = 'exit';
+                    disp('Goodbye!');
+                    return;
+                end
+                
+                if ~exist(filename,'file')
+                    fprintf('\nFile "%s" not found. Please try again\n\n',...
+                        filename);
+                    filename = '';
+                end
+            end
+            
+            % Load experimental data using <trEPRTSim_load>.
+            expdataset = trEPRTSim_load(filename);
+            
+            
+            % Plotting of maxima experimental spectrum
+            [~,idxMax] = max(max(expdataset.data));
+            close(figure(1));
+            plot(expdataset.axes.y.values,expdataset.data(:,idxMax))
+            legend({'Originaldata'},'Location','SouthEast');
+            
+            
+        case 'n'
+            % do nothing
+    end
+     
+    
 end
 
 simouterloop = true;
 while simouterloop
+    
+    % Get config values, also done in trEPRTSim_simini
+    % conf = trEPRTSim_conf();
+    
+    % Initialize minimal simulation parameters
+    simdataset = trEPRTSim_simini(simdataset); 
+    
     
     siminiloop = true;
     while siminiloop
@@ -44,7 +116,7 @@ while simouterloop
         % Display minimal set of simulation parameters with
         % their initial values
         disp('The simulation parameters currently chosen:')
-        trEPRTSim_parDisplay(dataset,'sim');
+        trEPRTSim_parDisplay(simdataset,'sim');
         
         disp(' ');
         
@@ -52,12 +124,12 @@ while simouterloop
         % simulation (changing simulation routine not implemented yet)
         option ={...
             'v','Change values of chosen simulation parameters';...
-            'p','Choose additional simulation parameters';...
-%           'r','Change simulation routine'
+            'p','Choose different simulation parameters';...
+            %           'r','Change simulation routine'
             's','Start simulation';...
             'q','Quit'};
         answer = cliMenu(option, 'default','s');
-
+        
         disp(' ');
         
         switch lower(answer)
@@ -66,20 +138,21 @@ while simouterloop
                 
                 % Get simulation parameters
                 simpar = trEPRTSim_simpar;
+                
                 % Select only the additional ones
                 addsimpar = simpar(~[simpar{:,5}],:);
                 
                 addsimpar2change = addsimpar(...
-                    ismember(addsimpar(:,1),dataset.TSim.sim.addsimpar),:);
+                    ismember(addsimpar(:,1),simdataset.TSim.sim.addsimpar),:);
                 if ~isempty(addsimpar2change)
                     par2change = [simpar([simpar{:,5}],:) ; addsimpar2change];
                 else
                     par2change = simpar([simpar{:,5}],:);
                 end
-
+                
                 % Temporarily get Sys,Exp as direct structures
-                Sys = dataset.TSim.sim.Sys;
-                Exp = dataset.TSim.sim.Exp;
+                Sys = simdataset.TSim.sim.Sys;
+                Exp = simdataset.TSim.sim.Exp;
                 
                 par2changeValues = cell(1,length(par2change));
                 for k=1:length(par2change)
@@ -107,14 +180,15 @@ while simouterloop
                                 ['[' num2str(par2changeValues{k}) ']'] ';']);
                     end
                 end
-                dataset.TSim.sim.Sys = Sys;
-                dataset.TSim.sim.Exp = Exp;
+                simdataset.TSim.sim.Sys = Sys;
+                simdataset.TSim.sim.Exp = Exp;
                 clear Sys Exp
                 
-                % Change parameters                
-                dataset = trEPRTSim_simini(dataset);
+                % Change parameters
+                simdataset = trEPRTSim_simini(simdataset);
             case 'p'
-                % Choose additional simulation parameters
+                % Choose different simulation parameters
+                % Idea: similar as in fit, show all possible parameters
                 
                 % Get simulation parameters
                 simpar = trEPRTSim_simpar;
@@ -128,28 +202,28 @@ while simouterloop
                 
                 % Get default value, depending on "addsimpar" value
                 if isempty(find(ismember(addsimpar(:,1),...
-                        dataset.TSim.sim.addsimpar),1))
+                        simdataset.TSim.sim.addsimpar),1))
                     defaultAddSimPar = ...
                         num2str(length(addsimpardescription)+1);
                 else
                     defaultAddSimPar = ...
                         num2str(find(ismember(addsimpar(:,1),...
-                        dataset.TSim.sim.addsimpar))');
+                        simdataset.TSim.sim.addsimpar))');
                 end
                 
                 answer = cliMenu(option,...
-                    'title','Please chose one or more additional simulation parameters',...
+                    'title','Please chose simulation parameters',...
                     'default',defaultAddSimPar,'multiple',true);
                 
                 if str2double(answer) < length(addsimpardescription)+1
-                    dataset.TSim.sim.addsimpar = ...
+                    simdataset.TSim.sim.addsimpar = ...
                         addsimpar(str2double(answer),1);
                 else
-                    dataset.TSim.sim.addsimpar = {};
+                    simdataset.TSim.sim.addsimpar = {};
                 end
                 
-                % Change parameters                
-                dataset = trEPRTSim_simini(dataset);
+                % Change parameters
+                simdataset = trEPRTSim_simini(simdataset);
                 
                 siminiloop = true;
             case 'r'
@@ -172,24 +246,28 @@ while simouterloop
     % Enter purpose
     disp('Enter a purpose:');
     purpose = input('> ','s');
-    dataset.TSim.remarks.purpose = purpose;
+    simdataset.TSim.remarks.purpose = purpose;
     
     % Calculate spectrum (actual simulation)
-    dataset = trEPRTSim_sim(dataset);
+    simdataset = trEPRTSim_sim(simdataset);
     
     figure();
-    plot(dataset.axes.y.values,dataset.calculated);
+    plot(linspace(...
+        simdataset.TSim.sim.Exp.Range(1),...
+        simdataset.TSim.sim.Exp.Range(2),...
+        simdataset.TSim.sim.Exp.nPoints ...
+        ),simdataset.calculated);
     xlabel('{\it magnetic field} / mT');
     ylabel('{\it intensity} / a.u.');
     
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
-    dataset.TSim.remarks.comment = comment;
+    simdataset.TSim.remarks.comment = comment;
     
     % Write history
     % (Orwell style - we're creating our own)
-    dataset = trEPRTSim_history('write',dataset);
+    simdataset = trEPRTSim_history('write',simdataset);
     
     saveloop = true;
     while saveloop
@@ -219,7 +297,7 @@ while simouterloop
                 %                             [saveFilename,pathname] = uiputfile(...
                 %                                 '*.tez','DialogTitle',suggestedFilename);
                 % Save dataset
-                [status] = trEPRsave(saveFilename,dataset);
+                [status] = trEPRTSim_save(saveFilename,simdataset);
                 if ~isempty(status)
                     disp('Some problems with saving data');
                 end
@@ -232,6 +310,9 @@ while simouterloop
                 saveloop = false;
             case 'f'
                 % Start fit - give therefore control back to caller
+                % Transfer TSim structure from simdataset into expdataset
+                expdataset.TSim = simdataset.TSim;
+                simdataset = expdataset;
                 command = 'fit';
                 return;
             case 'q'
@@ -248,7 +329,7 @@ while simouterloop
                 end
                 saveFilename = suggestedFilename;
                 % Save dataset
-                [status] = trEPRsave(saveFilename,dataset);
+                [status] = trEPRTSim_save(saveFilename,simdataset);
                 if ~isempty(status)
                     disp('Some problems with saving data');
                 end

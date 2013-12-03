@@ -1,4 +1,4 @@
-function [dataset, command] = trEPRTSim_cli_fit(varargin)
+function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % TREPRTSIM_CLI_FIT Subfunction of the trEPRTSim CLI handling the fitting
 % part. 
 %
@@ -29,136 +29,83 @@ function [dataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-07
+% 2013-12-03
 
-if nargin % If we have input arguments
+% If we have input arguments
+if nargin
     if isstruct(varargin{1})
-        dataset = varargin{1};
+        simdataset = varargin{1};
+        expdataset = simdataset;
+        
+        option = {'n','new data';'a','already loaded data'};
+        answer = cliMenu(option,...
+            'title','Do you wish to fit your already loaded data, or rather load new data?',...
+            'default','a');
+        
+        switch lower(answer)
+            case 'a'
+                % überspringe loaddataloop
+                loaddataloop = false;
+            case 'n'
+                % load new data
+                loaddataloop = true;
+        end
     end
 else
     % Create (empty) dataset
     % TODO: Handle missing parameters, such as field range, ...
-    dataset = trEPRTSim_dataset();
+    expdataset = trEPRTSim_dataset();
+    
+    % Get config values
+    conf = trEPRTSim_conf();
+    
+    loaddataloop = true;
 end
 
-% Get config values
-conf = trEPRTSim_conf();
 
 fitdataloop = true;
 while fitdataloop
     
-    disp(' ');
-    % fitting was chosen
-    filename = '';
-    while isempty(filename)
-        filename = input(sprintf('%s\n%s',...
-            'Please enter the filename of the experimental data',...
-            'you wish to fit (''q'' to quit): '),'s');
-        if strcmpi(filename,'q')
-            % Quit
-            command = 'exit';
-            disp('Goodbye!');
-            return;
+    
+    while loaddataloop
+        
+        disp(' ');
+        % fitting was chosen
+        filename = '';
+        while isempty(filename)
+            filename = input(sprintf('%s\n%s',...
+                'Please enter the filename of the experimental data',...
+                'you wish to fit (''q'' to quit): '),'s');
+            if strcmpi(filename,'q')
+                % Quit
+                command = 'exit';
+                disp('Goodbye!');
+                return;
+            end
+            
+            if ~exist(filename,'file')
+                fprintf('\nFile "%s" not found. Please try again\n\n',...
+                    filename);
+                filename = '';
+            end
         end
         
-        if ~exist(filename,'file')
-            fprintf('\nFile "%s" not found. Please try again\n\n',...
-                filename);
-            filename = '';
-        end
+        % Load experimental data using <trEPRTSim_load>
+        expdataset = trEPRTSim_load(filename);
+        
+        
+        
+        loaddataloop = false;
     end
-    
-    % Load experimental data using <trEPRload>.
-    data = trEPRload(filename);
-    
-    % Convert Gauss -> mT
-    data = trEPRconvertUnits(data,'g2mt');
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    % Some necessary tests of the dataset loaded, such as 1D or 2D,
-    % preprocessing, and selecting slice (in case of 2D)
-    
-    % Check whether data are 2D or 1D, and in case of 2D, take maximum
-    if min(size(data.data)) > 1
-        disp(' ');
-        disp('2D data detected');
-        % For the time being, perform a pretrigger offset compensation on
-        % the data... (should be done by the user manually or within the
-        % toolbox, respectively.)
-        disp(' ');
-        disp('Perform pretrigger offset compensation (POC)');
-        data.data = trEPRPOC(...
-            data.data,data.parameters.transient.triggerPosition);
-        % In case of fsc2 data, perform BGC
-        if isfield(data,'file') && isfield(data.file,'format') ...
-                && strcmpi(data.file.format,'fsc2')
-            disp(' ');
-            disp('Perform simple background correction (BGC)');
-            data.data = trEPRBGC(data.data);
-        end
-        % Take maximum
-        disp(' ');
-        disp('Take slice at maximum (if unhappy, provide 1D dataset)');
-        [~,idxMax] = max(max(data.data));
-        spectrum = data.data(:,idxMax);
-    else
-        spectrum = data.data;
-    end
-    disp(' ');
-    
-    % In case we couldn't read a frequency value from the (too old) fsc2
-    % file, ask user to provide a reasonable value...
-    if isempty(data.parameters.bridge.MWfrequency.value)
-        disp(' ');
-        disp('Dataset is missing MW frequency value. Please provide one.');
-        MWfreqloop = true;
-        MWfreqDefault = 9.70;
-        while MWfreqloop
-            MWfreq = input(...
-                sprintf('MW frequency in GHz [%f]: ',MWfreqDefault),'s');
-            if isempty(MWfreq)
-                MWfreq = MWfreqDefault;
-                data.parameters.bridge.MWfrequency.value = MWfreq;
-                data.parameters.bridge.MWfrequency.unit = 'GHz';
-                MWfreqloop = false;
-            end
-            if ~isnan(str2double(MWfreq))
-                data.parameters.bridge.MWfrequency.value = ...
-                    str2double(MWfreq);
-                data.parameters.bridge.MWfrequency.unit = 'GHz';
-                MWfreqloop = false;
-            end
-        end
-        disp(' ');
-    end
-    
-    % If MWfrequency is a vector and not a scalar, average
-    if ~isscalar(data.parameters.bridge.MWfrequency.value)
-        data.parameters.bridge.MWfrequency.value = ...
-            mean(data.parameters.bridge.MWfrequency.value);
-    end
-
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-    dataset.TSim.sim.Sys
-    
-    % Merging parameters from experimental dataset.
-    data.TSim = dataset.TSim;
-    dataset = data;
-    clear data;
-    
-    dataset.TSim.sim.Exp
     
     % Get fit parameters
     parameters = trEPRTSim_fitpar();
     fitpardescription = parameters(:,3);
-            
-    % Initialize fit parameters in dataset
-    dataset = trEPRTSim_fitini(dataset);
     
-        
+    % Initialize fit parameters in dataset
+    expdataset = trEPRTSim_fitini(expdataset);
+    
+    
     fitouterloop = true;
     while fitouterloop
         
@@ -175,18 +122,18 @@ while fitdataloop
                 % Choose fit parameters
                 answer = cliMenu(option,...
                     'title','Please chose one or more fit parameters',...
-                    'default',num2str(find(dataset.TSim.fit.fitini.tofit)),...
+                    'default',num2str(find(expdataset.TSim.fit.fitini.tofit)),...
                     'multiple',true);
                 
                 display(' ');
                 
                 % Convert answer into tofit parameter in dataset
-                dataset.TSim.fit.fitini.tofit = ...
-                    zeros(1,length(dataset.TSim.fit.fitini.tofit));
-                dataset.TSim.fit.fitini.tofit(str2double(answer)) = 1;
+                expdataset.TSim.fit.fitini.tofit = ...
+                    zeros(1,length(expdataset.TSim.fit.fitini.tofit));
+                expdataset.TSim.fit.fitini.tofit(str2double(answer)) = 1;
                 
                 % Initialize fit parameters in dataset
-                dataset = trEPRTSim_fitini(dataset);
+                expdataset = trEPRTSim_fitini(expdataset);
                 
                 
                 
@@ -195,7 +142,7 @@ while fitdataloop
                     
                     % Hier kaeme: Display chosen fitting parameters with
                     % values, upper and lower boundaries
-                    trEPRTSim_parDisplay(dataset,'fitpar');
+                    trEPRTSim_parDisplay(expdataset,'fitpar');
                     
                     display(' ');
                     
@@ -223,26 +170,26 @@ while fitdataloop
                             valueloop = true;
                             
                             disp('Please enter new values for the initial values:');
-                            for k=1:length(dataset.TSim.fit.inipar)
-                                dataset.TSim.fit.inipar(k) = cliInput(...
-                                    dataset.TSim.fit.fitini.fitparameters{k},...
-                                    'default',num2str(dataset.TSim.fit.inipar(k)),...
+                            for k=1:length(expdataset.TSim.fit.inipar)
+                                expdataset.TSim.fit.inipar(k) = cliInput(...
+                                    expdataset.TSim.fit.fitini.fitparameters{k},...
+                                    'default',num2str(expdataset.TSim.fit.inipar(k)),...
                                     'numeric',true);
                             end
                             % Transfer parameters from inipar to fitpar
-                            dataset.TSim.fit.fitini.fitpar(...
-                                dataset.TSim.fit.fitini.tofit) = ...
-                                dataset.TSim.fit.inipar;
+                            expdataset.TSim.fit.fitini.fitpar(...
+                                expdataset.TSim.fit.fitini.tofit) = ...
+                                expdataset.TSim.fit.inipar;
                         case 'l'
                             % Lower boundary values
                             fitiniloop = true;
                             valueloop = true;
                             
                             disp('Please enter new values for the lower boundaries:');
-                            for k=1:length(dataset.TSim.fit.fitini.lb)
-                                dataset.TSim.fit.fitini.lb(k) = cliInput(...
-                                    dataset.TSim.fit.fitini.fitparameters{k},...
-                                    'default',num2str(dataset.TSim.fit.fitini.lb(k)),...
+                            for k=1:length(expdataset.TSim.fit.fitini.lb)
+                                expdataset.TSim.fit.fitini.lb(k) = cliInput(...
+                                    expdataset.TSim.fit.fitini.fitparameters{k},...
+                                    'default',num2str(expdataset.TSim.fit.fitini.lb(k)),...
                                     'numeric',true);
                             end
                         case 'u'
@@ -251,10 +198,10 @@ while fitdataloop
                             valueloop = true;
                             
                             disp('Please enter new values for the upper boundaries:');
-                            for k=1:length(dataset.TSim.fit.fitini.ub)
-                                dataset.TSim.fit.fitini.ub(k) = cliInput(...
-                                    dataset.TSim.fit.fitini.fitparameters{k},...
-                                    'default',num2str(dataset.TSim.fit.fitini.ub(k)),...
+                            for k=1:length(expdataset.TSim.fit.fitini.ub)
+                                expdataset.TSim.fit.fitini.ub(k) = cliInput(...
+                                    expdataset.TSim.fit.fitini.fitparameters{k},...
+                                    'default',num2str(expdataset.TSim.fit.fitini.ub(k)),...
                                     'numeric',true);
                             end
                         case 'c'
@@ -273,7 +220,7 @@ while fitdataloop
                     end
                     
                     % Initialize fit parameters in dataset
-                    dataset = trEPRTSim_fitini(dataset);
+                    expdataset = trEPRTSim_fitini(expdataset);
                     
                     disp(' ');
                     
@@ -295,10 +242,10 @@ while fitdataloop
                         %                                 'a','Change fitting algorithm';...
                         'i',sprintf(...
                         'Change maximum number of iterations (%i)',...
-                        dataset.TSim.fit.fitopt.MaxIter);
+                        expdataset.TSim.fit.fitopt.MaxIter);
                         't',sprintf(...
                         'Change termination tolerance on the function value (%.2e)',...
-                        dataset.TSim.fit.fitopt.TolFun);...
+                        expdataset.TSim.fit.fitopt.TolFun);...
                         %                                'r','Change simulation routine';...
                         'f','Start fitting';...
                         'q','Quit'};
@@ -315,18 +262,18 @@ while fitdataloop
                             % Change MaxIter
                             MaxIter = input(...
                                 sprintf('Number of iterations (%i): ',...
-                                dataset.TSim.fit.fitopt.MaxIter));
+                                expdataset.TSim.fit.fitopt.MaxIter));
                             if ~isempty(MaxIter)
-                                dataset.TSim.fit.fitopt.MaxIter = MaxIter;
+                                expdataset.TSim.fit.fitopt.MaxIter = MaxIter;
                             end
                             fitoptionloop = true;
                         case 't'
                             % Change MaxIter
                             TolFun = input(...
                                 sprintf('Number of iterations (%i): ',...
-                                dataset.TSim.fit.fitopt.TolFun));
+                                expdataset.TSim.fit.fitopt.TolFun));
                             if ~isempty(MaxIter)
-                                dataset.TSim.fit.fitopt.TolFun = TolFun;
+                                expdataset.TSim.fit.fitopt.TolFun = TolFun;
                             end
                             fitoptionloop = true;
                             %                                 case 'r'
@@ -348,35 +295,48 @@ while fitdataloop
                 % Enter purpose
                 disp('Enter a purpose:');
                 purpose = input('> ','s');
-                dataset.TSim.remarks.purpose = purpose;
+                expdataset.TSim.remarks.purpose = purpose;
+                
+                
+                % Define spectrum
+                % Check whether data are 2D or 1D, and in case of 2D, take maximum
+                if min(size(expdataset.data)) > 1
+                    % Take maximum
+                    [~,idxMax] = max(max(expdataset.data));
+                    spectrum = expdataset.data(:,idxMax);
+                else
+                    spectrum = expdataset.data;
+                end
+                
+                
                 
                 % Finally: START FITTING! YEAH!
                 % Took us six bloody weeks to come to this point...
-                options = optimset(dataset.TSim.fit.fitopt);
-                fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,spectrum,dataset);
-                dataset.TSim.fit.fittedpar = lsqcurvefit(fitfun, ...
-                    dataset.TSim.fit.inipar, ...
-                    dataset.axes.y.values, ...
+                options = optimset(expdataset.TSim.fit.fitopt);
+                fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,spectrum,expdataset);
+                expdataset.TSim.fit.fittedpar = lsqcurvefit(fitfun, ...
+                    expdataset.TSim.fit.inipar, ...
+                    expdataset.axes.y.values, ...
                     spectrum, ...
-                    dataset.TSim.fit.fitini.lb, ...
-                    dataset.TSim.fit.fitini.ub, ...
+                    expdataset.TSim.fit.fitini.lb, ...
+                    expdataset.TSim.fit.fitini.ub, ...
                     options);
                 
-                dataset = trEPRTSim_par2SysExp(...
-                    dataset.TSim.fit.fittedpar,...
-                    dataset);
+                expdataset = trEPRTSim_par2SysExp(...
+                    expdataset.TSim.fit.fittedpar,...
+                    expdataset);
                 
                 % Calculate spectrum with final fit parameters.
-                dataset = trEPRTSim_sim(dataset);
+                expdataset = trEPRTSim_sim(expdataset);
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 % Calculate difference between fit and signal
                 difference = spectrum-...
-                    dataset.calculated*dataset.TSim.sim.Exp.scale;
+                    expdataset.calculated*expdataset.TSim.sim.Exp.scale;
                 
                 % Print fit results
-                report = trEPRTSim_fitreport(dataset);
+                report = trEPRTSim_fitreport(expdataset);
                 
                 disp('');
                 
@@ -384,14 +344,14 @@ while fitdataloop
                 
                 % PLOTTING: the final fit in comparison to the measured signal
                 close(figure(1));
-                figure('Name', ['Data from ' filename])
+                figure('Name', ['Data from ' expdataset.file.name])
                 subplot(6,1,[1 5]);
                 plot(...
-                    dataset.axes.y.values,...
-                    [spectrum,dataset.calculated*dataset.TSim.sim.Exp.scale]);
+                    expdataset.axes.y.values,...
+                    [spectrum,expdataset.calculated*expdataset.TSim.sim.Exp.scale]);
                 legend({'Original','Fit'},'Location','SouthEast');
                 subplot(6,1,6);
-                plot(dataset.axes.y.values,difference);
+                plot(expdataset.axes.y.values,difference);
                 xlabel('{\it magnetic field} / mT')
                 subplot(6,1,[1 5]);
                 
@@ -400,17 +360,17 @@ while fitdataloop
                 % Enter comment
                 disp('Enter a comment:');
                 comment = input('> ','s');
-                dataset.TSim.remarks.comment = comment;
+                expdataset.TSim.remarks.comment = comment;
                 
                 % Write history
                 % (Orwell style - we're creating our own)
-                dataset = trEPRTSim_history('write',dataset);
+                expdataset = trEPRTSim_history('write',expdataset);
                 
                 saveloop = true;
                 while saveloop
                     
                     % Ask how to continue
-                    option = {... 
+                    option = {...
                         'a','Save dataset';...
                         % 'r','report parameters';...
                         % 'e','Fit again with fitted values as starting point';...
@@ -428,7 +388,7 @@ while fitdataloop
                     switch lower(answer)
                         case 'a'
                             % Suggest reasonable filename
-                            [path,name,~] = fileparts(filename);
+                            [path,name,~] = fileparts(expdataset.file.name);
                             suggestedFilename = fullfile(path,[name '_fit.tez']);
                             % The "easy" way: consequently use CLI
                             saveFilename = input(...
@@ -442,41 +402,41 @@ while fitdataloop
                             % '*.tez','DialogTitle',suggestedFilename);
                             
                             % Save dataset
-                            [status] = trEPRsave(saveFilename,dataset);
+                            [status] = trEPRTSim_save(saveFilename,expdataset);
                             if ~isempty(status)
                                 disp('Some problems with saving data');
                             end
                             clear status saveFilename suggestedFilename;
                             saveloop = true;
-%                         case 'r'
-%                             % show parameters on command line
-%                             report = trEPRTSim_fitreport(dataset);
-%                             display(report);
-%                             saveloop = true;
+                            %                         case 'r'
+                            %                             % show parameters on command line
+                            %                             report = trEPRTSim_fitreport(dataset);
+                            %                             display(report);
+                            %                             saveloop = true;
                         case 'f'
                             % Write fit results to initial values
-                            dataset.TSim.fit.inipar = ...
-                                dataset.TSim.fit.fittedpar;
+                            expdataset.TSim.fit.inipar = ...
+                                expdataset.TSim.fit.fittedpar;
                             
                             % Write parameters back to Sys, Exp
-                            dataset = trEPRTSim_par2SysExp(...
-                                dataset.TSim.fit.fittedpar,...
-                                dataset);
+                            expdataset = trEPRTSim_par2SysExp(...
+                                expdataset.TSim.fit.fittedpar,...
+                                expdataset);
                             
                             % Fit again
                             saveloop = false;
                             fitinnerloop = false;
                             fitloop = true;
-                     
+                            
                         case 'q'
                             % Quit
                             % Suggest reasonable filename
-                            [path,name,~] = fileparts(filename);
+                            [path,name,~] = fileparts(expdataset.file.name);
                             suggestedFilename = fullfile(...
                                 path,[name '_fit-' datestr(now,30) '.tez']);
                             saveFilename = suggestedFilename;
                             % Save dataset
-                            [status] = trEPRsave(saveFilename,dataset);
+                            [status] = trEPRTSim_save(saveFilename,expdataset);
                             if ~isempty(status)
                                 disp('Some problems with saving data');
                             end
@@ -484,35 +444,35 @@ while fitdataloop
                             command = 'exit';
                             disp('Goodbye!');
                             return;
-%                         case 'e'
-%                             % Write fit results to initial values
-%                             dataset.TSim.fit.inipar = ...
-%                                 dataset.TSim.fit.fittedpar;
-%                             
-%                             % Write parameters back to Sys, Exp
-%                             dataset = trEPRTSim_par2SysExp(...
-%                                 dataset.TSim.fit.fittedpar,...
-%                                 dataset);
-%                             
-%                             % Fit again
-%                             saveloop = false;
-%                             fitinnerloop = true;
+                            %                         case 'e'
+                            %                             % Write fit results to initial values
+                            %                             dataset.TSim.fit.inipar = ...
+                            %                                 dataset.TSim.fit.fittedpar;
+                            %
+                            %                             % Write parameters back to Sys, Exp
+                            %                             dataset = trEPRTSim_par2SysExp(...
+                            %                                 dataset.TSim.fit.fittedpar,...
+                            %                                 dataset);
+                            %
+                            %                             % Fit again
+                            %                             saveloop = false;
+                            %                             fitinnerloop = true;
                         case 'n'
                             % New fit with default initial parameters from
                             % config
-                            dataset.TSim.sim.Sys = conf.Sys;
-                            dataset.TSim.sim.Exp.Temperature = ...
+                            expdataset.TSim.sim.Sys = conf.Sys;
+                            expdataset.TSim.sim.Exp.Temperature = ...
                                 conf.Exp.Temperature;
-                            dataset = trEPRTSim_SysExp2par(dataset);
+                            expdataset = trEPRTSim_SysExp2par(expdataset);
                             
                             saveloop = false;
                             fitinnerloop = false;
                         case 'b'
                             % New fit with same initial parameters as before
                             % Write parameters back to Sys, Exp
-                            dataset = trEPRTSim_par2SysExp(...
-                                dataset.TSim.fit.inipar,...
-                                dataset);
+                            expdataset = trEPRTSim_par2SysExp(...
+                                expdataset.TSim.fit.inipar,...
+                                expdataset);
                             saveloop = false;
                             fitinnerloop = false;
                         case 'd'
@@ -520,6 +480,7 @@ while fitdataloop
                             saveloop = false;
                             fitinnerloop = false;
                             fitouterloop = false;
+                            loaddataloop = true;
                         case 's'
                             % Simulation (with fit values as starting point)
                             command = 'sim';

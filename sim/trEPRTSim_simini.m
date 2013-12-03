@@ -107,7 +107,7 @@ if any(ismember(dataset.TSim.sim.addsimpar,{'gStrainx','gStrainy','gStrainz'}))
 end
 
 % Set scale to 1
-dataset.TSim.sim.Exp.scale = 1;
+% dataset.TSim.sim.Exp.scale = 1;
 
 % Write fields in trEPR datastructure using simulation parameters - but
 % only if dataset contains no experimental data.

@@ -10,11 +10,11 @@ function dataset = trEPRTSim_SysExp2par(dataset)
 % See also TREPRTSIM, TREPRTSIM_PAR2SYSEXP
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-11-28
+% 2013-11-29
 
 dataset.TSim.fit.fitini.fitpar(1:3) = dataset.TSim.sim.Sys.g;
 dataset.TSim.fit.fitini.fitpar(4)   = dataset.TSim.sim.Sys.D(3)*3/2;
-%% Definition of E was wrong! 25.11.13
+
 dataset.TSim.fit.fitini.fitpar(5)   = ...
     (dataset.TSim.sim.Sys.D(1) - dataset.TSim.sim.Sys.D(2))/2;
 dataset.TSim.fit.fitini.fitpar(6:8) = dataset.TSim.sim.Exp.Temperature;

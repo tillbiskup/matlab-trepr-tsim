@@ -153,6 +153,7 @@ while simouterloop
                 % Temporarily get Sys,Exp as direct structures
                 Sys = simdataset.TSim.sim.Sys;
                 Exp = simdataset.TSim.sim.Exp;
+               
                 
                 par2changeValues = cell(1,length(par2change));
                 for k=1:length(par2change)
@@ -189,7 +190,7 @@ while simouterloop
             case 'p'
                 % Choose different simulation parameters
                 % Idea: similar as in fit, show all possible parameters
-                
+                 
                 % Get simulation parameters
                 simpar = trEPRTSim_simpar;
                 % Select only the additional ones

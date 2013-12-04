@@ -32,7 +32,7 @@ function dataset = trEPRTSim_simini(dataset)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-07
+% 2013-12-05
  
 % Get values from configuration
 conf = trEPRTSim_conf();
@@ -40,8 +40,11 @@ conf = trEPRTSim_conf();
 if isempty(dataset.TSim.sim.addsimpar)
     % Create minimal Sys structure for simulation
     % In particular, remove competing fields causing trouble with "pepper".
-    if isfield(dataset.TSim.sim.Sys,'lw')
-        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lw');
+    if isfield(dataset.TSim.sim.Sys,'lwLorentz')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lwLorentz');
+    end
+    if isfield(dataset.TSim.sim.Sys,'lwGauss')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lwGauss');
     end
     if isfield(dataset.TSim.sim.Sys,'DStrain')
         dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
@@ -71,9 +74,18 @@ if any(ismember(dataset.TSim.sim.addsimpar,{'gStrainx','gStrainy','gStrainz'}))
         {'DStrainD','DStrainE'})) = [];
 end
 
-if any(ismember(dataset.TSim.sim.addsimpar,{'lw'}))
+if any(ismember(dataset.TSim.sim.addsimpar,{'lwGauss','lwLorentz'}))
     % Add field to Sys, if not there, and fill with values from config
+     if ~isfield(dataset.TSim.sim.Sys,'lw')
     dataset.TSim.sim.Sys.lw = conf.Sys.lw;
+     end
+     % Set not selected parameters to zero
+    if ~ismember(dataset.TSim.sim.addsimpar,{'lwGauss'})
+        dataset.TSim.sim.Sys.lw(1) = 0;
+    end
+    if ~ismember(dataset.TSim.sim.addsimpar,{'lwLorentz'})
+        dataset.TSim.sim.Sys.lw(2) = 0;
+    end
 end
 
 if any(ismember(dataset.TSim.sim.addsimpar,{'DStrainD','DStrainE'}))

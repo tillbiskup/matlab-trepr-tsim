@@ -352,7 +352,8 @@ while fitdataloop
                 legend({'Original','Fit'},'Location','SouthEast');
                 subplot(6,1,6);
                 plot(expdataset.axes.y.values,difference);
-                xlabel('{\it magnetic field} / mT')
+                xlabel('{\it B_{0}} / mT','fontsize',20);
+                
                 subplot(6,1,[1 5]);
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

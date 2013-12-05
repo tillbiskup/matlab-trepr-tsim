@@ -27,6 +27,9 @@ parser.parse(dataset,varargin{:});
 % Define simulation routine
 routine = str2func(parser.Results.routine);
 
+% Only for now
+% Opt = struct('nKnots',60);
+
 % Calculating the spectrum using Easyspin's pepper function. The result is
 % returned in the field "calculated" of the dataset.
 dataset.calculated(:,1) = routine(dataset.TSim.sim.Sys,dataset.TSim.sim.Exp);

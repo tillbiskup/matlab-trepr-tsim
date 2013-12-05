@@ -26,7 +26,7 @@ function [simdataset, command] = trEPRTSim_cli_sim(varargin)
 if nargin % If we have input arguments
     if isstruct(varargin{1})
         expdataset = varargin{1}; % used for plotting
-        simdataset = expdatset;
+        simdataset = expdataset;
         
         % Optional display of experimental data to look at while
         % simulating

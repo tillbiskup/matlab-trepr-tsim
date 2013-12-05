@@ -37,7 +37,8 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 
 if nargin
     if isstruct(varargin{1})
-        expdataset = varargin{1};
+        simdataset = varargin{1};
+        expdataset = simdataset; % needed for passing to simulation
         
         option = {'n','new data';'a','already loaded data'};
         answer = cliMenu(option,...

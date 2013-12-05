@@ -94,6 +94,7 @@ while loop
     loop = false;
     
     % Convert into numeric if necessary
+    % Change ',' into '.'
     if parser.Results.numeric
         answer = str2num(answer); %#ok<ST2NM>
         if isempty(answer)

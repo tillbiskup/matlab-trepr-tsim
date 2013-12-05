@@ -32,10 +32,12 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % 2013-12-03
 
 % If we have input arguments
+% simdataset = varargin{1};
+% expdataset = simdataset;
+
 if nargin
     if isstruct(varargin{1})
-        simdataset = varargin{1};
-        expdataset = simdataset;
+        expdataset = varargin{1};
         
         option = {'n','new data';'a','already loaded data'};
         answer = cliMenu(option,...
@@ -96,7 +98,7 @@ while fitdataloop
         
         
         loaddataloop = false;
-    end
+    end % loaddataloop
     
     % Get fit parameters
     parameters = trEPRTSim_fitpar();
@@ -169,12 +171,16 @@ while fitdataloop
                             fitiniloop = true;
                             valueloop = true;
                             
+                            % User could also write a string that is not a
+                            % number; which then causes pepper to crash
+                            % since value of parameter is NaN
                             disp('Please enter new values for the initial values:');
                             for k=1:length(expdataset.TSim.fit.inipar)
-                                expdataset.TSim.fit.inipar(k) = cliInput(...
+                                expdataset.TSim.fit.inipar(k) = trEPRguiSanitiseNumericInput(cliInput(...
                                     expdataset.TSim.fit.fitini.fitparameters{k},...
                                     'default',num2str(expdataset.TSim.fit.inipar(k)),...
-                                    'numeric',true);
+                                    'numeric',false));
+                                
                             end
                             % Transfer parameters from inipar to fitpar
                             expdataset.TSim.fit.fitini.fitpar(...
@@ -185,24 +191,30 @@ while fitdataloop
                             fitiniloop = true;
                             valueloop = true;
                             
+                             % User could also write a string that is not a
+                            % number; which then causes pepper to crash
+                            % since value of parameter is NaN
                             disp('Please enter new values for the lower boundaries:');
                             for k=1:length(expdataset.TSim.fit.fitini.lb)
-                                expdataset.TSim.fit.fitini.lb(k) = cliInput(...
+                                expdataset.TSim.fit.fitini.lb(k) = trEPRguiSanitiseNumericInput(cliInput(...
                                     expdataset.TSim.fit.fitini.fitparameters{k},...
                                     'default',num2str(expdataset.TSim.fit.fitini.lb(k)),...
-                                    'numeric',true);
+                                    'numeric',false));
                             end
                         case 'u'
                             % Upper Boundary values
                             fitiniloop = true;
                             valueloop = true;
                             
+                             % User could also write a string that is not a
+                            % number; which then causes pepper to crash
+                            % since value of parameter is NaN
                             disp('Please enter new values for the upper boundaries:');
                             for k=1:length(expdataset.TSim.fit.fitini.ub)
-                                expdataset.TSim.fit.fitini.ub(k) = cliInput(...
+                                expdataset.TSim.fit.fitini.ub(k) = trEPRguiSanitiseNumericInput(cliInput(...
                                     expdataset.TSim.fit.fitini.fitparameters{k},...
                                     'default',num2str(expdataset.TSim.fit.fitini.ub(k)),...
-                                    'numeric',true);
+                                    'numeric',false));
                             end
                         case 'c'
                             % Continue
@@ -352,7 +364,7 @@ while fitdataloop
                 legend({'Original','Fit'},'Location','SouthEast');
                 subplot(6,1,6);
                 plot(expdataset.axes.y.values,difference);
-                xlabel('{\it B_{0}} / mT','fontsize',20);
+                xlabel('{\it B_{0}} / mT');
                 
                 subplot(6,1,[1 5]);
                 

@@ -21,10 +21,12 @@ function [simdataset, command] = trEPRTSim_cli_sim(varargin)
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-12-03
 
+
+
 if nargin % If we have input arguments
     if isstruct(varargin{1})
-        expdataset = varargin{1};
-        simdataset = expdataset;
+        expdataset = varargin{1}; % used for plotting
+        simdataset = expdatset;
         
         % Optional display of experimental data to look at while
         % simulating
@@ -128,7 +130,7 @@ while simouterloop
             %           'r','Change simulation routine'
             's','Start simulation';...
             'q','Quit'};
-        answer = cliMenu(option, 'default','s');
+        answer = cliMenu(option, 'default','v');
         
         disp(' ');
         
@@ -139,8 +141,10 @@ while simouterloop
                 % Get simulation parameters
                 simpar = trEPRTSim_simpar;
                 
+               
                 % Select only the additional ones
                 addsimpar = simpar(~[simpar{:,5}],:);
+                
                 
                 addsimpar2change = addsimpar(...
                     ismember(addsimpar(:,1),simdataset.TSim.sim.addsimpar),:);
@@ -222,7 +226,7 @@ while simouterloop
                 else
                     simdataset.TSim.sim.addsimpar = {};
                 end
-                
+               
                 % Change parameters
                 simdataset = trEPRTSim_simini(simdataset);
                 

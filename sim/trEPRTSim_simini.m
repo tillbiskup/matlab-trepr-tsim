@@ -40,11 +40,9 @@ conf = trEPRTSim_conf();
 if isempty(dataset.TSim.sim.addsimpar)
     % Create minimal Sys structure for simulation
     % In particular, remove competing fields causing trouble with "pepper".
-    if isfield(dataset.TSim.sim.Sys,'lwLorentz')
-        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lwLorentz');
-    end
-    if isfield(dataset.TSim.sim.Sys,'lwGauss')
-        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lwGauss');
+    
+    if isfield(dataset.TSim.sim.Sys,'lw')
+        dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lw');
     end
     if isfield(dataset.TSim.sim.Sys,'DStrain')
         dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');

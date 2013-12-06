@@ -19,7 +19,7 @@ function [simdataset, command] = trEPRTSim_cli_sim(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-03
+% 2013-12-06
 
 
 
@@ -86,7 +86,7 @@ else
             expdataset = trEPRTSim_load(filename);
             
             
-            % Plotting of maxima experimental spectrum
+            % Plotting of maxima in experimental spectrum
             [~,idxMax] = max(max(expdataset.data));
             close(figure(1));
             plot(expdataset.axes.y.values,expdataset.data(:,idxMax))
@@ -103,9 +103,7 @@ end
 simouterloop = true;
 while simouterloop
     
-    % Get config values, also done in trEPRTSim_simini
-    % conf = trEPRTSim_conf();
-    
+ 
     % Initialize minimal simulation parameters
     simdataset = trEPRTSim_simini(simdataset); 
     
@@ -126,7 +124,7 @@ while simouterloop
         % simulation (changing simulation routine not implemented yet)
         option ={...
             'v','Change values of chosen simulation parameters';...
-            'p','Choose different simulation parameters';...
+            'p','Choose additional simulation parameters';...
             %           'r','Change simulation routine'
             's','Start simulation';...
             'q','Quit'};
@@ -157,6 +155,7 @@ while simouterloop
                 % Temporarily get Sys,Exp as direct structures
                 Sys = simdataset.TSim.sim.Sys;
                 Exp = simdataset.TSim.sim.Exp;
+                Opt = simdataset.TSim.sim.Opt;
                
                 
                 par2changeValues = cell(1,length(par2change));
@@ -187,13 +186,13 @@ while simouterloop
                 end
                 simdataset.TSim.sim.Sys = Sys;
                 simdataset.TSim.sim.Exp = Exp;
-                clear Sys Exp
+                simdataset.TSim.sim.Opt = Opt;
+                clear Sys Exp Opt
                 
                 % Change parameters
                 simdataset = trEPRTSim_simini(simdataset);
             case 'p'
                 % Choose different simulation parameters
-                % Idea: similar as in fit, show all possible parameters
                  
                 % Get simulation parameters
                 simpar = trEPRTSim_simpar;
@@ -314,12 +313,22 @@ while simouterloop
                 simouterloop = 1;
                 saveloop = false;
             case 'f'
+                
                 % Start fit - give therefore control back to caller
-                % Transfer TSim structure from simdataset into expdataset
-                expdataset.TSim = simdataset.TSim;
-                simdataset = expdataset;
+                % Test if there is experimental data and if there is
+                % transfer TSim structure from simdataset into expdataset        
+                if ~exist('expdataset','var');
+                    command = 'fit';
+                    return;
+                end
+                
+                if ~isempty(simdataset.data);
+                    expdataset.TSim = simdataset.TSim;
+                    simdataset = expdataset;
+                end
                 command = 'fit';
                 return;
+        
             case 'q'
                 % Quit
                 % Automatically save dataset to default filename

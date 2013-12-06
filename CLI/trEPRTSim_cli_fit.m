@@ -29,7 +29,7 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-03
+% 2013-12-06
 
 % If we have input arguments
 % simdataset = varargin{1};
@@ -37,8 +37,10 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 
 if nargin
     if isstruct(varargin{1})
-        simdataset = varargin{1};
-        expdataset = simdataset; % needed for passing to simulation
+        expdataset = varargin{1};
+        
+        % Test if there is experimental data
+        if ~isempty(expdataset.data);
         
         option = {'n','new data';'a','already loaded data'};
         answer = cliMenu(option,...
@@ -51,7 +53,10 @@ if nargin
                 loaddataloop = false;
             case 'n'
                 % load new data
-                loaddataloop = true;
+                loaddataloop = true;             
+        end
+        else % only simulation was made
+            loaddataloop = true;
         end
     end
 else
@@ -95,20 +100,148 @@ while fitdataloop
         
         % Load experimental data using <trEPRTSim_load>
         expdataset = trEPRTSim_load(filename);
-        
-        
-        
+              
         loaddataloop = false;
     end % loaddataloop
     
+    % Initialize minimal simulation parameters
+    expdataset = trEPRTSim_simini(expdataset); 
+
+    siminiloop = true;
+    while siminiloop
+        
+        % Display minimal set of simulation parameters with
+        % their initial values
+        disp('The parameters for simulation are as follow:')
+        trEPRTSim_parDisplay(expdataset,'sim');
+        
+        disp(' ');
+        option ={...
+            'v','Change values of chosen simulation parameters';...
+            'p','Choose additional simulation parameters';...
+            'c','Continue';...
+            'q','Quit'};
+        answer = cliMenu(option, 'default','c');
+        
+        disp(' ');
+        
+        switch lower(answer)
+            case 'v'
+                % Change values
+                % Get simulation parameters
+                simpar = trEPRTSim_simpar;
+                
+                % Select only the additional ones
+                addsimpar = simpar(~[simpar{:,5}],:);
+                
+                addsimpar2change = addsimpar(...
+                    ismember(addsimpar(:,1),expdataset.TSim.sim.addsimpar),:);
+                if ~isempty(addsimpar2change)
+                    par2change = [simpar([simpar{:,5}],:) ; addsimpar2change];
+                else
+                    par2change = simpar([simpar{:,5}],:);
+                end
+                
+                % Temporarily get Sys,Exp as direct structures
+                Sys = expdataset.TSim.sim.Sys;
+                Exp = expdataset.TSim.sim.Exp;
+                Opt = expdataset.TSim.sim.Opt;
+                
+                
+                par2changeValues = cell(1,length(par2change));
+                for k=1:length(par2change)
+                    par2changeValues{k} = eval(par2change{k,2});
+                end
+                
+                disp('Please enter new values for the parameters:');
+                for k=1:length(par2change)
+                    par2changeValues{k} = cliInput(par2change{k,1},...
+                        'default',num2str(par2changeValues{k}),...
+                        'numeric',true);
+                end
+                % Assign (changed) values back to Sys and Exp
+                % Need to do that after all values are present
+                for k=1:length(par2change)
+                    switch par2change{k,1}
+                        case {'D','E'}
+                            D = par2changeValues{...
+                                ismember(par2change(:,1),{'D'})};
+                            E = par2changeValues{...
+                                ismember(par2change(:,1),{'E'})};
+                            Sys.D = [-D/3+E -D/3-E 2*D/3];
+                        otherwise
+                            eval([par2change{k,2} '=' ...
+                                ['[' num2str(par2changeValues{k}) ']'] ';']);
+                    end
+                end
+                expdataset.TSim.sim.Sys = Sys;
+                expdataset.TSim.sim.Exp = Exp;
+                expdataset.TSim.sim.Opt = Opt;
+                clear Sys Exp Opt
+                
+                % Change parameters
+                expdataset = trEPRTSim_simini(expdataset);
+            case 'p'
+                % Choose additional simulation parameters
+                % Get simulation parameters
+                simpar = trEPRTSim_simpar;
+                % Select only the additional ones
+                addsimpar = simpar(~[simpar{:,5}],:);
+                addsimpardescription = addsimpar(:,3);
+                option = [ ...
+                    strtrim(cellstr(num2str((1:length(addsimpardescription)+1)')))...
+                    [addsimpardescription ; 'No additional parameters'] ...
+                    ];
+                
+                % Get default value, depending on "addsimpar" value
+                if isempty(find(ismember(addsimpar(:,1),...
+                        expdataset.TSim.sim.addsimpar),1))
+                    defaultAddSimPar = ...
+                        num2str(length(addsimpardescription)+1);
+                else
+                    defaultAddSimPar = ...
+                        num2str(find(ismember(addsimpar(:,1),...
+                        expdataset.TSim.sim.addsimpar))');
+                end
+                
+                answer = cliMenu(option,...
+                    'title','Please chose additional simulation parameters',...
+                    'default',defaultAddSimPar,'multiple',true);
+                
+                if str2double(answer) < length(addsimpardescription)+1
+                    expdataset.TSim.sim.addsimpar = ...
+                        addsimpar(str2double(answer),1);
+                else
+                    expdataset.TSim.sim.addsimpar = {};
+                end
+                
+                % Change parameters
+                expdataset = trEPRTSim_simini(expdataset);
+                siminiloop = true;
+                
+            case 'q'
+                % Quit
+                command = 'exit';
+                disp('Goodbye!');
+                return;
+            case 'c'
+                % contiue
+               siminiloop = false;
+            otherwise
+                % Shall never happen
+                disp('Moron!');
+        end
+        
+        
+    end % siminiloop
+
     % Get fit parameters
-    parameters = trEPRTSim_fitpar();
-    fitpardescription = parameters(:,3);
+    fitparameters = trEPRTSim_fitpar();
+    fitpardescription = fitparameters(:,3);
     
     % Initialize fit parameters in dataset
     expdataset = trEPRTSim_fitini(expdataset);
-    
-    
+        
     fitouterloop = true;
     while fitouterloop
         

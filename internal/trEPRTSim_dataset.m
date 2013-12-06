@@ -18,7 +18,7 @@ function dataset = trEPRTSim_dataset(varargin)
 % See also TREPRTSIM_DATASTRUCTURE, TREPRDATASTRUCTURE
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-04
+% 2013-12-06
 
 dataset = struct();
 
@@ -46,10 +46,11 @@ for k=1:length(TSimFieldNames)
 end
 clear TSim TSimFieldNames k;
 
-% Initialize Sys and Exp from the configuration
+% Initialize Sys, Exp and Opt from the configuration
 conf = trEPRTSim_conf;
 dataset.TSim.sim.Sys = conf.Sys;
 dataset.TSim.sim.Exp = conf.Exp;
+dataset.TSim.sim.Opt = conf.Opt;
 
 % Merge fitini into TSim structure
 fitiniFieldNames = fieldnames(conf.fitini);

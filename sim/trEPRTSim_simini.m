@@ -32,7 +32,7 @@ function dataset = trEPRTSim_simini(dataset)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-05
+% 2013-12-06
  
 % Get values from configuration
 conf = trEPRTSim_conf();
@@ -43,6 +43,9 @@ if isempty(dataset.TSim.sim.addsimpar)
     
     if isfield(dataset.TSim.sim.Sys,'lw')
         dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'lw');
+    end
+     if isfield(dataset.TSim.sim.Opt,'nKnots')
+        dataset.TSim.sim.Opt = rmfield(dataset.TSim.sim.Opt,'nKnots');
     end
     if isfield(dataset.TSim.sim.Sys,'DStrain')
         dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'DStrain');
@@ -84,6 +87,21 @@ if any(ismember(dataset.TSim.sim.addsimpar,{'lwGauss','lwLorentz'}))
     if ~ismember(dataset.TSim.sim.addsimpar,{'lwLorentz'})
         dataset.TSim.sim.Sys.lw(2) = 0;
     end
+end
+
+if any(ismember(dataset.TSim.sim.addsimpar,{'nKnotsOrientation','nKnotsInterpolation'}))
+    % Add field to Opt, if not there, and fill with values from config
+     if ~isfield(dataset.TSim.sim.Opt,'nKnots')
+    dataset.TSim.sim.Opt.nKnots = conf.Opt.nKnots;
+     end
+      % Set not selected Interpolation parameters to zero
+    if ~ismember(dataset.TSim.sim.addsimpar,{'nKnotsInterpolation'})
+        dataset.TSim.sim.Opt.nKnots(2) = 0;
+    end
+     % nKnotsInterpolation makes no sense without nKnotsOrientation
+     % hence if nKnotsOrientation is chosen nKnotesOrientation is also
+     % added with its default value
+    
 end
 
 if any(ismember(dataset.TSim.sim.addsimpar,{'DStrainD','DStrainE'}))

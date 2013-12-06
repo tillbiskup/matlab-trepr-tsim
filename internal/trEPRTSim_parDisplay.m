@@ -26,7 +26,7 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 % See also TREPRTSIM
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-05
+% 2013-12-06
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -46,6 +46,7 @@ switch lower(command)
     case 'sim'
         % Display parameters from Sys structure
         SysFields = fieldnames(dataset.TSim.sim.Sys);
+       
         % Remove spin multiplicity from display
         SysFields(ismember(SysFields,{'S'})) = [];
         maxLengthSysFields = max(cellfun(@(x)length(x),SysFields));
@@ -77,6 +78,22 @@ switch lower(command)
             end
             fprintf('\n');
         end
+         % Display parameters from Opt structure
+        OptFields = fieldnames(dataset.TSim.sim.Opt);
+         for k=1:length(OptFields)
+            fprintf('%s%s ',OptFields{k},...
+                blanks(maxLengthFields-length(OptFields{k})));
+            
+            for m = 1:length(dataset.TSim.sim.Opt.(OptFields{k}))
+                if ischar(dataset.TSim.sim.Opt.(OptFields{k}))
+                    fprintf('%s%s ',dataset.TSim.sim.Opt.(OptFields{k})(m));
+                else
+                    fprintf('%10.4f ',dataset.TSim.sim.Opt.(OptFields{k})(m));
+                end
+            end
+            fprintf('\n');
+         end
+        
     case 'fit'
         % TODO: Display lb, ub
         % TODO: Display only those parameters that were chosen

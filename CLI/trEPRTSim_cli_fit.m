@@ -110,6 +110,8 @@ while fitdataloop
     siminiloop = true;
     while siminiloop
         
+ 
+        
         % Display minimal set of simulation parameters with
         % their initial values
         disp('The parameters for simulation are as follow:')
@@ -235,13 +237,16 @@ while fitdataloop
         
     end % siminiloop
 
+   
     % Get fit parameters
     fitparameters = trEPRTSim_fitpar();
     fitpardescription = fitparameters(:,3);
     
     % Initialize fit parameters in dataset
     expdataset = trEPRTSim_fitini(expdataset);
-        
+
+
+   
     fitouterloop = true;
     while fitouterloop
         

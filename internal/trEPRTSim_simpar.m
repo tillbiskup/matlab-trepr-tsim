@@ -23,7 +23,7 @@ function simpar = trEPRTSim_simpar(varargin)
 % See also TREPRTSIM, TREPRTSIM_FITPAR
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-06
+% 2013-12-10
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -54,7 +54,7 @@ simpar(15,:) = {'DStrainE','Sys.DStrain(2)','local inhomogenous linewidth, E str
 simpar(16,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction (don''t use with D strain!)','MHz',false};
 simpar(17,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction (don''t use with D strain!)','MHz',false};
 simpar(18,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction (don''t use with D strain!)','MHz',false};
-simpar(19,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder betweeen 0° and 90°','',false};
+simpar(19,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder between 0 and 90 deg','',false};
 simpar(20,:) = {'nKnotsInterpolation','Opt.nKnots(2)','Refinement factor for interpolation of orientational grid','',false};
 
 % If user prefers structs over cell arrays, convert into struct

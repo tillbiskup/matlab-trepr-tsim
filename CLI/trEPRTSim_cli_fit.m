@@ -99,9 +99,13 @@ while fitdataloop
         end
         
         % Load experimental data using <trEPRTSim_load>
-        expdataset = trEPRTSim_load(filename);
-              
-        loaddataloop = false;
+        [expdataset, status] = trEPRTSim_load(filename);
+        if status
+            loaddataloop = true;
+        else
+            loaddataloop = false;
+        end
+        
     end % loaddataloop
     
     % Initialize minimal simulation parameters

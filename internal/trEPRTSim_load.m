@@ -1,13 +1,17 @@
-function expdataset = trEPRTSim_load(filename)
+function [expdataset,status] = trEPRTSim_load(filename)
 % TREPRTSIM_DATASET Load experimental data, make some corrections 
 % and merge it into TSim structure.
 %
 %
 % Usage
 %   dataset = trEPRTSim_load(filename);
+%   [dataset,status] = trEPRTSim_load(filename);
 %
 %   dataset   - struct
 %               Full trEPR toolbox dataset including TSim structure
+%
+%   status    - integer
+%               0 everything is fine
 %
 %   filename  - string 
 %               name of Experimental data
@@ -15,14 +19,23 @@ function expdataset = trEPRTSim_load(filename)
 % See also TREPRTSIM_...
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-03
+% 2013-12-13
 
+
+% Define return variables
+status = 0;
 
 % Create empty dataset
 expdataset = trEPRTSim_dataset();
 
 % Load experimental data using <trEPRload>.
-data = trEPRload(filename);
+[data] = trEPRload(filename);
+
+% Is there is a problem loading the file
+if isempty(data) 
+    status = 1;
+    return;
+end
 
 % Convert Gauss -> mT
 data = trEPRconvertUnits(data,'g2mt');

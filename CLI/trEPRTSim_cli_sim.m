@@ -19,7 +19,7 @@ function [simdataset, command] = trEPRTSim_cli_sim(varargin)
 %              Additional information what to do (bypassing certain loops)
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-06
+% 2013-12-16
 
 
 
@@ -28,25 +28,33 @@ if nargin % If we have input arguments
         expdataset = varargin{1}; % used for plotting
         simdataset = expdataset;
         
-        % Optional display of experimental data to look at while
-        % simulating
-        option = {'y','Yes';'n','No'};
-        answer = cliMenu(option, 'title','Do you wish to display your experimental data?','default','y');
         
-        disp(' ');
-        
-        switch lower(answer)
-            case 'y'
-                
-                % Plotting of the already loaded experimental spectrum
-                close(figure(1));
-                plot(expdataset.axes.y.values,expdataset.data)
-                legend({'Originaldata'},'Location','SouthEast');
-                
-            case 'n'
-                % do nothing
+        % Test if there is experimental data or a simulation was loaded
+        if ~isempty(expdataset.data);
+            
+            % Optional display of experimental data to look at while
+            % simulating
+            option = {'y','Yes';'n','No'};
+            answer = cliMenu(option, 'title','Do you wish to display your experimental data?','default','y');
+            
+            disp(' ');
+            
+            switch lower(answer)
+                case 'y'
+                    
+                    % Plotting of the already loaded experimental spectrum
+                    close(figure(1));
+                    plot(expdataset.axes.y.values,expdataset.data)
+                    legend({'Originaldata'},'Location','SouthEast');
+                    
+                case 'n'
+                    % do nothing
+            end
+        else
+            % Display simulated spectrum
+            close(figure(1));
+            plot(simdataset.axes.y.values,simdataset.calculated)
         end
-        
     end
 else
     % Create (empty) dataset

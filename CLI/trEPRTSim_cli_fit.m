@@ -29,7 +29,7 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-06
+% 2013-12-16
 
 % If we have input arguments
 % simdataset = varargin{1};
@@ -38,6 +38,7 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 if nargin
     if isstruct(varargin{1})
         expdataset = varargin{1};
+        
         
         % Test if there is experimental data
         if ~isempty(expdataset.data);
@@ -105,8 +106,9 @@ while fitdataloop
         else
             loaddataloop = false;
         end
-        
+       
     end % loaddataloop
+    
     
     % Initialize minimal simulation parameters
     expdataset = trEPRTSim_simini(expdataset); 

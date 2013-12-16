@@ -4,7 +4,7 @@
 % Integral part of the TSim module of the trEPR toolbox.
 
 % (c) 2013, Deborah Meyer, Till Biskup
-% 2013-10-08
+% 2013-12-16
 
 % For the time being, erase everything in the workspace... (quite rude)
 clear all; close all;
@@ -20,6 +20,56 @@ else
     clear status missing
 end
 
+% Is there already a dataset, that shall be loaded
+answer = cliMenu({'y','Yes';'n','No';'q','Quit'},'default','n','title',...
+    'Do you wish to load an existing dataset');
+
+switch answer
+    case 'y'
+         loaddatasetloop = true;
+       % Load dataset
+       while loaddatasetloop
+           
+           disp(' ');
+          datasetname = '';
+           while isempty(datasetname)
+               datasetname = input(sprintf('%s\n%s',...
+                   'Please enter the name of the dataset',...
+                   'you wish to load (''q'' to quit): '),'s');
+               if strcmpi(datasetname,'q')
+                   % Quit
+                   command = 'exit';
+                   disp('Goodbye!');
+                   return;
+               end
+               
+               if ~exist(datasetname,'file')
+                   fprintf('\nFile "%s" not found. Please try again\n\n',...
+                       datasetname);
+                   datasetname = '';
+               end
+           end
+           
+           % Load dataset using <trEPRTload>
+           [dataset, warnings] = trEPRload(datasetname);
+           if size(warnings)
+               loaddatasetloop = true;
+           else
+               loaddatasetloop = false;
+           end
+           
+           clear warnings
+       end % loaddatasetloop
+      
+    case 'n'
+        % do nothing;
+    case 'q'
+        disp('Goodbye!');
+        return;
+    otherwise
+        % Shall never happen
+        action = '';
+end
 
 % Chose wether it shall be simulated or fitted
 answer = cliMenu({'f','Fit';'s','Simulate';'q','Quit'},'default','f','title',...

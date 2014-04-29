@@ -28,8 +28,8 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % This will read all files in the directory <dir>, combine them and write
 % the result to <filename>. Here, <filename> need not to have an extension.
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-16
+% (c) 2013-14, Deborah Meyer, Till Biskup
+% 2014-04-29
 
 % If we have input arguments
 % simdataset = varargin{1};
@@ -509,7 +509,7 @@ while fitdataloop
                 legend({'Original','Fit'},'Location','SouthEast');
                 subplot(6,1,6);
                 plot(expdataset.axes.y.values,difference);
-                xlabel('{\it B_{0}} / mT');
+                xlabel('{\it B}_0 / mT');
                 
                 subplot(6,1,[1 5]);
                 

@@ -31,6 +31,13 @@ dataset = trEPRTSim_sim(dataset);
 % Scaling of spectrum
 sim = dataset.TSim.sim.Exp.scale*dataset.calculated;
 
+% Check if someone has mutilated spectrum
+if ~isempty(dataset.TSim.fit.fitcut.mutilatedData)
+    sim(dataset.TSim.fit.fitcut.cuttedIndices) = [];
+    Bfield = dataset.TSim.fit.fitcut.mutilatedField;
+end
+   
+
 % The current fit parameters are displayed on the command line
 disp(num2str(par))
 

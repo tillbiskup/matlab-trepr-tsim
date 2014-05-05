@@ -29,7 +29,7 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013-14, Deborah Meyer, Till Biskup
-% 2014-04-29
+% 2014-05-05
 
 % If we have input arguments
 % simdataset = varargin{1};
@@ -336,7 +336,7 @@ while fitdataloop
                             fitiniloop = true;
                             valueloop = true;
                             
-                             % User could also write a string that is not a
+                            % User could also write a string that is not a
                             % number; which then causes pepper to crash
                             % since value of parameter is NaN
                             disp('Please enter new values for the lower boundaries:');
@@ -351,7 +351,7 @@ while fitdataloop
                             fitiniloop = true;
                             valueloop = true;
                             
-                             % User could also write a string that is not a
+                            % User could also write a string that is not a
                             % number; which then causes pepper to crash
                             % since value of parameter is NaN
                             disp('Please enter new values for the upper boundaries:');
@@ -386,6 +386,51 @@ while fitdataloop
             
             fitinnerloop = true;
             while fitinnerloop
+                
+                cutoutloop = true;
+                  m = 1;
+                while cutoutloop
+                  
+                    option = {'r', 'cut out a region of spectrum';...
+                        'c','continue'};
+                    answer = cliMenu(option,'title','Tills wish shall be granted...',...
+                        'default','r');
+                    
+                    display(' ');
+                    
+                    switch lower(answer)
+                        case 'c'
+                            % Do nothing
+                            cutoutloop = false;
+                        case 'r'
+                            % Cut out a region
+                            InitialValue = input(...
+                                sprintf('Initial Value in mT:'));
+                            
+                            if ~isempty(InitialValue)
+                                expdataset.TSim.fit.fitcut.cutpoints(m,1) = InitialValue;
+                            end
+                            
+                            FinalValue = input(...
+                                sprintf('Final Value in mT:'));
+                            
+                            if ~isempty(FinalValue)
+                                expdataset.TSim.fit.fitcut.cutpoints(m,2) = FinalValue;
+                            end
+                            display(' ');
+                            m = m+1;
+                            
+                           expdataset = trEPRTSim_fitcut(expdataset);
+                            
+                            cutoutloop = true;
+                        otherwise
+                            disp('Hab Mist gemacht')
+                            
+                    end
+                    
+                end % Cutoutloop
+                
+                
                 
                 fitoptionloop = true;
                 while fitoptionloop
@@ -425,9 +470,9 @@ while fitdataloop
                             end
                             fitoptionloop = true;
                         case 't'
-                            % Change MaxIter
+                            % Change TolFun
                             TolFun = input(...
-                                sprintf('Number of iterations (%i): ',...
+                                sprintf('TolFun (%i): ',...
                                 expdataset.TSim.fit.fitopt.TolFun));
                             if ~isempty(MaxIter)
                                 expdataset.TSim.fit.fitopt.TolFun = TolFun;
@@ -465,7 +510,13 @@ while fitdataloop
                     spectrum = expdataset.data;
                 end
                 
-                
+                % Check if someone has mutilated spectrum
+                if ~isempty(expdataset.TSim.fit.fitcut.mutilatedData)
+                    spectrum = expdataset.TSim.fit.fitcut.mutilatedData;
+                    Bfield = expdataset.TSim.fit.fitcut.mutilatedField;
+                else
+                    Bfield = expdataset.axes.y.values;
+                end
                 
                 % Finally: START FITTING! YEAH!
                 % Took us six bloody weeks to come to this point...
@@ -473,7 +524,7 @@ while fitdataloop
                 fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,spectrum,expdataset);
                 expdataset.TSim.fit.fittedpar = lsqcurvefit(fitfun, ...
                     expdataset.TSim.fit.inipar, ...
-                    expdataset.axes.y.values, ...
+                    Bfield, ...
                     spectrum, ...
                     expdataset.TSim.fit.fitini.lb, ...
                     expdataset.TSim.fit.fitini.ub, ...
@@ -489,6 +540,16 @@ while fitdataloop
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 % Calculate difference between fit and signal
+                % Check if someone has mutilated spectrum
+                if ~isempty(expdataset.TSim.fit.fitcut.mutilatedData)
+                    if min(size(expdataset.data)) > 1
+                        % Take maximum
+                        [~,idxMax] = max(max(expdataset.data));
+                        spectrum = expdataset.data(:,idxMax);
+                    else
+                        spectrum = expdataset.data;
+                    end
+                end
                 difference = spectrum-...
                     expdataset.calculated*expdataset.TSim.sim.Exp.scale;
                 
@@ -523,7 +584,8 @@ while fitdataloop
                 % Write history
                 % (Orwell style - we're creating our own)
                 expdataset = trEPRTSim_history('write',expdataset);
-                
+                 
+               
                 saveloop = true;
                 while saveloop
                     
@@ -650,6 +712,11 @@ while fitdataloop
                                 'Congratulations!']);
                     end
                 end % saveloop
+                
+                % Clear fitcut
+                expdataset.TSim.fit.fitcut = structfun(@(x)[],...
+                    expdataset.TSim.fit.fitcut,'UniformOutput',false);
+                
             end % fitinnerloop
         end % fitloop
     end % fitouterloop

@@ -29,7 +29,7 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013-14, Deborah Meyer, Till Biskup
-% 2014-05-05
+% 2014-10-21
 
 % If we have input arguments
 % simdataset = varargin{1};
@@ -506,6 +506,8 @@ while fitdataloop
                     % Take maximum
                     [~,idxMax] = max(max(expdataset.data));
                     spectrum = expdataset.data(:,idxMax);
+                    % Set maximum in calculation structure
+                    expdataset.calculation.position = idxMax;
                 else
                     spectrum = expdataset.data;
                 end

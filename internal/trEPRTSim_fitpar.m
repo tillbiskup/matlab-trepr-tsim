@@ -22,8 +22,8 @@ function fitpar = trEPRTSim_fitpar(varargin)
 %
 % See also TREPRTSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-11-29
+% (c) 2013-14, Deborah Meyer, Till Biskup
+% 2014-11-14
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -53,6 +53,7 @@ fitpar(14,:) = {'DeltaB','','Frequency correction via field offset','mT'};
 fitpar(15,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction','MHz'};
 fitpar(16,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction','MHz'};
 fitpar(17,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction','MHz'};
+fitpar(18,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems',''};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

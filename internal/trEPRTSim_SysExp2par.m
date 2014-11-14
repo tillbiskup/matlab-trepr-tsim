@@ -9,8 +9,8 @@ function dataset = trEPRTSim_SysExp2par(dataset)
 %
 % See also TREPRTSIM, TREPRTSIM_PAR2SYSEXP
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-11-29
+% (c) 2013-14, Deborah Meyer, Till Biskup
+% 2014-11-14
 
 dataset.TSim.fit.fitini.fitpar(1:3) = dataset.TSim.sim.Sys.g;
 dataset.TSim.fit.fitini.fitpar(4)   = dataset.TSim.sim.Sys.D(3)*3/2;
@@ -37,7 +37,19 @@ if isfield(dataset.TSim.sim.Sys,'gStrain')
 else
     dataset.TSim.fit.fitini.fitpar(15:17) = 0;
 end
+
+% Order parameter
+if isfield(dataset.TSim.sim.Exp,'Ordering')
+    dataset.TSim.fit.fitini.fitpar(19) = dataset.TSim.sim.Exp.Ordering;
+else
+    dataset.TSim.fit.fitini.fitpar(19) = 0;
+end
+
+
 % Cannot get field offset, therefore, set it to zero
 dataset.TSim.fit.fitini.fitpar(14) = 0;
+
+
+
 
 end

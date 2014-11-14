@@ -38,8 +38,8 @@ parser.addRequired('dataset',@isstruct);
 parser.addRequired('command',@ischar);
 parser.parse(dataset,command,varargin{:});
 
-SimExpFields = {'mwFreq','nPoints','Range','Temperature'};
-FitExpFields = {'Temperature','scale'};
+SimExpFields = {'mwFreq','nPoints','Range','Temperature','Ordering'};
+FitExpFields = {'Temperature','scale','Ordering'};
 maxLengthExpFields = max(cellfun(@(x)length(x),SimExpFields));
 
 switch lower(command)

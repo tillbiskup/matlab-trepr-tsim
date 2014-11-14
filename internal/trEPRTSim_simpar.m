@@ -22,8 +22,8 @@ function simpar = trEPRTSim_simpar(varargin)
 %
 % See also TREPRTSIM, TREPRTSIM_FITPAR
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-10
+% (c) 2013-14, Deborah Meyer, Till Biskup
+% 2014-11-14
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -34,7 +34,7 @@ parser.StructExpand  = true; % Enable passing arguments in a structure
 parser.addParamValue('struct',logical(false),@islogical);
 parser.parse(varargin{:});
 
-simpar = cell(18,5);
+simpar = cell(21,5);
 
 simpar(1,:)  = {'gx','Sys.g(1)','gx value','',true};
 simpar(2,:)  = {'gy','Sys.g(2)','gy value','',true};
@@ -56,6 +56,7 @@ simpar(17,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction (don''t use
 simpar(18,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction (don''t use with D strain!)','MHz',false};
 simpar(19,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder between 0 and 90 deg','',false};
 simpar(20,:) = {'nKnotsInterpolation','Opt.nKnots(2)','Refinement factor for interpolation of orientational grid','',false};
+simpar(21,:) = {'Ordering','Exp.Ordering','Ordering parameter for partially ordered systems','',false};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

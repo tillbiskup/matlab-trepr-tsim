@@ -12,14 +12,14 @@ function dataset = trEPRTSim_par2SysExp(par,dataset)
 %
 % See also TREPRTSIM, TREPRTSIM_SYSEXP2PAR
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-11-25
+% (c) 2013-14, Deborah Meyer, Till Biskup
+% 2014-11-14
 
 % Merge parameters to be fitted into vector of all possible fit parameters
 dataset.TSim.fit.fitini.fitpar(dataset.TSim.fit.fitini.tofit) = ...
     par(1:length(find(dataset.TSim.fit.fitini.tofit)));
 
-% [gx gy gz D  E   Exp.Temperature scale lw lwD lwE DeltaB gxStrain   gyStrain   gzStrain  ]
+% [gx gy gz D  E   Exp.Temperature scale lw lwD lwE DeltaB gxStrain   gyStrain   gzStrain Ordering  ]
 
 dataset.TSim.sim.Sys.g = dataset.TSim.fit.fitini.fitpar(1:3);
 
@@ -47,5 +47,13 @@ if any(dataset.TSim.fit.fitini.tofit(15:17))
 elseif isfield(dataset.TSim.sim.Sys,'gStrain')
     dataset.TSim.sim.Sys = rmfield(dataset.TSim.sim.Sys,'gStrain');
 end
+
+% Ordering 
+if any(dataset.TSim.fit.fitini.tofit(18))
+    dataset.TSim.sim.Exp.Ordering = dataset.TSim.fit.fitini.fitpar(18);
+elseif isfield(dataset.TSim.sim.Exp,'Ordering')
+    dataset.TSim.sim.Exp = rmfield(dataset.TSim.sim.Exp,'Ordering');
+end
+
 
 end

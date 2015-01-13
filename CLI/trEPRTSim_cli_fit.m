@@ -29,7 +29,7 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % the result to <filename>. Here, <filename> need not to have an extension.
 
 % (c) 2013-14, Deborah Meyer, Till Biskup
-% 2014-10-21
+% 2015-01-16
 
 % If we have input arguments
 % simdataset = varargin{1};
@@ -698,10 +698,12 @@ while fitdataloop
                             saveloop = false;
                             fitinnerloop = false;
                         case 'd'
-                            % New data
+                            % New Fit with New data
                             saveloop = false;
                             fitinnerloop = false;
+                            fitloop = false;
                             fitouterloop = false;
+                            fitdataloop = true;
                             loaddataloop = true;
                         case 's'
                             % Simulation (with fit values as starting point)

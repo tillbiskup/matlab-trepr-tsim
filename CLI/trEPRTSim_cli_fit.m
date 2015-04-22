@@ -28,12 +28,19 @@ function [expdataset, command] = trEPRTSim_cli_fit(varargin)
 % This will read all files in the directory <dir>, combine them and write
 % the result to <filename>. Here, <filename> need not to have an extension.
 
-% (c) 2013-14, Deborah Meyer, Till Biskup
-% 2015-01-16
+% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
+% 2015-04-22
 
 % If we have input arguments
 % simdataset = varargin{1};
 % expdataset = simdataset;
+
+% colordefinitions for picture
+simlinecolor = [0 0.6 0];
+explinecolor = [0 0 0];
+zerolinecolor = [0.5 0.5 0.5];
+residuumlinecolor = [0 0 1];
+
 
 if nargin
     if isstruct(varargin{1})
@@ -272,7 +279,7 @@ while fitdataloop
                     'default',num2str(find(expdataset.TSim.fit.fitini.tofit)),...
                     'multiple',true);
                 
-                display(' ');
+                disp(' ');
                 
                 % Convert answer into tofit parameter in dataset
                 expdataset.TSim.fit.fitini.tofit = ...
@@ -394,7 +401,7 @@ while fitdataloop
                     option = {'r', 'cut out a region of spectrum';...
                         'c','continue'};
                     answer = cliMenu(option,'title','Tills wish shall be granted...',...
-                        'default','r');
+                        'default','c');
                     
                     display(' ');
                     
@@ -522,6 +529,7 @@ while fitdataloop
                 
                 % Finally: START FITTING! YEAH!
                 % Took us six bloody weeks to come to this point...
+                set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
                 options = optimset(expdataset.TSim.fit.fitopt);
                 fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,spectrum,expdataset);
                 expdataset.TSim.fit.fittedpar = lsqcurvefit(fitfun, ...
@@ -532,12 +540,19 @@ while fitdataloop
                     expdataset.TSim.fit.fitini.ub, ...
                     options);
                 
+                % Normalize Populations
+                %expdataset = trEPRTSim_normalizePopulations(expdataset);
+                
                 expdataset = trEPRTSim_par2SysExp(...
                     expdataset.TSim.fit.fittedpar,...
                     expdataset);
                 
+                
+                
                 % Calculate spectrum with final fit parameters.
                 expdataset = trEPRTSim_sim(expdataset);
+                
+                
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
@@ -564,18 +579,31 @@ while fitdataloop
                 
                 % PLOTTING: the final fit in comparison to the measured signal
                 close(figure(1));
+                %set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
                 figure('Name', ['Data from ' expdataset.file.name])
+                
+                %%%%%%%%%%%%%
+                zeroLineProperties = struct(...
+                    'Color',zerolinecolor,...
+                    'LineStyle','--', ...
+                    'LineWidth',1 ...
+                    );
+           
+                %%%%%%%%%%%%%
+                set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
                 subplot(6,1,[1 5]);
                 plot(...
                     expdataset.axes.y.values,...
-                    [spectrum,expdataset.calculated*expdataset.TSim.sim.Exp.scale]);
+                    [spectrum,expdataset.calculated*expdataset.TSim.sim.Exp.scale],...
+                    'LineWidth',1);
                 legend({'Original','Fit'},'Location','SouthEast');
+                set(gca,'XTickLabel',{})
+                addZeroLines(zeroLineProperties)
                 subplot(6,1,6);
-                plot(expdataset.axes.y.values,difference);
-                xlabel('{\it B}_0 / mT');
-                
+                plot(expdataset.axes.y.values,difference,'LineWidth',1,'Color',residuumlinecolor);
+                xlabel('{\it magnetic field} / mT');
+                addZeroLines(zeroLineProperties)
                 subplot(6,1,[1 5]);
-                
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 % Enter comment
@@ -594,7 +622,7 @@ while fitdataloop
                     % Ask how to continue
                     option = {...
                         'a','Save dataset';...
-                        % 'r','report parameters';...
+                        'e','Export figure';...
                         % 'e','Fit again with fitted values as starting point';...
                         'f','Fit again with fitted values as starting point';...
                         'n','Start new fit with initial values from config';...
@@ -602,10 +630,12 @@ while fitdataloop
                         'd','Start a fit with new data';...
                         's','Start a simulation';...
                         'q','Quit'};
+                    
+
                     answer = cliMenu(option,'title',...
                         'How to continue?','default','f');
                     
-                    display(' ');
+                    disp(' ');
                     
                     switch lower(answer)
                         case 'a'
@@ -629,6 +659,41 @@ while fitdataloop
                                 disp('Some problems with saving data');
                             end
                             clear status saveFilename suggestedFilename;
+                            close(figure(1));
+                            saveloop = true;
+                            %                         case 'r'
+                            %                             % show parameters on command line
+                            %                             report = trEPRTSim_fitreport(dataset);
+                            %                             display(report);
+                            %                             saveloop = true;
+                        case 'e'
+                            % Get figure handel
+                            h = gcf;
+                            % Suggest reasonable filename
+                            [path,name,~] = fileparts(expdataset.file.name);
+                            suggestedFilename = fullfile(path,[name '_fit']);
+                            % The "easy" way: consequently use CLI
+                            saveFilename = input(...
+                                sprintf('Filename (%s): ',suggestedFilename),...
+                                's');
+                            if isempty(saveFilename)
+                                saveFilename = suggestedFilename;
+                            end
+                            % The "convenient" way: Matlab(r) UI:
+                            % [saveFilename,pathname] = uiputfile(...
+                            % '*.tez','DialogTitle',suggestedFilename);
+                            
+                            % Export figure as .fig and as .pdf
+                            [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
+                            if ~isempty(status)
+                                disp('Some problems with exporting fig-figure');
+                            end
+                            [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
+                            if ~isempty(status)
+                                disp('Some problems with exporting pdf-figure');
+                            end
+                            clear status saveFilename suggestedFilename;
+                            close(figure(1));
                             saveloop = true;
                             %                         case 'r'
                             %                             % show parameters on command line
@@ -645,6 +710,7 @@ while fitdataloop
                                 expdataset.TSim.fit.fittedpar,...
                                 expdataset);
                             
+                            close(figure(1));
                             % Fit again
                             saveloop = false;
                             fitinnerloop = false;
@@ -686,7 +752,7 @@ while fitdataloop
                             expdataset.TSim.sim.Exp.Temperature = ...
                                 conf.Exp.Temperature;
                             expdataset = trEPRTSim_SysExp2par(expdataset);
-                            
+                            close(figure(1));
                             saveloop = false;
                             fitinnerloop = false;
                         case 'b'
@@ -695,10 +761,12 @@ while fitdataloop
                             expdataset = trEPRTSim_par2SysExp(...
                                 expdataset.TSim.fit.inipar,...
                                 expdataset);
+                            close(figure(1));
                             saveloop = false;
                             fitinnerloop = false;
                         case 'd'
                             % New Fit with New data
+                            close(figure(1));
                             saveloop = false;
                             fitinnerloop = false;
                             fitloop = false;
@@ -707,6 +775,7 @@ while fitdataloop
                             loaddataloop = true;
                         case 's'
                             % Simulation (with fit values as starting point)
+                            close(figure(1));
                             command = 'sim';
                             return;
                         otherwise
@@ -728,3 +797,29 @@ end % fitdataloop
 
 end
 
+
+function addZeroLines(lineProperties)
+
+xLimits = get(gca,'XLim');
+yLimits = get(gca,'YLim');
+
+hLine = [];
+
+if prod(xLimits) <= 0
+    hold on
+    hLine(end+1) = line([0 0],yLimits);
+    hold off
+end
+
+if prod(yLimits) <= 0
+    hold on
+    hLine(end+1) = line(xLimits,[0 0]);
+    hold off
+end
+
+% Set line properties
+for lHandle = 1:length(hLine)
+    set(hLine(lHandle),lineProperties);
+end
+
+end

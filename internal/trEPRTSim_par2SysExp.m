@@ -12,8 +12,8 @@ function dataset = trEPRTSim_par2SysExp(par,dataset)
 %
 % See also TREPRTSIM, TREPRTSIM_SYSEXP2PAR
 
-% (c) 2013-14, Deborah Meyer, Till Biskup
-% 2014-11-14
+% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
+% 2015-04-22
 
 % Merge parameters to be fitted into vector of all possible fit parameters
 dataset.TSim.fit.fitini.fitpar(dataset.TSim.fit.fitini.tofit) = ...
@@ -28,6 +28,10 @@ dataset.TSim.sim.Sys.D = [...
     -dataset.TSim.fit.fitini.fitpar(4)/3 - dataset.TSim.fit.fitini.fitpar(5),...
     2*dataset.TSim.fit.fitini.fitpar(4)/3 ...
     ];
+
+% Normalize Populations
+dataset = trEPRTSim_normalizePopulations(dataset);
+
 dataset.TSim.sim.Exp.Temperature = dataset.TSim.fit.fitini.fitpar(6:8);
 dataset.TSim.sim.Exp.scale = dataset.TSim.fit.fitini.fitpar(9);
 dataset.TSim.sim.Sys.lw = dataset.TSim.fit.fitini.fitpar(10:11);

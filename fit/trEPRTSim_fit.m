@@ -45,6 +45,7 @@ disp(num2str(par))
 % improvement of the fitting process.
 figure(1)
 plot(Bfield,[spectrum,sim]);
+set(gca,'XLim',[min(dataset.axes.y.values),max(dataset.axes.y.values)]);
 pause(0.001);
 
 end

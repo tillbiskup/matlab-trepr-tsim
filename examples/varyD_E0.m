@@ -24,12 +24,12 @@ dataset.TSim.sim.Sys.g = [2 2 2];
 dataset.TSim.sim.Exp.Range = [0 550]; % in mT
 dataset.TSim.sim.Exp.nPoints = 551;
 % Population
-dataset.TSim.sim.Exp.Temperature = [0 0.45 0.55];
+dataset.TSim.sim.Exp.Temperature = [0.5 0.5 0];
 % isotropic line width
-dataset.TSim.sim.Sys.lw = 0.5; % in mT
+dataset.TSim.sim.Sys.lw = 0; % in mT
 
 % Get range for D
-D = 1000 : 100 : 5000; % in MHz
+D = 1000 : 100 : 1400; % in MHz
 
 % Set E to zero
 E = 0;

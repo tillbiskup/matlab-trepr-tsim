@@ -596,12 +596,14 @@ while fitdataloop
                     expdataset.axes.y.values,...
                     [spectrum,expdataset.calculated*expdataset.TSim.sim.Exp.scale],...
                     'LineWidth',1);
-                legend({'Original','Fit'},'Location','SouthEast');
+                set(gca,'XLim',[min(expdataset.axes.y.values),max(expdataset.axes.y.values)]);
+                %legend({'Original','Fit'},'Location','SouthEast');
                 set(gca,'XTickLabel',{})
                 addZeroLines(zeroLineProperties)
                 subplot(6,1,6);
                 plot(expdataset.axes.y.values,difference,'LineWidth',1,'Color',residuumlinecolor);
                 xlabel('{\it magnetic field} / mT');
+                set(gca,'XLim',[min(expdataset.axes.y.values),max(expdataset.axes.y.values)]);
                 addZeroLines(zeroLineProperties)
                 subplot(6,1,[1 5]);
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -671,7 +673,7 @@ while fitdataloop
                             h = gcf;
                             % Suggest reasonable filename
                             [path,name,~] = fileparts(expdataset.file.name);
-                            suggestedFilename = fullfile(path,[name '_fit']);
+                            suggestedFilename = fullfile(path,[name '_fitfig']);
                             % The "easy" way: consequently use CLI
                             saveFilename = input(...
                                 sprintf('Filename (%s): ',suggestedFilename),...

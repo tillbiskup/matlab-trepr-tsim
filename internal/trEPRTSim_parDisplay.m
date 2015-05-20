@@ -71,10 +71,12 @@ switch lower(command)
         end
         % Display selected parameters from Exp structure
         for k=1:length(SimExpFields)
-            fprintf('%s%s ',SimExpFields{k},...
-                blanks(maxLengthFields-length(SimExpFields{k})));
-            for m = 1:length(dataset.TSim.sim.Exp.(SimExpFields{k}))
-                fprintf('%10.4f ',dataset.TSim.sim.Exp.(SimExpFields{k})(m));
+            if isfield(dataset.TSim.sim.Exp,SimExpFields{k})
+                fprintf('%s%s ',SimExpFields{k},...
+                    blanks(maxLengthFields-length(SimExpFields{k})));
+                for m = 1:length(dataset.TSim.sim.Exp.(SimExpFields{k}))
+                    fprintf('%10.4f ',dataset.TSim.sim.Exp.(SimExpFields{k})(m));
+                end
             end
             fprintf('\n');
         end

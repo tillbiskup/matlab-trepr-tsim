@@ -28,8 +28,8 @@ function parameters = trEPRTSim_parameters(varargin)
 %
 % See also TREPRTSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2014-03-27
+% Copyright (c) 2013-14, Deborah Meyer, Till Biskup
+% 2015-04-24
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -57,13 +57,17 @@ parameters(12,:) = {'DStrainE','Sys.DStrain(2)','local inhomogeneous linewidth, 
 parameters(13,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction (don''t use with D strain!)','MHz', true, true, false};
 parameters(14,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction (don''t use with D strain!)','MHz', true, true, false};
 parameters(15,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction (don''t use with D strain!)','MHz', true, true, false};
-parameters(16,:) = {'scale','','Scaling factor between experiment and fit','', true, false, false};
-parameters(17,:) = {'DeltaB','','Frequency correction via field offset','mT', true, false, false};
-parameters(18,:) = {'mwFreq','Exp.mwFreq','Microwave frequency','GHz',false, true, true};
-parameters(19,:) = {'nPoints','Exp.nPoints','Number of points of field axis','',false, true, true};
-parameters(20,:) = {'Range','Exp.Range','Lower and upper boundaries of field axis','mT', false, true, true};
-parameters(21,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder between 0 and 90 deg','', false, true, false};
-parameters(22,:) = {'nKnotsInterpolation','Opt.nKnots(2)','Refinement factor for interpolation of orientational grid','',false, true, false};
+parameters(16,:) = {'DeltaB','','Frequency correction via field offset','mT', true, false, false};
+parameters(17,:) = {'mwFreq','Exp.mwFreq','Microwave frequency','GHz',false, true, true};
+parameters(18,:) = {'nPoints','Exp.nPoints','Number of points of field axis','',false, true, true};
+parameters(19,:) = {'Range','Exp.Range','Lower and upper boundaries of field axis','mT', false, true, true};
+parameters(20,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder between 0 and 90 deg','', false, true, false};
+parameters(21,:) = {'nKnotsInterpolation','Opt.nKnots(2)','Refinement factor for interpolation of orientational grid','',false, true, false};
+parameters(22,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems','',false, true, false};
+%parameters(23,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems','',false, true, false};
+%parameters(24,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems','',false, true, false};
+%parameters(25,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems','',false, true, false};
+%parameters(26,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems','',false, true, false};
 
 % If user prefers structs over cell arrays, convert into struct
 if parser.Results.struct

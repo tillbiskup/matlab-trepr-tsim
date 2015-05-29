@@ -11,8 +11,8 @@ function dataset = trEPRTSim_sim(dataset,varargin)
 %
 % See also TREPRTSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-06
+% Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
+% 2015-05-26
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -24,12 +24,25 @@ parser.addRequired('dataset',@(x)isstruct(x));
 parser.addParamValue('routine','pepper',@ischar);
 parser.parse(dataset,varargin{:});
 
-% Define simulation routine
-routine = str2func(parser.Results.routine);
 
+% Define simulation routine
+if isempty(dataset.TSim.sim.routine)
+    dataset.TSim.sim.routine = parser.Results.routine;
+end
+routine = str2func(dataset.TSim.sim.routine);
 
 % Calculating the spectrum using Easyspin's pepper function. The result is
 % returned in the field "calculated" of the dataset.
-dataset.calculated(:,1) = routine(dataset.TSim.sim.Sys,dataset.TSim.sim.Exp,dataset.TSim.sim.Opt);
+
+% Call Simpar2EasySpin
+dataset = trEPRTSim_Simpar2EasySpin(dataset);
+
+% Simulate
+dataset.calculated(:,1) = routine(dataset.TSim.sim.EasySpin.Sys,...
+    dataset.TSim.sim.EasySpin.Exp,dataset.TSim.sim.EasySpin.Opt);
+
+% EasySpin does not normalize the spectra
+dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,1)));
+
 
 end

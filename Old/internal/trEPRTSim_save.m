@@ -21,10 +21,6 @@ function [status] = trEPRTSim_save(saveFilename,dataset)
 % (c) 2013, Deborah Meyer, Till Biskup
 % 2013-11-29
 
-
-% Rescale calculated spectrum
-dataset.calculated = dataset.TSim.sim.Exp.scale*dataset.calculated;
-
 % Save dataset
 [status] = trEPRsave(saveFilename,dataset);
 

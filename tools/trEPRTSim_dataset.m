@@ -17,8 +17,8 @@ function dataset = trEPRTSim_dataset(varargin)
 %
 % See also TREPRTSIM_DATASTRUCTURE, TREPRDATASTRUCTURE
 
-% (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-06
+% Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
+% 2015-05-26
 
 dataset = struct();
 
@@ -35,10 +35,10 @@ if nargin
     end
 end
 
-% Create data structure
+% Create data structures
 dataset = trEPRdataStructure('structure');
-
 TSim = trEPRTSim_dataStructure();
+
 % Merge TSim into dataset
 TSimFieldNames = fieldnames(TSim);
 for k=1:length(TSimFieldNames)
@@ -46,38 +46,6 @@ for k=1:length(TSimFieldNames)
 end
 clear TSim TSimFieldNames k;
 
-% Initialize Sys, Exp and Opt from the configuration
-conf = trEPRTSim_conf;
-dataset.TSim.sim.Sys = conf.Sys;
-dataset.TSim.sim.Exp = conf.Exp;
-dataset.TSim.sim.Opt = conf.Opt;
-
-% Merge fitini into TSim structure
-fitiniFieldNames = fieldnames(conf.fitini);
-for k=1:length(fitiniFieldNames)
-    dataset.TSim.fit.fitini.(fitiniFieldNames{k}) = ...
-        conf.fitini.(fitiniFieldNames{k});
-end
-clear fitiniFieldNames k;
-
-% Convert tofit into logical vector
-dataset.TSim.fit.fitini.tofit = logical(dataset.TSim.fit.fitini.tofit);
-
-% Create proper "fitparameters" cell array using information from 'tofit'
-parameters = trEPRTSim_fitpar();
-dataset.TSim.fit.fitini.fitparameters = ...
-    parameters(dataset.TSim.fit.fitini.tofit);
-
-% Merge fitopt into TSim structure
-fitoptFieldNames = fieldnames(conf.fitopt);
-for k=1:length(fitoptFieldNames)
-    dataset.TSim.fit.fitopt.(fitoptFieldNames{k}) = ...
-        conf.fitopt.(fitoptFieldNames{k});
-end
-clear fitoptFieldNames k;
-
-dataset.TSim.fit.routine = conf.routines.fit;
-dataset.TSim.sim.routine = conf.routines.sim;
 
 if nargin
     data = varargin{1};
@@ -88,14 +56,7 @@ if nargin
         dataset.(dataFieldNames{k}) = data.(dataFieldNames{k});
     end
     clear dataFieldNames k;
-    
-    % Replace parameters taken from experimental data
-    dataset.TSim.sim.Exp.mwFreq = ...
-        dataset.parameters.bridge.MWfrequency.value;
-    dataset.TSim.sim.Exp.nPoints = size(data.data,1);
-    dataset.TSim.sim.Exp.Range = ...
-        [dataset.axes.y.values(1) dataset.axes.y.values(end)];
-    
+  
 end
 
 end

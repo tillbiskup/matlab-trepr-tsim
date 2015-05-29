@@ -1,10 +1,10 @@
 function dataset = TsimIniSimpar(dataset)
-% TSIMINISimpar Initialize simpar parameters for simulating triplet spectra
+% TSIMINISIMPAR Initialize simpar parameters for simulating triplet spectra
 % with Tsim. Creates minimal parameters in the simpar structure and
 % fills it with values. If there is already was in there nothing is changed
 %
 % Usage
-%   dataset = TsimSimini(dataset);
+%   dataset = TsimIniSimpar(dataset);
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure

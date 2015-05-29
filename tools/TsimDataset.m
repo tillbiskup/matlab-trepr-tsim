@@ -1,6 +1,6 @@
 function dataset = TsimDataset(varargin)
 % TSIMDATASET Return dataset (structure) complying with the trEPR
-% toolbox data structure and containing in addition the TSim fields.
+% toolbox data structure and containing in addition the Tsim fields.
 %
 % If called with an input argument (experimental dataset), the values of
 % the experimental dataset are merged into the output structure.
@@ -10,7 +10,7 @@ function dataset = TsimDataset(varargin)
 %   dataset = TsimDataset(data);
 %
 %   dataset   - struct
-%               Full trEPR toolbox dataset including TSim structure
+%               Full trEPR toolbox dataset including Tsim structure
 %
 %   data      - struct (optional)
 %               Experimental dataset (full trEPR toolbox dataset)
@@ -18,7 +18,7 @@ function dataset = TsimDataset(varargin)
 % See also TSIMDATASTRUCTURE, TREPRDATASTRUCTURE
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-05-26
+% 2015-05-29
 
 dataset = struct();
 

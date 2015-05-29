@@ -12,7 +12,7 @@ function dataset = TsimSim(dataset,varargin)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-05-26
+% 2015-05-29
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

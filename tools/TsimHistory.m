@@ -13,8 +13,8 @@ function varargout = TsimHistory(varargin)
 %
 % See also TREPRDATASTRUCTURE.
 
-% Copyright (c) 2013, Deborah Meyer, Till Biskup
-% 2013-09-12
+% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
+% 2015-05-29
 
 if ~nargin && ~nargout
     help TsimHistory
@@ -40,7 +40,7 @@ if nargin && ischar(varargin{1})
             end
             % Create history record
             history = trEPRdataStructure('history');
-            % TODO: Proper name of method (?)
+            % TODO: Proper name of method taken from TsimInfo
             history.method = 'Tsim';
             history.parameters.TSim = dataset.TSim;
             history.parameters.calculated = dataset.calculated;

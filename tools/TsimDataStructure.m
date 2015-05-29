@@ -30,7 +30,7 @@ function varargout = TsimDataStructure(varargin)
 % See also TREPRLOAD, TREPRDATASTRUCTURE.
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-05-22
+% 2015-05-29
 
 if ~nargin && ~nargout
     help TsimDataStructure

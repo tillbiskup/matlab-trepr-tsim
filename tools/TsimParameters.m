@@ -2,8 +2,6 @@ function parameters = TsimParameters(varargin)
 % TSIMPARAMETERS Return definition of parameters for simulating and
 % fitting triplet spectra with Tsim.
 % 
-% IS SUPPOSED TO REPALCE TSIMSIMPAR AND TSIMFITPAR
-%
 % Usage
 %   parameters  = TsimParameters();
 %   parameters  = TsimParameters(<parameter>,<value>);
@@ -30,7 +28,7 @@ function parameters = TsimParameters(varargin)
 % See also TSIM
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-05-27
+% 2015-05-29
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

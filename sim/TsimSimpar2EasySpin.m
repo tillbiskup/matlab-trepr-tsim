@@ -11,9 +11,7 @@ function dataset = TsimSimpar2EasySpin(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-05-26
-
-
+% 2015-05-29
 
 parameters = TsimParameters;
 
@@ -47,7 +45,7 @@ simparameters = fieldnames(dataset.TSim.sim.simpar);
 simparvalues = struct2cell(dataset.TSim.sim.simpar);
 
 
-[simnonconparameters, ipar, isimpar] = intersect(nonconpars,simparameters);
+[~, ipar, isimpar] = intersect(nonconpars,simparameters);
 simnonconparameters = evalnonconpars(ipar);
 simnonconparvalues = simparvalues(isimpar);
 

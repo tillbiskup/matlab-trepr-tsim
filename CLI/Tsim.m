@@ -40,7 +40,7 @@ switch answer
         % load nothing and start simlation;
         disp('Welcome to BetterTSim, the simulation program for triplett spectra!');
         dataset = TsimDataset();
-        dataset = TsimCli_sim(dataset);
+        dataset = TsimCliSim(dataset);
         return;
     case 'q'
         disp('Goodbye!');
@@ -68,7 +68,7 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(data
         dataset = TsimDataset(dataset);
     end
     
-    dataset = TsimCli_sim(dataset);
+    dataset = TsimCliSim(dataset);
     return;
     
 end
@@ -106,10 +106,10 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dat
     
     switch lower(answer)
         case 's'
-            dataset = TsimCli_sim(dataset);
+            dataset = TsimCliSim(dataset);
             return;
         case 'f'
-            dataset = TsimCli_fit(dataset);
+            dataset = TsimCliFit(dataset);
             return;
     end
 end
@@ -144,10 +144,10 @@ if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(d
     
     switch lower(answer)
         case 's'
-            dataset = TsimCli_sim(dataset);
+            dataset = TsimCliSim(dataset);
             return;
         case 'f'
-            dataset = TsimCli_fit(dataset);
+            dataset = TsimCliFit(dataset);
             return;
     end
 end

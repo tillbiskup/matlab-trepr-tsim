@@ -25,8 +25,8 @@ function TsimParDisplay(dataset,command,varargin)
 %
 % See also TSIM
 
-% Copyright (c) 2013, Deborah Meyer, Till Biskup
-% 2013-12-06
+% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
+% 2015-05-29
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

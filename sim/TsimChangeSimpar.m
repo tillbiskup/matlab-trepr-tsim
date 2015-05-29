@@ -1,5 +1,6 @@
 function dataset = TsimChangeSimpar(dataset)
-% TSIMCHANGESIMPAR changes (adds and removes) parameters from the simpar structure.
+% TSIMCHANGESIMPAR Change (add and remove) parameters from the simpar
+% structure. 
 %
 % Usage
 %   dataset = TsimChangeSimpar(dataset)

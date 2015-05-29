@@ -1,18 +1,15 @@
-function dataset = TsimCli_sim(dataset)
-% TSIMCLI_SIM Subfunction of the Tsim CLI handling the
+function dataset = TsimCliSim(dataset)
+% TSIMCLISIM Subfunction of the Tsim CLI handling the
 % simulation part.
 %
 % If the user decides at some point to start a fit with the given
 % simulation parameters, control is handed back to the caller.
 %
 % Usage
-%   trEPRTsim_cli_sim
-%   TsimCli_sim(expdataset)
-%   expdataset = TsimCli_sim
-%   expdataset = TsimCli_sim(expdataset)
+%   dataset = TsimCliSim(dataset)
 %
 %   dataset  - struct
-%              Full trEPR toolbox dataset including TSim structure
+%              Full trEPR toolbox dataset including Tsim structure
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup

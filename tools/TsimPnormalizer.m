@@ -1,6 +1,5 @@
 function [normalized] = TsimPnormalizer(unnormalized)
-% TSIMPnormalizer Normalizes the Populations so the sum is always
-% equal to one
+% TSIMPNORMALIZER Normalize populations
 %
 % Usage
 %   [normalized] = TsimDandEconverter(unnormalized)
@@ -18,10 +17,8 @@ function [normalized] = TsimPnormalizer(unnormalized)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-05-28
+% 2015-05-29
 
+normalized = unnormalized./sum(unnormalized);
 
-    norma = sum(unnormalized);
-    normalized = unnormalized./norma;
-    
 end

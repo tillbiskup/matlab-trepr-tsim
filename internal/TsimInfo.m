@@ -1,21 +1,22 @@
-function varargout = Tsiminfo(varargin)
-% TSIMINFO Display/return information about the trEPR toolbox SIM
+function varargout = TsimInfo(varargin)
+% TSIMINFO Display/return information about the trEPR toolbox Tsim
 % module.
-%   TSIMINFO without any input and output parameters displays
-%   information about the trEPR toolbox TSim module.
 %
-%   If called with an output parameter, TSIMINFO returns a structure
-%   "info" that contains all the information known to Matlab(r) about the
-%   trEPR toolbox TSim module.
+% TSIMINFO without any input and output parameters displays
+% information about the trEPR toolbox Tsim module.
+%
+% If called with an output parameter, TsimInfo returns a structure
+% "info" that contains all the information known to Matlab(r) about the
+% trEPR toolbox TSim module.
 %
 % Usage
-%   Tsiminfo
+%   TsimInfo
 %
-%   info = Tsiminfo;
+%   info = TsimInfo;
 %
-%   version = Tsiminfo('version')
-%   url = Tsiminfo('url')
-%   dir = Tsiminfo('dir')
+%   version = TsimInfo('version')
+%   url = TsimInfo('url')
+%   dir = TsimInfo('dir')
 %
 %   info    - struct
 %             Fields: maintainer, url, bugtracker, vcs, version, path,
@@ -58,8 +59,8 @@ function varargout = Tsiminfo(varargin)
 %
 % See also VER
 
-% Copyright (c) 2013, Deborah Meyer, Till Biskup
-% 2013-08-18
+% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
+% 2015-05-29
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the trEPR toolbox SIM module.
@@ -93,7 +94,7 @@ info.bugtracker = struct(...
     );
 info.vcs = struct(...
     'type','git',...
-    'url','git@sw2.chemie.uni-freiburg.de/triplet.git'...
+    'url','git@sw2.physchem.uni-freiburg.de/triplet.git'...
     );
 info.description = ...
     'a module for the trEPR toolbox for simulating triplet spectra';

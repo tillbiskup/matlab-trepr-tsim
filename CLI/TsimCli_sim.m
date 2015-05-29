@@ -1,5 +1,5 @@
-function dataset = trEPRTSim_cli_sim(dataset)
-% TREPRTSIM_CLI_SIM Subfunction of the trEPRTSim CLI handling the
+function dataset = TsimCli_sim(dataset)
+% TSIMCLI_SIM Subfunction of the Tsim CLI handling the
 % simulation part.
 %
 % If the user decides at some point to start a fit with the given
@@ -7,9 +7,9 @@ function dataset = trEPRTSim_cli_sim(dataset)
 %
 % Usage
 %   trEPRTsim_cli_sim
-%   trEPRTSim_cli_sim(expdataset)
-%   expdataset = trEPRTSim_cli_sim
-%   expdataset = trEPRTSim_cli_sim(expdataset)
+%   TsimCli_sim(expdataset)
+%   expdataset = TsimCli_sim
+%   expdataset = TsimCli_sim(expdataset)
 %
 %   dataset  - struct
 %              Full trEPR toolbox dataset including TSim structure
@@ -24,7 +24,7 @@ simouterloop = true;
 while simouterloop
         
     % Initialize minimal simulation parameters
-    dataset = trEPRTSim_iniSimpar(dataset);
+    dataset = TsimIniSimpar(dataset);
         
     siminiloop = true;
     while siminiloop
@@ -37,7 +37,7 @@ while simouterloop
         
         disp(' ');
         
-        trEPRTSim_parDisplay(dataset,'sim');
+        TsimParDisplay(dataset,'sim');
         
         disp(' ');
         
@@ -86,7 +86,7 @@ while simouterloop
     dataset.TSim.remarks.purpose = purpose;
     
     % Calculate spectrum (actual simulation)
-    dataset = trEPRTSim_sim(dataset);
+    dataset = TsimSim(dataset);
     
     figure();
     plot(linspace(...
@@ -104,7 +104,7 @@ while simouterloop
     
     % Write history
     % (Orwell style - we're creating our own)
-    dataset = trEPRTSim_history('write',dataset);
+    dataset = TsimHistory('write',dataset);
     
     saveloop = true;
     while saveloop
@@ -121,7 +121,7 @@ while simouterloop
         switch lower(answer)
             case 'a'
                 % Suggest reasonable filename
-                suggestedFilename = fullfile(pwd,['trEPRTSim_'...
+                suggestedFilename = fullfile(pwd,['Tsim'...
                     datestr(now,'yyyy-mm-dd_HH-MM') '_sim.tez']);
                 % The "easy" way: consequently use CLI
                 saveFilename = input(...

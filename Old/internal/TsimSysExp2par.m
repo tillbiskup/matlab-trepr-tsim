@@ -1,15 +1,15 @@
-function dataset = trEPRTSim_SysExp2par(dataset)
-% TREPRTSIM_SYSEXP2PAR Transfer Sys,Exp structs to fit parameters.
+function dataset = TsimSysExp2par(dataset)
+% TSIMSYSEXP2PAR Transfer Sys,Exp structs to fit parameters.
 %
 % Usage
-%   dataset = trEPRTSim_SysExp2par(dataset)
+%   dataset = TsimSysExp2par(dataset)
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM, TREPRTSIM_PAR2SYSEXP
+% See also TSIM, TSIMPAR2SYSEXP
 
-% (c) 2013-14, Deborah Meyer, Till Biskup
+% Copyright (c) 2013-14, Deborah Meyer, Till Biskup
 % 2014-11-14
 
 dataset.TSim.fit.fitini.fitpar(1:3) = dataset.TSim.sim.Sys.g;

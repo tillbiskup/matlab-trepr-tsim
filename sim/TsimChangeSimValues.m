@@ -8,7 +8,7 @@ function dataset = TsimChangeSimValues(dataset)
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-29
@@ -26,7 +26,7 @@ while changeloop
     
     disp(' ');
     
-    trEPRTSim_parDisplay(dataset,'sim');
+    TsimParDisplay(dataset,'sim');
     
     disp(' ');
     
@@ -52,7 +52,7 @@ while changeloop
             
             % Chek for things
             if isfield(dataset.TSim.sim.simpar,'p1') && isfield(dataset.TSim.sim.simpar,'p2') && isfield(dataset.TSim.sim.simpar,'p3')
-                [normalized] = trEPRTSim_Pnormalizer([(dataset.TSim.sim.simpar.p1) (dataset.TSim.sim.simpar.p2) (dataset.TSim.sim.simpar.p3)]);
+                [normalized] = TsimPnormalizer([(dataset.TSim.sim.simpar.p1) (dataset.TSim.sim.simpar.p2) (dataset.TSim.sim.simpar.p3)]);
                 
                 dataset.TSim.sim.simpar.p1 = normalized(1);
                 dataset.TSim.sim.simpar.p2 = normalized(2);
@@ -63,7 +63,7 @@ while changeloop
             % D and E should follow the convention E <= 1/3 D
             if isfield(dataset.TSim.sim.simpar,'D') && isfield(dataset.TSim.sim.simpar,'E')
                 
-                converted = trEPRTSim_DandEconverter(trEPRTSim_DandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]));
+                converted = TsimDandEconverter(TsimDandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]));
                 
                 dataset.TSim.sim.simpar.D = converted(1);
                 dataset.TSim.sim.simpar.E = converted(2);

@@ -1,15 +1,15 @@
-function dataset = trEPRTSim_sim(dataset,varargin)
-% TREPRTSIM_SIM Simulate spectrum using the EasySpin function pepper.
+function dataset = TsimSim(dataset,varargin)
+% TSIMSIM Simulate spectrum using the EasySpin function pepper.
 %
 % This file uses EasySpin. See http://www.easyspin.org/ 
 %
 % Usage
-%   dataset = trEPRTSim_sim(dataset)
+%   dataset = TsimSim(dataset)
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
 % 2015-05-26
@@ -35,7 +35,7 @@ routine = str2func(dataset.TSim.sim.routine);
 % returned in the field "calculated" of the dataset.
 
 % Call Simpar2EasySpin
-dataset = trEPRTSim_Simpar2EasySpin(dataset);
+dataset = TsimSimpar2EasySpin(dataset);
 
 % Simulate
 dataset.calculated(:,1) = routine(dataset.TSim.sim.EasySpin.Sys,...

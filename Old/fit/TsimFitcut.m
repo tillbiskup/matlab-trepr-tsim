@@ -1,17 +1,17 @@
-function dataset = trEPRTSim_fitcut(dataset)
-% TREPRTSIM_FITCUT Cuts out some part of the spectrum 
+function dataset = TsimFitcut(dataset)
+% TSIMFITCUT Cuts out some part of the spectrum 
 % 
 %
 % Usage
-%   dataset = trEPRTSim_fitcut(dataset);
+%   dataset = TsimFitcut(dataset);
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2014, Deborah Meyer, Till Biskup
+% Copyright (c) 2014, Deborah Meyer, Till Biskup
 % 2014-05-05
 
 

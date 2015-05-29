@@ -1,10 +1,10 @@
-function [status] = trEPRTSim_save(saveFilename,dataset)
+function [status] = TsimSave(saveFilename,dataset)
 
-% TREPRTSIM_SAVE Rescale calculated spectrum and save it calling 
+% TSIMSAVE Rescale calculated spectrum and save it calling 
 % trEPRTsave.
 %
 % Usage
-%   [status] = trEPRTSim_save(saveFilename,dataset)
+%   [status] = TsimSave(saveFilename,dataset)
 %
 %   status        - integer
 %                   0 - everthing is fine
@@ -16,9 +16,9 @@ function [status] = trEPRTSim_save(saveFilename,dataset)
 %   dataset       - struct
 %                   Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-11-29
 
 % Save dataset

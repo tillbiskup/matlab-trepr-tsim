@@ -1,21 +1,21 @@
-function dataset = trEPRTSim_Simpar2EasySpin(dataset)
-% TREPRTSIM_SIMPAR2EASYSPIN Transfers parameters from the simpar structure to the easyspin structure.
+function dataset = TsimSimpar2EasySpin(dataset)
+% TSIMSIMPAR2EASYSPIN Transfers parameters from the simpar structure to the easyspin structure.
 %
 % Usage
-%   dataset = trEPRTSim_par2SysExp(dataset)
+%   dataset = TsimPar2SysExp(dataset)
 %
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-26
 
 
 
-parameters = trEPRTSim_parameters;
+parameters = TsimParameters;
 
 % Initialize non useracces parameters that don't need conversion
 nonuser = ~logical(cell2mat(parameters(:,9)));
@@ -63,7 +63,7 @@ end
 % D and E are in minsim
 if isfield(dataset.TSim.sim.simpar,'D') && isfield(dataset.TSim.sim.simpar,'E')
     
-    principalvalues = trEPRTSim_DandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]);
+    principalvalues = TsimDandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]);
     
     % Put it in EasySpin
     dataset.TSim.sim.EasySpin.Sys = ...

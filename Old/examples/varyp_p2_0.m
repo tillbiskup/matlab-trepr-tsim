@@ -5,20 +5,20 @@
 % Set p2 to zero and vary p1 and p3 while keeping all other parameters  
 % constant. D and E are chosen to be 1000 MHz for D and 50 MHz for E.
 %
-% The script uses the underlying infrastructure provided by the trEPRTSim
+% The script uses the underlying infrastructure provided by the Tsim
 % module, but does not make use of the CLI.
 %
 % A series of spectra are calculated and the result plotted in various
 % ways. This script may serve as a starting point for similar systematic
 % investigations of the parameters.
 
-% (c) 2013, Till Biskup, <till@till-biskup.de>
-% (c) 2014, Deborah Meyer
+% Copyright (c) 2013, Till Biskup, <till@till-biskup.de>
+% Copyright (c) 2014, Deborah Meyer
 % 2014-10-14
 
 % Prepare dataset for simulation
-dataset = trEPRTSim_dataset();
-dataset = trEPRTSim_simini(dataset);
+dataset = TsimDataset();
+dataset = TsimSimini(dataset);
 
 % Change a few parameters in Sys and Exp structure
 % isotropic g tensor
@@ -54,7 +54,7 @@ for k = 1:length(p1)
     % Set populations respectively
     dataset.TSim.sim.Exp.Temperature = [p1(k) p2 p3(k)];
     % Do actual simulation
-    simdataset{k} = trEPRTSim_sim(dataset);
+    simdataset{k} = TsimSim(dataset);
     % Create 2D matrix with data, B0 vs. p1
     data(:,k) = simdataset{k}.calculated;
     

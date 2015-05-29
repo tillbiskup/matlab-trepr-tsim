@@ -1,9 +1,9 @@
-function [normalized] = trEPRTSim_Pnormalizer(unnormalized)
-% TREPRTSIM_Pnormalizer Normalizes the Populations so the sum is always
+function [normalized] = TsimPnormalizer(unnormalized)
+% TSIMPnormalizer Normalizes the Populations so the sum is always
 % equal to one
 %
 % Usage
-%   [normalized] = trEPRTSim_DandEconverter(unnormalized)
+%   [normalized] = TsimDandEconverter(unnormalized)
 %
 %
 %   normalized   - vector
@@ -15,7 +15,7 @@ function [normalized] = trEPRTSim_Pnormalizer(unnormalized)
 %                  populations
 %
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-28

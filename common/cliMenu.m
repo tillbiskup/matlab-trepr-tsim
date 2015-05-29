@@ -55,7 +55,7 @@ function answer = cliMenu(options,varargin)
 %
 % SEE ALSO: input, ginput, keyboard
 
-% (c) 2013, Till Biskup, Deborah Meyer
+% Copyright (c) 2013, Till Biskup, Deborah Meyer
 % 2013-10-03
 
 % Parse input arguments using the inputParser functionality

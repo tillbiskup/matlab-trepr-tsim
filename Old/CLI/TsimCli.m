@@ -1,16 +1,16 @@
-% TREPRTSIM_CLI CLI for simulating and fitting spin-polarized EPR spectra
+% TSIMCLI CLI for simulating and fitting spin-polarized EPR spectra
 % of triplets.
 %
 % Integral part of the TSim module of the trEPR toolbox.
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-12-16
 
 % For the time being, erase everything in the workspace... (quite rude)
 clear all; close all;
 
 % Check for dependencies
-[status, missing] = trEPRTSim_dependency();
+[status, missing] = TsimDependency();
 if (status == 1)
      disp('There are files missing required for the fit:');
      cellfun(@disp, missing);
@@ -96,12 +96,12 @@ while outerloop
         case {'fit','f'}
             if exist('dataset','var')
                 if exist('command','var')
-                    [dataset,command] = trEPRTSim_cli_fit(dataset,command);
+                    [dataset,command] = TsimCli_fit(dataset,command);
                 else
-                    [dataset,command] = trEPRTSim_cli_fit(dataset);
+                    [dataset,command] = TsimCli_fit(dataset);
                 end
             else
-                [dataset,command] = trEPRTSim_cli_fit();
+                [dataset,command] = TsimCli_fit();
             end
             switch lower(command)
                 case 'exit'
@@ -113,12 +113,12 @@ while outerloop
         case {'sim','s'}
             if exist('dataset','var')
                 if exist('command','var')
-                    [dataset,command] = trEPRTSim_cli_sim(dataset,command);
+                    [dataset,command] = TsimCli_sim(dataset,command);
                 else
-                    [dataset,command] = trEPRTSim_cli_sim(dataset);
+                    [dataset,command] = TsimCli_sim(dataset);
                 end
             else
-                [dataset,command] = trEPRTSim_cli_sim();
+                [dataset,command] = TsimCli_sim();
             end
             switch lower(command)
                 case 'exit'

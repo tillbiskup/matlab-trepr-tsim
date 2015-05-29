@@ -1,21 +1,21 @@
-function report = trEPRTSim_fitreport(dataset)
-% TREPRTSIM_FITREPORT Report fit results and final parameter set.
+function report = TsimFitreport(dataset)
+% TSIMFITREPORT Report fit results and final parameter set.
 %
 % Usage
-%   report  = trEPRTSim_fitreport(tofit,inipar,fittedpar,lb,ub)
+%   report  = TsimFitreport(tofit,inipar,fittedpar,lb,ub)
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
 %   report  - cell array
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-09-12
 
 % Get fit parameters and their definitions
-fitparDef = trEPRTSim_fitpar();
+fitparDef = TsimFitpar();
 fittedparDef = fitparDef(dataset.TSim.fit.fitini.tofit,:);
 
 % Get length of parameter names for nice typesetting  of table below

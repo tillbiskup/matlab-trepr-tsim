@@ -1,9 +1,9 @@
-function dataset = trEPRTSim_fitini(dataset)
-% TREPRTSIM_FITINI Initialize fit parameters for fitting triplet spectra
-% with trEPRTSim.
+function dataset = TsimFitini(dataset)
+% TSIMFITINI Initialize fit parameters for fitting triplet spectra
+% with Tsim.
 %
 % Usage
-%   dataset = trEPRTSim_fitini(dataset);
+%   dataset = TsimFitini(dataset);
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
@@ -15,23 +15,23 @@ function dataset = trEPRTSim_fitini(dataset)
 % predefined boundaries, they will be rearranged centered around the new
 % initial value (and a warning displayed on the command line).
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-12-10
 
 % Convert tofit into boolean values
 dataset.TSim.fit.fitini.tofit = logical(dataset.TSim.fit.fitini.tofit);
 
 % Set fit parameters
-parameters = trEPRTSim_fitpar();
+parameters = TsimFitpar();
 % Get old fit parameters (for handling boundaries), set fit parameters
 oldTofit = ismember(parameters(:,1)',dataset.TSim.fit.fitini.fitparameters);
 dataset.TSim.fit.fitini.fitparameters = ...
     parameters(dataset.TSim.fit.fitini.tofit,1)';
 
 % Get values from configuration
-conf = trEPRTSim_conf();
+conf = TsimConf();
 
 % Generate fit parameters from Sys and Exp if necessary
 if isempty(dataset.TSim.fit.inipar)
@@ -40,11 +40,11 @@ if isempty(dataset.TSim.fit.inipar)
     confdataset = dataset;
     confdataset.TSim.sim.Sys = conf.Sys;
     confdataset.TSim.sim.Exp = conf.Exp;
-    dataset = trEPRTSim_SysExp2par(confdataset);
+    dataset = TsimSysExp2par(confdataset);
     % Actual setting of parameters from real dataset
     % Needs to be done after setting the values from the configuration and
     % overwrites those values where necessary.
-    dataset = trEPRTSim_SysExp2par(dataset);
+    dataset = TsimSysExp2par(dataset);
 end
 
 % Transfer changed boundaries if necessary

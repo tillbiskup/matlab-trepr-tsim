@@ -8,7 +8,7 @@ function str = strJoin(C,varargin)
 % Please note: Starting with Matlab(r) version 2013a, there exists a
 % function with the similar name "strjoin".
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-08-23
 
 % Check whether builtin function "strjoin" exists, and if so, use it.

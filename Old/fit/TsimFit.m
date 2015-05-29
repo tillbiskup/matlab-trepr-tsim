@@ -1,9 +1,9 @@
-function sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
-% TREPRTSIM_FIT Calculate fit calling trEPRTSim_sim and display iterative
+function sim = TsimFit(par,Bfield,spectrum,dataset)
+% TSIMFIT Calculate fit calling TsimSim and display iterative
 % results.
 %
 % Usage
-%   sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
+%   sim = TsimFit(par,Bfield,spectrum,dataset)
 %
 %   par      - vector
 %              simulation parameters
@@ -17,16 +17,16 @@ function sim = trEPRTSim_fit(par,Bfield,spectrum,dataset)
 %   dataset  - struct
 %              Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-08-15
 
 % Set Sys and Exp according to parameters that shall be fitted
-dataset = trEPRTSim_par2SysExp(par,dataset);
+dataset = TsimPar2SysExp(par,dataset);
 
 % Calling simulation function
-dataset = trEPRTSim_sim(dataset);
+dataset = TsimSim(dataset);
 
 % Scaling of spectrum
 sim = dataset.TSim.sim.Exp.scale*dataset.calculated;

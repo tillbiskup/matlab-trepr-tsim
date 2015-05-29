@@ -8,7 +8,7 @@ function dataset = TsimChangeSimpar(dataset)
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-29
@@ -17,7 +17,7 @@ function dataset = TsimChangeSimpar(dataset)
 % TODO Read configuration to see if the added parameter is in configuration
 % and has a value there...
 
-parameters = trEPRTSim_parameters;
+parameters = TsimParameters;
 ParameterNames = parameters(:,1);
 StandardParameterValues = parameters(:,10);
 

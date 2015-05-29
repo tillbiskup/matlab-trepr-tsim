@@ -1,21 +1,21 @@
-function varargout = trEPRTSiminfo(varargin)
-% TREPRTSIMINFO Display/return information about the trEPR toolbox SIM
+function varargout = Tsiminfo(varargin)
+% TSIMINFO Display/return information about the trEPR toolbox SIM
 % module.
-%   TREPRTSIMINFO without any input and output parameters displays
+%   TSIMINFO without any input and output parameters displays
 %   information about the trEPR toolbox TSim module.
 %
-%   If called with an output parameter, TREPRTSIMINFO returns a structure
+%   If called with an output parameter, TSIMINFO returns a structure
 %   "info" that contains all the information known to Matlab(r) about the
 %   trEPR toolbox TSim module.
 %
 % Usage
-%   trEPRTSiminfo
+%   Tsiminfo
 %
-%   info = trEPRTSiminfo;
+%   info = Tsiminfo;
 %
-%   version = trEPRTSiminfo('version')
-%   url = trEPRTSiminfo('url')
-%   dir = trEPRTSiminfo('dir')
+%   version = Tsiminfo('version')
+%   url = Tsiminfo('url')
+%   dir = Tsiminfo('dir')
 %
 %   info    - struct
 %             Fields: maintainer, url, bugtracker, vcs, version, path,
@@ -58,7 +58,7 @@ function varargout = trEPRTSiminfo(varargin)
 %
 % See also VER
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-08-18
 
 % The place to centrally manage the revision number and date is the file

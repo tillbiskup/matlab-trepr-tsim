@@ -1,9 +1,9 @@
-function dataset = trEPRTSim_simini(dataset)
-% TREPRTSIM_SIMINI Initialize sim parameters for simulating triplet spectra
-% with trEPRTSim.
+function dataset = TsimSimini(dataset)
+% TSIMSIMINI Initialize sim parameters for simulating triplet spectra
+% with Tsim.
 %
 % Usage
-%   dataset = trEPRTSim_simini(dataset);
+%   dataset = TsimSimini(dataset);
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
@@ -29,13 +29,13 @@ function dataset = trEPRTSim_simini(dataset)
 % main parameters section of the dataset in case the dataset contains no
 % experimental data.
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-12-06
  
 % Get values from configuration
-conf = trEPRTSim_conf();
+conf = TsimConf();
 
 if isempty(dataset.TSim.sim.addsimpar)
     % Create minimal Sys structure for simulation

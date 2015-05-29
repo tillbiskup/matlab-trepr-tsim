@@ -1,15 +1,15 @@
-function dataset = trEPRTSim_normalizePopulations(dataset)
-% TREPRTSIM_NORMALIZEPOPULATIONS Normalize all populations in whole dataset.
+function dataset = TsimNormalizePopulations(dataset)
+% TSIMNORMALIZEPOPULATIONS Normalize all populations in whole dataset.
 %
 % Usage
-%   dataset = trEPRTSim_normalizePopulations(dataset)
+%   dataset = TsimNormalizePopulations(dataset)
 %
 %   
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM, TREPRTSIM_SYSEXP2PAR
+% See also TSIM, TSIMSYSEXP2PAR
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-04-22

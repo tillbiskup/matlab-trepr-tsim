@@ -1,17 +1,17 @@
-function conf = trEPRTSim_conf(varargin)
-% TREPRTSIM_CONF Return configuration settings for simulating and fitting
-% triplet spectra with trEPRTSim.
+function conf = TsimConf(varargin)
+% TSIMCONF Return configuration settings for simulating and fitting
+% triplet spectra with Tsim.
 %
 % Usage
-%   conf = trEPRTSim_conf();
+%   conf = TsimConf();
 %
 %   conf - struct
 %          Structure containing the configuration settings for the
-%          trEPRTSim module
+%          Tsim module
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013-14, Deborah Meyer, Till Biskup
+% Copyright (c) 2013-14, Deborah Meyer, Till Biskup
 % 2015-05-22
 
 % TODO: Read configuration from file

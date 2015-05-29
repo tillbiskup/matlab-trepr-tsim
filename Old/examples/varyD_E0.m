@@ -3,19 +3,19 @@
 %
 % Set E to zero and vary D while keeping all other parameters constant.
 %
-% The script uses the underlying infrastructure provided by the trEPRTSim
+% The script uses the underlying infrastructure provided by the Tsim
 % module, but does not make use of the CLI.
 %
 % A series of spectra are calculated and the result plotted in various
 % ways. This script may serve as a starting point for similar systematic
 % investigations of the parameters.
 
-% (c) 2013, Till Biskup, <till@till-biskup.de>
+% Copyright (c) 2013, Till Biskup, <till@till-biskup.de>
 % 2013-10-18
 
 % Prepare dataset for simulation
-dataset = trEPRTSim_dataset();
-dataset = trEPRTSim_simini(dataset);
+dataset = TsimDataset();
+dataset = TsimSimini(dataset);
 
 % Change a few parameters in Sys and Exp structure
 % isotropic g tensor
@@ -47,7 +47,7 @@ for k = 1:length(D)
     % Set D tensor respectively
     dataset.TSim.sim.Sys.D = [-D(k)/3+E -D(k)/3-E 2*D(k)/3];
     % Do actual simulation
-    simdataset{k} = trEPRTSim_sim(dataset);
+    simdataset{k} = TsimSim(dataset);
     % Create 2D matrix with data, B0 vs. D
     data(:,k) = simdataset{k}.calculated;
     

@@ -1,13 +1,13 @@
-function dataset = trEPRTSim_dataset(varargin)
-% TREPRTSIM_DATASET Return dataset (structure) complying with the trEPR
+function dataset = TsimDataset(varargin)
+% TSIMDATASET Return dataset (structure) complying with the trEPR
 % toolbox data structure and containing in addition the TSim fields.
 %
 % If called with an input argument (experimental dataset), the values of
 % the experimental dataset are merged into the output structure.
 %
 % Usage
-%   dataset = trEPRTSim_dataset();
-%   dataset = trEPRTSim_dataset(data);
+%   dataset = TsimDataset();
+%   dataset = TsimDataset(data);
 %
 %   dataset   - struct
 %               Full trEPR toolbox dataset including TSim structure
@@ -15,7 +15,7 @@ function dataset = trEPRTSim_dataset(varargin)
 %   data      - struct (optional)
 %               Experimental dataset (full trEPR toolbox dataset)
 %
-% See also TREPRTSIM_DATASTRUCTURE, TREPRDATASTRUCTURE
+% See also TSIMDATASTRUCTURE, TREPRDATASTRUCTURE
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
 % 2015-05-26
@@ -37,7 +37,7 @@ end
 
 % Create data structures
 dataset = trEPRdataStructure('structure');
-TSim = trEPRTSim_dataStructure();
+TSim = TsimDataStructure();
 
 % Merge TSim into dataset
 TSimFieldNames = fieldnames(TSim);

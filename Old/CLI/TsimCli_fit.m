@@ -1,13 +1,13 @@
-function [expdataset, command] = trEPRTSim_cli_fit(varargin)
-% TREPRTSIM_CLI_FIT Subfunction of the trEPRTSim CLI handling the fitting
+function [expdataset, command] = TsimCli_fit(varargin)
+% TSIMCLI_FIT Subfunction of the Tsim CLI handling the fitting
 % part. 
 %
 % Usage
 %   trEPRTsim_cli_fit
-%   trEPRTSim_cli_fit(dataset)
-%   dataset = trEPRTSim_cli_fit
-%   dataset = trEPRTSim_cli_fit(dataset)
-%   [dataset,<command>] = trEPRTSim_cli_fit(dataset,<command>)
+%   TsimCli_fit(dataset)
+%   dataset = TsimCli_fit
+%   dataset = TsimCli_fit(dataset)
+%   [dataset,<command>] = TsimCli_fit(dataset,<command>)
 %
 %   dataset  - struct
 %              Full trEPR toolbox dataset including TSim structure
@@ -70,10 +70,10 @@ if nargin
 else
     % Create (empty) dataset
     % TODO: Handle missing parameters, such as field range, ...
-    expdataset = trEPRTSim_dataset();
+    expdataset = TsimDataset();
     
     % Get config values
-    conf = trEPRTSim_conf();
+    conf = TsimConf();
     
     loaddataloop = true;
 end
@@ -106,8 +106,8 @@ while fitdataloop
             end
         end
         
-        % Load experimental data using <trEPRTSim_load>
-        [expdataset, status] = trEPRTSim_load(filename);
+        % Load experimental data using <TsimLoad>
+        [expdataset, status] = TsimLoad(filename);
         if status
             loaddataloop = true;
         else
@@ -118,7 +118,7 @@ while fitdataloop
     
     
     % Initialize minimal simulation parameters
-    expdataset = trEPRTSim_simini(expdataset); 
+    expdataset = TsimSimini(expdataset); 
 
     siminiloop = true;
     while siminiloop
@@ -128,7 +128,7 @@ while fitdataloop
         % Display minimal set of simulation parameters with
         % their initial values
         disp('The parameters for simulation are as follow:')
-        trEPRTSim_parDisplay(expdataset,'sim');
+        TsimParDisplay(expdataset,'sim');
         
         disp(' ');
         option ={...
@@ -144,7 +144,7 @@ while fitdataloop
             case 'v'
                 % Change values
                 % Get simulation parameters
-                simpar = trEPRTSim_simpar;
+                simpar = TsimSimpar;
                 
                 % Select only the additional ones
                 addsimpar = simpar(~[simpar{:,5}],:);
@@ -195,11 +195,11 @@ while fitdataloop
                 clear Sys Exp Opt
                 
                 % Change parameters
-                expdataset = trEPRTSim_simini(expdataset);
+                expdataset = TsimSimini(expdataset);
             case 'p'
                 % Choose additional simulation parameters
                 % Get simulation parameters
-                simpar = trEPRTSim_simpar;
+                simpar = TsimSimpar;
                 % Select only the additional ones
                 addsimpar = simpar(~[simpar{:,5}],:);
                 addsimpardescription = addsimpar(:,3);
@@ -231,7 +231,7 @@ while fitdataloop
                 end
                 
                 % Change parameters
-                expdataset = trEPRTSim_simini(expdataset);
+                expdataset = TsimSimini(expdataset);
                 siminiloop = true;
                 
             case 'q'
@@ -252,11 +252,11 @@ while fitdataloop
 
    
     % Get fit parameters
-    fitparameters = trEPRTSim_fitpar();
+    fitparameters = TsimFitpar();
     fitpardescription = fitparameters(:,3);
     
     % Initialize fit parameters in dataset
-    expdataset = trEPRTSim_fitini(expdataset);
+    expdataset = TsimFitini(expdataset);
 
 
    
@@ -287,7 +287,7 @@ while fitdataloop
                 expdataset.TSim.fit.fitini.tofit(str2double(answer)) = 1;
                 
                 % Initialize fit parameters in dataset
-                expdataset = trEPRTSim_fitini(expdataset);
+                expdataset = TsimFitini(expdataset);
                 
                 
                 
@@ -296,7 +296,7 @@ while fitdataloop
                     
                     % Hier kaeme: Display chosen fitting parameters with
                     % values, upper and lower boundaries
-                    trEPRTSim_parDisplay(expdataset,'fitpar');
+                    TsimParDisplay(expdataset,'fitpar');
                     
                     display(' ');
                     
@@ -384,7 +384,7 @@ while fitdataloop
                     end
                     
                     % Initialize fit parameters in dataset
-                    expdataset = trEPRTSim_fitini(expdataset);
+                    expdataset = TsimFitini(expdataset);
                     
                     disp(' ');
                     
@@ -427,7 +427,7 @@ while fitdataloop
                             display(' ');
                             m = m+1;
                             
-                           expdataset = trEPRTSim_fitcut(expdataset);
+                           expdataset = TsimFitcut(expdataset);
                             
                             cutoutloop = true;
                         otherwise
@@ -531,7 +531,7 @@ while fitdataloop
                 % Took us six bloody weeks to come to this point...
                 set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
                 options = optimset(expdataset.TSim.fit.fitopt);
-                fitfun = @(x,Bfield)trEPRTSim_fit(x,Bfield,spectrum,expdataset);
+                fitfun = @(x,Bfield)TsimFit(x,Bfield,spectrum,expdataset);
                 expdataset.TSim.fit.fittedpar = lsqcurvefit(fitfun, ...
                     expdataset.TSim.fit.inipar, ...
                     Bfield, ...
@@ -541,16 +541,16 @@ while fitdataloop
                     options);
                 
                 % Normalize Populations
-                %expdataset = trEPRTSim_normalizePopulations(expdataset);
+                %expdataset = TsimNormalizePopulations(expdataset);
                 
-                expdataset = trEPRTSim_par2SysExp(...
+                expdataset = TsimPar2SysExp(...
                     expdataset.TSim.fit.fittedpar,...
                     expdataset);
                 
                 
                 
                 % Calculate spectrum with final fit parameters.
-                expdataset = trEPRTSim_sim(expdataset);
+                expdataset = TsimSim(expdataset);
                 
                 
                 
@@ -571,7 +571,7 @@ while fitdataloop
                     expdataset.calculated*expdataset.TSim.sim.Exp.scale;
                 
                 % Print fit results
-                report = trEPRTSim_fitreport(expdataset);
+                report = TsimFitreport(expdataset);
                 
                 disp('');
                 
@@ -615,7 +615,7 @@ while fitdataloop
                 
                 % Write history
                 % (Orwell style - we're creating our own)
-                expdataset = trEPRTSim_history('write',expdataset);
+                expdataset = TsimHistory('write',expdataset);
                  
                
                 saveloop = true;
@@ -656,7 +656,7 @@ while fitdataloop
                             % '*.tez','DialogTitle',suggestedFilename);
                             
                             % Save dataset
-                            [status] = trEPRTSim_save(saveFilename,expdataset);
+                            [status] = TsimSave(saveFilename,expdataset);
                             if ~isempty(status)
                                 disp('Some problems with saving data');
                             end
@@ -665,7 +665,7 @@ while fitdataloop
                             saveloop = true;
                             %                         case 'r'
                             %                             % show parameters on command line
-                            %                             report = trEPRTSim_fitreport(dataset);
+                            %                             report = TsimFitreport(dataset);
                             %                             display(report);
                             %                             saveloop = true;
                         case 'e'
@@ -699,7 +699,7 @@ while fitdataloop
                             saveloop = true;
                             %                         case 'r'
                             %                             % show parameters on command line
-                            %                             report = trEPRTSim_fitreport(dataset);
+                            %                             report = TsimFitreport(dataset);
                             %                             display(report);
                             %                             saveloop = true;
                         case 'f'
@@ -708,7 +708,7 @@ while fitdataloop
                                 expdataset.TSim.fit.fittedpar;
                             
                             % Write parameters back to Sys, Exp
-                            expdataset = trEPRTSim_par2SysExp(...
+                            expdataset = TsimPar2SysExp(...
                                 expdataset.TSim.fit.fittedpar,...
                                 expdataset);
                             
@@ -726,7 +726,7 @@ while fitdataloop
                                 path,[name '_fit-' datestr(now,30) '.tez']);
                             saveFilename = suggestedFilename;
                             % Save dataset
-                            [status] = trEPRTSim_save(saveFilename,expdataset);
+                            [status] = TsimSave(saveFilename,expdataset);
                             if ~isempty(status)
                                 disp('Some problems with saving data');
                             end
@@ -740,7 +740,7 @@ while fitdataloop
                             %                                 dataset.TSim.fit.fittedpar;
                             %
                             %                             % Write parameters back to Sys, Exp
-                            %                             dataset = trEPRTSim_par2SysExp(...
+                            %                             dataset = TsimPar2SysExp(...
                             %                                 dataset.TSim.fit.fittedpar,...
                             %                                 dataset);
                             %
@@ -753,14 +753,14 @@ while fitdataloop
                             expdataset.TSim.sim.Sys = conf.Sys;
                             expdataset.TSim.sim.Exp.Temperature = ...
                                 conf.Exp.Temperature;
-                            expdataset = trEPRTSim_SysExp2par(expdataset);
+                            expdataset = TsimSysExp2par(expdataset);
                             close(figure(1));
                             saveloop = false;
                             fitinnerloop = false;
                         case 'b'
                             % New fit with same initial parameters as before
                             % Write parameters back to Sys, Exp
-                            expdataset = trEPRTSim_par2SysExp(...
+                            expdataset = TsimPar2SysExp(...
                                 expdataset.TSim.fit.inipar,...
                                 expdataset);
                             close(figure(1));

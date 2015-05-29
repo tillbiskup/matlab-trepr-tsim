@@ -1,11 +1,11 @@
-function varargout = trEPRTSim_dataStructure(varargin)
-% TREPRTSIM_DATASTRUCTURE Return data structure for trEPR TSim module, or
+function varargout = TsimDataStructure(varargin)
+% TSIMDATASTRUCTURE Return data structure for trEPR TSim module, or
 % test compliance of given structure with the data structure of the module.
 %
 % Usage
-%   structure = trEPRTSim_dataStructure;
-%   structure = trEPRTSim_dataStructure(<command>)
-%   [missingFields,wrongType] = trEPRTSim_dataStructure(<command>,structure)
+%   structure = TsimDataStructure;
+%   structure = TsimDataStructure(<command>)
+%   [missingFields,wrongType] = TsimDataStructure(<command>,structure)
 %
 %   <command> - string 
 %               one of 'structure', 'model' or 'check'
@@ -29,11 +29,11 @@ function varargout = trEPRTSim_dataStructure(varargin)
 %
 % See also TREPRLOAD, TREPRDATASTRUCTURE.
 
-% (c) 2013-15, Deborah Meyer, Till Biskup
+% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
 % 2015-05-22
 
 if ~nargin && ~nargout
-    help trEPRTSim_dataStructure
+    help TsimDataStructure
     return;
 end
 

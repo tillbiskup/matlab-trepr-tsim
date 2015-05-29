@@ -1,8 +1,8 @@
-function [status, missing] = trEPRTSim_dependency()
-% TREPRTSIM_DEPENDECY Check for dependencies necessary for simulation.
+function [status, missing] = TsimDependency()
+% TSIMDEPENDECY Check for dependencies necessary for simulation.
 %
 % Usage
-%   [status, missing] = trEPRTSim_dependency()
+%   [status, missing] = TsimDependency()
 %
 %   status  - scalar
 %             0 if everything is fine, 1 otherwise
@@ -10,9 +10,9 @@ function [status, missing] = trEPRTSim_dependency()
 %   missing - cell array
 %             names of missing functions
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-08-06
 
 % List of necessary functions

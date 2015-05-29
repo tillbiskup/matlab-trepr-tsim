@@ -1,10 +1,10 @@
-function fitpar = trEPRTSim_fitpar(varargin)
-% TREPRTSIM_FITPAR Return definition of fit parameters for simulating
-% triplet spectra with trEPRTSim.
+function fitpar = TsimFitpar(varargin)
+% TSIMFITPAR Return definition of fit parameters for simulating
+% triplet spectra with Tsim.
 %
 % Usage
-%   fitpar = trEPRTSim_fitpar();
-%   fitpar = trEPRTSim_fitpar(<parameter>,<value>);
+%   fitpar = TsimFitpar();
+%   fitpar = TsimFitpar(<parameter>,<value>);
 %
 %   fitpar - nx4 cell array OR struct
 %            variable name, evaluation string, description, unit for each
@@ -20,9 +20,9 @@ function fitpar = trEPRTSim_fitpar(varargin)
 %            return struct rather than cell array.
 %            Default: FALSE
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013-14, Deborah Meyer, Till Biskup
+% Copyright (c) 2013-14, Deborah Meyer, Till Biskup
 % 2014-11-14
 
 % Parse input arguments using the inputParser functionality

@@ -1,8 +1,8 @@
-function varargout = trEPRTSim_history(varargin)
-% TREPRTSIM_HISTORY Manage history records of the TSim module (create, ...)
+function varargout = TsimHistory(varargin)
+% TSIMHISTORY Manage history records of the TSim module (create, ...)
 %
 % Usage
-%   dataset = trEPRTSim_history('write',dataset);
+%   dataset = TsimHistory('write',dataset);
 %
 %   <command> - string 
 %               currently only 'write'
@@ -13,11 +13,11 @@ function varargout = trEPRTSim_history(varargin)
 %
 % See also TREPRDATASTRUCTURE.
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-09-12
 
 if ~nargin && ~nargout
-    help trEPRTSim_history
+    help TsimHistory
     return;
 end
 
@@ -41,7 +41,7 @@ if nargin && ischar(varargin{1})
             % Create history record
             history = trEPRdataStructure('history');
             % TODO: Proper name of method (?)
-            history.method = 'trEPRTSim';
+            history.method = 'Tsim';
             history.parameters.TSim = dataset.TSim;
             history.parameters.calculated = dataset.calculated;
             dataset.history{end+1} = history;

@@ -1,12 +1,12 @@
-function parameters = trEPRTSim_parameters(varargin)
-% TREPRTSIM_PARAMETERS Return definition of parameters for simulating and
-% fitting triplet spectra with trEPRTSim.
+function parameters = TsimParameters(varargin)
+% TSIMPARAMETERS Return definition of parameters for simulating and
+% fitting triplet spectra with Tsim.
 % 
-% IS SUPPOSED TO REPALCE TREPRTSIM_SIMPAR AND TREPRTSIM_FITPAR
+% IS SUPPOSED TO REPALCE TSIMSIMPAR AND TSIMFITPAR
 %
 % Usage
-%   parameters  = trEPRTSim_parameters();
-%   parameters  = trEPRTSim_parameters(<parameter>,<value>);
+%   parameters  = TsimParameters();
+%   parameters  = TsimParameters(<parameter>,<value>);
 %
 %   parameters  - nx8 cell array OR struct
 %                 variable name, evaluation string, description, unit 
@@ -27,7 +27,7 @@ function parameters = trEPRTSim_parameters(varargin)
 %            return struct rather than cell array.
 %            Default: FALSE
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
 % 2015-05-27

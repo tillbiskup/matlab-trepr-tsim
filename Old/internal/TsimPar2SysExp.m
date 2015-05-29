@@ -1,8 +1,8 @@
-function dataset = trEPRTSim_par2SysExp(par,dataset)
-% TREPRTSIM_PAR2SYSEXP Transfer fitted parameters back to Sys,Exp structs.
+function dataset = TsimPar2SysExp(par,dataset)
+% TSIMPAR2SYSEXP Transfer fitted parameters back to Sys,Exp structs.
 %
 % Usage
-%   dataset = trEPRTSim_par2SysExp(par,dataset)
+%   dataset = TsimPar2SysExp(par,dataset)
 %
 %   par     - vector
 %             simulation parameters that shall be fitted
@@ -10,7 +10,7 @@ function dataset = trEPRTSim_par2SysExp(par,dataset)
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM, TREPRTSIM_SYSEXP2PAR
+% See also TSIM, TSIMSYSEXP2PAR
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
 % 2015-04-22
@@ -30,7 +30,7 @@ dataset.TSim.sim.Sys.D = [...
     ];
 
 % Normalize Populations
-dataset = trEPRTSim_normalizePopulations(dataset);
+dataset = TsimNormalizePopulations(dataset);
 
 dataset.TSim.sim.Exp.Temperature = dataset.TSim.fit.fitini.fitpar(6:8);
 dataset.TSim.sim.Exp.scale = dataset.TSim.fit.fitini.fitpar(9);

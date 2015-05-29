@@ -8,7 +8,7 @@ function dataset = TsimChangeSimRoutine(dataset)
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-29

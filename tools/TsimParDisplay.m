@@ -1,9 +1,9 @@
-function trEPRTSim_parDisplay(dataset,command,varargin)
-% TREPRTSIM_PARDISPLAY Display parameters for simulating and/or fitting
-% triplet spectra with trEPRTSim.
+function TsimParDisplay(dataset,command,varargin)
+% TSIMPARDISPLAY Display parameters for simulating and/or fitting
+% triplet spectra with Tsim.
 %
 % Usage
-%   trEPRTSim_simini(dataset,<command>);
+%   TsimSimini(dataset,<command>);
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
@@ -23,9 +23,9 @@ function trEPRTSim_parDisplay(dataset,command,varargin)
 %             'simpar' - display simulation parameters currently
 %                        initialized, excluding their value
 %
-% See also TREPRTSIM
+% See also TSIM
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-12-06
 
 % Parse input arguments using the inputParser functionality
@@ -78,7 +78,7 @@ switch lower(command)
         % TODO: Display lb, ub
         % TODO: Display only those parameters that were chosen
         % Hint: Use fit.fitparameters etc
-        parameters = trEPRTSim_fitpar;
+        parameters = TsimFitpar;
         parameters = parameters(dataset.TSim.fit.fitini.tofit,:);
         maxLengthFields = max(cellfun(@(x)length(x),parameters(:,1)));
         % Set minimum length for maxLengthFields to hold heading

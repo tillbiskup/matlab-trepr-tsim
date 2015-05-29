@@ -1,10 +1,10 @@
-function [converted] = trEPRTSim_DandEconverter(unconverted)
-% TREPRTSIM_DANDECONVERTER Converts D and E in principal values of the D
+function [converted] = TsimDandEconverter(unconverted)
+% TSIMDANDECONVERTER Converts D and E in principal values of the D
 % Tensor or the other way round. It makes sure that the convention E <= D/3
 % is followed.
 %
 % Usage
-%   [converted] = trEPRTSim_DandEconverter(unconverted)
+%   [converted] = TsimDandEconverter(unconverted)
 %
 %
 %   converted   - vector
@@ -16,7 +16,7 @@ function [converted] = trEPRTSim_DandEconverter(unconverted)
 %                 three element vector with the three principal values (dxx, dyy, dzz) of the
 %                 D tensor
 %
-% See also TREPRTSIM
+% See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-28

@@ -1,5 +1,5 @@
 function dataset=Tsim()
-% TREPRTSIM for simulating spin-polarized EPR spectra
+% TSIM for simulating spin-polarized EPR spectra
 % of triplets.
 %
 % Usage
@@ -16,7 +16,7 @@ function dataset=Tsim()
 
 
 % Check for dependencies
-[status, missing] = trEPRTSim_dependency();
+[status, missing] = TsimDependency();
 if (status == 1)
     disp('There are files missing required for the fit:');
     cellfun(@disp, missing);
@@ -39,8 +39,8 @@ switch answer
     case 'n'
         % load nothing and start simlation;
         disp('Welcome to BetterTSim, the simulation program for triplett spectra!');
-        dataset = trEPRTSim_dataset();
-        dataset = trEPRTSim_cli_sim(dataset);
+        dataset = TsimDataset();
+        dataset = TsimCli_sim(dataset);
         return;
     case 'q'
         disp('Goodbye!');
@@ -65,10 +65,10 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(data
     % Should not be necessary
     % TSim structure is added
     if  ~isfield(dataset,'TSim')
-        dataset = trEPRTSim_dataset(dataset);
+        dataset = TsimDataset(dataset);
     end
     
-    dataset = trEPRTSim_cli_sim(dataset);
+    dataset = TsimCli_sim(dataset);
     return;
     
 end
@@ -95,7 +95,7 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dat
     % Should not be necessary
     % TSim structure is added
     if  ~isfield(dataset,'TSim')
-        dataset = trEPRTSim_dataset(dataset);
+        dataset = TsimDataset(dataset);
     end
     
     % Ask what to do
@@ -106,10 +106,10 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dat
     
     switch lower(answer)
         case 's'
-            dataset = trEPRTSim_cli_sim(dataset);
+            dataset = TsimCli_sim(dataset);
             return;
         case 'f'
-            dataset = trEPRTSim_cli_fit(dataset);
+            dataset = TsimCli_fit(dataset);
             return;
     end
 end
@@ -133,7 +133,7 @@ if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(d
     
     if  ~isfield(dataset,'TSim')
         % TSim structure is added
-        dataset = trEPRTSim_dataset(dataset);
+        dataset = TsimDataset(dataset);
     end
     
     % Ask what to do
@@ -144,10 +144,10 @@ if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(d
     
     switch lower(answer)
         case 's'
-            dataset = trEPRTSim_cli_sim(dataset);
+            dataset = TsimCli_sim(dataset);
             return;
         case 'f'
-            dataset = trEPRTSim_cli_fit(dataset);
+            dataset = TsimCli_fit(dataset);
             return;
     end
 end

@@ -50,7 +50,7 @@ function answer = cliInput(prompt,varargin)
 %
 % SEE ALSO: cliMenu, input, ginput, keyboard
 
-% (c) 2013, Till Biskup, Deborah Meyer
+% Copyright (c) 2013, Till Biskup, Deborah Meyer
 % 2013-10-05
 
 % Parse input arguments using the inputParser functionality

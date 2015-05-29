@@ -1,11 +1,11 @@
-function [expdataset,status] = trEPRTSim_load(filename)
-% TREPRTSIM_DATASET Load experimental data, make some corrections 
+function [expdataset,status] = TsimLoad(filename)
+% TSIMDATASET Load experimental data, make some corrections 
 % and merge it into TSim structure.
 %
 %
 % Usage
-%   dataset = trEPRTSim_load(filename);
-%   [dataset,status] = trEPRTSim_load(filename);
+%   dataset = TsimLoad(filename);
+%   [dataset,status] = TsimLoad(filename);
 %
 %   dataset   - struct
 %               Full trEPR toolbox dataset including TSim structure
@@ -16,9 +16,9 @@ function [expdataset,status] = trEPRTSim_load(filename)
 %   filename  - string 
 %               name of Experimental data
 %
-% See also TREPRTSIM_...
+% See also TSIM...
 
-% (c) 2013, Deborah Meyer, Till Biskup
+% Copyright (c) 2013, Deborah Meyer, Till Biskup
 % 2013-12-13
 
 
@@ -26,7 +26,7 @@ function [expdataset,status] = trEPRTSim_load(filename)
 status = 0;
 
 % Create empty dataset
-expdataset = trEPRTSim_dataset();
+expdataset = TsimDataset();
 
 % Load experimental data using <trEPRload>.
 [data] = trEPRload(filename);

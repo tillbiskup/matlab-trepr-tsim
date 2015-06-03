@@ -44,5 +44,31 @@ dataset.calculated(:,1) = routine(dataset.TSim.sim.EasySpin.Sys,...
 % EasySpin does not normalize the spectra
 dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,1)));
 
+% Put Axes information for calculated in main dataset
+if min(size(dataset.data)) < 2
+    % Only Simulated or 1-d Data
+    dataset.axes.calculated(1).values = linspace(...
+        dataset.TSim.sim.EasySpin.Exp.Range(1),...
+        dataset.TSim.sim.EasySpin.Exp.Range(2),...
+        dataset.TSim.sim.EasySpin.Exp.nPoints);
+    
+    dataset.axes.calculated(1).unit = 'mT';
+    dataset.axes.calculated(1).measure = 'magnetic field';
+    
+else
+    % 2-D datata
+    dataset.axes.calculated(2).values = linspace(...
+        dataset.TSim.sim.EasySpin.Exp.Range(1),...
+        dataset.TSim.sim.EasySpin.Exp.Range(2),...
+        dataset.TSim.sim.EasySpin.Exp.nPoints);
+    
+    dataset.axes.calculated(2).unit = 'mT';
+    dataset.axes.calculated(2).measure = 'magnetic field';
+end
+
+
+
+
+
 
 end

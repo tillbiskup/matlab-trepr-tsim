@@ -18,7 +18,7 @@ function dataset = TsimDataset(varargin)
 % See also TSIMDATASTRUCTURE, TREPRDATASTRUCTURE
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-02
 
 dataset = struct();
 
@@ -40,6 +40,8 @@ dataset = trEPRdataStructure('structure');
 TSim = TsimDataStructure();
 
 % Merge TSim into dataset
+% Ersetzen durch
+% dataset = commonStructCopy(dataset,TSim)
 TSimFieldNames = fieldnames(TSim);
 for k=1:length(TSimFieldNames)
     dataset.(TSimFieldNames{k}) = TSim.(TSimFieldNames{k});
@@ -51,6 +53,8 @@ if nargin
     data = varargin{1};
     
     % Merge data into dataset
+    % Ersetzen durch
+    % dataset = commonStructCopy(dataset,data)
     dataFieldNames = fieldnames(data);
     for k=1:length(dataFieldNames)
         dataset.(dataFieldNames{k}) = data.(dataFieldNames{k});

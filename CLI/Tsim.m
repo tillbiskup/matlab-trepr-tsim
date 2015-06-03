@@ -60,7 +60,8 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(data
     disp('Welcome to BetterTSim, the simulation program for triplett spectra!');
     
     figure(1);
-    plot(dataset.axes.y.values,dataset.calculated);
+    plot(dataset.axes.calculated(1).values,dataset.calculated)
+    % commonplot(dataset,'kind','calculated');
     
     % Should not be necessary
     % TSim structure is added
@@ -80,17 +81,27 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dat
         [~,idxMax] = max(max(dataset.data));
         
         figure(1);
-        plot(dataset.axes.y.values,dataset.data(:,idxMax))
+        plot(dataset.axes.data(2).values,dataset.data(:,idxMax))
         legend({'Originaldata'},'Location','SouthEast');
+        % commonplot(dataset,'kind','data','type','1d','direction','magnetic field','position','max');
+        
+        figure(2);
+        plot(dataset.axes.calculated(2).values,dataset.calculated)
+        % commonplot(dataset,'kind','calculated');
+        
     else
         figure(1);
-        plot(expdataset.axes.y.values,expdataset.data)
+        plot(expdataset.axes.data(1).values,dataset.data)
         legend({'Originaldata'},'Location','SouthEast');
+        % commonplot(dataset,'kind','data');
+        
+        figure(2);
+        plot(datset.axes.calculated(1).values,dataset.calculated)
+        % commonplot(dataset,'kind','calculated');
         
     end
     
-    figure(2);
-    plot(dataset.axes.y.values,dataset.calculated);
+   
     
     % Should not be necessary
     % TSim structure is added
@@ -122,13 +133,15 @@ if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(d
         [~,idxMax] = max(max(dataset.data));
         
         figure(1);
-        plot(dataset.axes.y.values,dataset.data(:,idxMax))
+        plot(dataset.axes.data(2).values,dataset.data(:,idxMax))
         legend({'Originaldata'},'Location','SouthEast');
+        % commonplot(dataset,'kind','data','type','1d','direction','magnetic field','position','max');
+        
     else
         figure(1);
-        plot(expdataset.axes.y.values,expdataset.data)
+        plot(expdataset.axes.data(1).values,dataset.data)
         legend({'Originaldata'},'Location','SouthEast');
-        
+        % commonplot(dataset,'kind','data');
     end
     
     if  ~isfield(dataset,'TSim')

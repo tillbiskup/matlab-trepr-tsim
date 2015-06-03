@@ -50,25 +50,8 @@ while changeloop
             NewValue = cliInput(prompt,'default',num2str(cell2mat(DefaultValue)),'numeric',true);
             dataset.TSim.sim.simpar.(Name) = NewValue;
             
-            % Chek for things
-            if isfield(dataset.TSim.sim.simpar,'p1') && isfield(dataset.TSim.sim.simpar,'p2') && isfield(dataset.TSim.sim.simpar,'p3')
-                [normalized] = TsimPnormalizer([(dataset.TSim.sim.simpar.p1) (dataset.TSim.sim.simpar.p2) (dataset.TSim.sim.simpar.p3)]);
-                
-                dataset.TSim.sim.simpar.p1 = normalized(1);
-                dataset.TSim.sim.simpar.p2 = normalized(2);
-                dataset.TSim.sim.simpar.p3 = normalized(3);
-                
-            end
-            
-            % D and E should follow the convention E <= 1/3 D
-            if isfield(dataset.TSim.sim.simpar,'D') && isfield(dataset.TSim.sim.simpar,'E')
-                
-                converted = TsimDandEconverter(TsimDandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]));
-                
-                dataset.TSim.sim.simpar.D = converted(1);
-                dataset.TSim.sim.simpar.E = converted(2);
-                
-            end
+            % Apply conventions
+            dataset = TsimApplyConventions(dataset);
             
             changeloop = true;
         end

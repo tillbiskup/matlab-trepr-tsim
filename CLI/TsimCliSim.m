@@ -108,8 +108,10 @@ while simouterloop
         option = {...
             'a','Save dataset';...
             'n','Start a new simulation';...
+            'c','Write parameters in configuration'
             'f','Start a fit using your simulation values as starting values';...
-            'q','Quit'};
+            'q','Quit';...
+            'e', 'Exit; No autosaving'};
         answer = cliMenu(option,'title',...
             'How to continue?','default','n');
         
@@ -127,9 +129,6 @@ while simouterloop
                 if isempty(saveFilename)
                     saveFilename = suggestedFilename;
                 end
-                % The "convenient" way: Matlab(r) UI:
-                %                             [saveFilename,pathname] = uiputfile(...
-                %                                 '*.tez','DialogTitle',suggestedFilename);
                 % Save dataset
                 [status] = trEPRsave(saveFilename,dataset);
                 if ~isempty(status)
@@ -138,13 +137,18 @@ while simouterloop
                 clear status saveFilename suggestedFilename;
                 saveloop = true;
                 simouterloop = true;
+            case 'c'
+                % Write Parameters in Config
+                TsimSimparIntoConfig(dataset)
+                saveloop = true;
+                simouterloop = true;
             case 'n'
                 % New simulation
                 simouterloop = 1;
                 saveloop = false;
             case 'f'
-%                 
-%                 % Start fit - give therefore control back to caller
+                %
+                %                 % Start fit - give therefore control back to caller
 %                 % Test if there is experimental data and if there is
 %                 % transfer TSim structure from simdataset into expdataset        
 %                 if ~exist('expdataset','var');
@@ -178,6 +182,10 @@ while simouterloop
                     disp('Some problems with saving data');
                 end
                 clear status saveFilename suggestedFilename;
+                disp('Goodbye!');
+                return;
+            case 'e'
+                % Quit without saving
                 disp('Goodbye!');
                 return;
             otherwise

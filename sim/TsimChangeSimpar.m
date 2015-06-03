@@ -12,16 +12,13 @@ function dataset = TsimChangeSimpar(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-02
 
 
-% TODO Read configuration to see if the added parameter is in configuration
-% and has a value there...
+Temp = CreateTemporaryParameterStruct(dataset);
 
 parameters = TsimParameters;
 ParameterNames = parameters(:,1);
-StandardParameterValues = parameters(:,10);
-
 minsim = logical(cell2mat(parameters(:,7)));
 userpar = logical(cell2mat(parameters(:,9)));    
 minsimuser = userpar & minsim;
@@ -31,19 +28,13 @@ MinSimParameters = ParameterNames(minsimuser);
 
 % Find simulationparameters user already has in simpar this is needed for
 % default
-% Parameter and values user wants
 OldUserSimulationParameters = fieldnames(dataset.TSim.sim.simpar);
-OldUserSimulationParameterValues = struct2cell(dataset.TSim.sim.simpar);
-
 
 % all possible simparameters for user
 allsimpar = logical(cell2mat(parameters(:,6)));
 allsimuser = userpar & allsimpar;
-
 PossibleUserSimulationParameterNames = ParameterNames(allsimuser);
-PossibleUserSimulationParameterStandardValues = StandardParameterValues(allsimuser);
-% TODO Read configuration to see if the added parameter is in configuration
-% and has a value there... so mix with standardvalue
+
 
 % Find default indices
 Lia = ismember(PossibleUserSimulationParameterNames, OldUserSimulationParameters);
@@ -86,47 +77,72 @@ while chooseloop
     end
     
     
-    % Test for MinSim
-    if ~isempty(setdiff(MinSim, NewUserSimulationParameters))
+    % Test for Incompatibilies
+    if any(Bol)
         disp(' ');
-        disp('You need to choose more parameters');
+        disp('You cannot use strains together with ordering.');
+        disp('You cannot use g-strains together with D- or E-strains.');
         disp(' ');
         chooseloop = true;
     else
-        %Test for Incopatibilities
-        if any(Bol)
+        chooseloop = false;
+        % Test for MinSim and Add missing Parameters
+        if ~isempty(setdiff(MinSim, NewUserSimulationParameters))
             disp(' ');
-            disp('You cannot use g-strains together with D- or E-strains');
+            disp('Additional missing parameters have been selected.');
             disp(' ');
-            chooseloop = true;
-        else
-            chooseloop = false;
+            Missing = setdiff(MinSim, NewUserSimulationParameters);
+            NewUserSimulationParameters = [NewUserSimulationParameters;Missing];
         end
     end
-    
-    
-    
+end
+
+% Add new Parameters (NewUserSimulationParameters) and values from
+% TempStruct to simpar
+
+for k=1:length(NewUserSimulationParameters)
+    simpar.(NewUserSimulationParameters{k}) = Temp.(NewUserSimulationParameters{k});
+end
+
+dataset.TSim.sim.simpar = simpar;
+
 end
 
 
-% Add new Parameters and values (FOR NOW THE STANDARDVALUES)
-% Find overlapp with oldparameters to contain their values
+function Temp = CreateTemporaryParameterStruct(dataset)
+Temp = dataset.TSim.sim.simpar;
 
-Lia = ismember(OldUserSimulationParameters, NewUserSimulationParameters);
-OldUserSimulationParameters = OldUserSimulationParameters(Lia);
-OldUserSimulationParameterValues = OldUserSimulationParameterValues(Lia);
+% Find AdditionalSimulatioParameters and theire Values
+% Value is from Config. If there is no value theire Value is from Standard
 
+% all possible simparameters for user
+parameters = TsimParameters;
+ParameterNames = parameters(:,1);
+userpar = logical(cell2mat(parameters(:,9)));
+allsimpar = logical(cell2mat(parameters(:,6)));
+allsimuser = userpar & allsimpar;
+allsimuser = ParameterNames(allsimuser);
 
-[NewUserSimulationParameters, iNewUser] = setdiff(NewUserSimulationParameters, OldUserSimulationParameters);
+% Additional Parameters
+AdditionalParameters = setdiff(allsimuser,fieldnames(dataset.TSim.sim.simpar));
 
-NewUserSimulationParameterStandardValues = PossibleUserSimulationParameterStandardValues(str2double(answer));
-NewUserSimulationParameterStandardValues = NewUserSimulationParameterStandardValues(iNewUser);
+% Values for additional Parameters
+% Is Parameter in config
+config = TsimConfigGet('parameters');
+FlatConfig = commonStructFlatten(config,'overwrite',false);
+FoundInConfig = AdditionalParameters(ismember(AdditionalParameters,fieldnames(FlatConfig)));
 
-simparameters = [OldUserSimulationParameters; NewUserSimulationParameters];
-simparametervalues = [OldUserSimulationParameterValues; NewUserSimulationParameterStandardValues];
-simpar = cell2struct(simparametervalues, simparameters,1);
+for k=1:length(FoundInConfig)
+    Temp.(FoundInConfig{k}) = FlatConfig.(FoundInConfig{k});
+end
 
-% Put it in dataset
-dataset.TSim.sim.simpar = simpar;
+% For Parameters not found in Config Use defaultvalue
+NotFoundInConfig = AdditionalParameters(~ismember(AdditionalParameters,fieldnames(FlatConfig)));
+
+structParam = TsimParameters('struct',true);
+
+for k=1:length(NotFoundInConfig)
+    Temp.(NotFoundInConfig{k}) = structParam.(NotFoundInConfig{k}).standardvalue;
+end
 
 end

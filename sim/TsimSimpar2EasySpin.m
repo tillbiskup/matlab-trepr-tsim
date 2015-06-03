@@ -57,7 +57,6 @@ dataset.TSim.sim.EasySpin = ...
 end
 
 
-% Convert other parameters
 % D and E are in minsim
 if isfield(dataset.TSim.sim.simpar,'D') && isfield(dataset.TSim.sim.simpar,'E')
     

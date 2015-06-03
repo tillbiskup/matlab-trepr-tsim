@@ -12,15 +12,61 @@ function dataset = TsimIniSimpar(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-01
 
 % Check if there is already some information
 if ~isempty(fieldnames(dataset.TSim.sim.simpar))
     return
 end
 
-% TODO: read Configuration and add parameternames to simparstructure and put
-% appropriate values in simpar structure too.
+config = TsimConfigGet('parameters');
+
+if isempty(fieldnames(config))
+    dataset = initializeFallBackParameters(dataset);
+else
+    % CleanUp Config for MinSim and EasySpinIncompatibilities
+    
+    try
+        config = TsimCleanUpConfig(config);
+        %  Write Cleaned Up config Back
+        TsimConfigSet('parameters',config)
+        % CreateSimpar from Config
+        dataset.TSim.sim.simpar = config.StandardSimulationParameters;
+    catch %#ok<CTCH>
+        disp(' ')
+        disp('(WW) Configuation file corrupted. Fall back to default parameters.')
+        dataset = initializeFallBackParameters(dataset);
+        % 
+        % Generate configGood from dist TsimConfigCreate('test') Gleicher
+        % dateiname wie correpted config
+        % newConfig = TsimConfigGet('test')
+        % config = CommonStructCopy(newConfig,config)
+        % config = TsimCleanUpConfig(config);
+        % TsimConfigSet('test',config);
+    end
+    
+    
+end
+
+% Do you have experimental data?
+if ~isempty(dataset.data)
+    % Write experimental things to simpar
+    dataset = trEPRconvertUnits(dataset,'G2mT');
+    
+    dataset.TSim.sim.simpar.nPoints = length(dataset.axes.data(2).values);
+    dataset.TSim.sim.simpar.Range(1) = min(dataset.axes.data(2).values);
+    dataset.TSim.sim.simpar.Range(2) = max(dataset.axes.data(2).values);
+    dataset.TSim.sim.simpar.mwFreq = dataset.parameters.bridge.MWfrequency.value;
+end
+
+dataset = TsimApplyConventions(dataset);
+
+
+end
+
+
+function dataset = initializeFallBackParameters(dataset)
+% Load Parameters
 parameters = TsimParameters;
 
 % Load minimal set of Simulation parameters
@@ -37,36 +83,6 @@ simpar = cell2struct(minsimparametervalues, minsimparameters,1);
 % Put it in dataset
 dataset.TSim.sim.simpar = simpar;
 
-% Do you have experimental data?
-if ~isempty(dataset.data)
-    % Write experimental things to simpar
-    dataset.TSim.sim.simpar.mwFreq = dataset.parameters.bridge.MWfrequency.value;
-    dataset.TSim.sim.simpar.nPoints = length(dataset.axes.y.values);
-    dataset.TSim.sim.simpar.Range(1) = min(dataset.axes.y.values);
-    dataset.TSim.sim.simpar.Range(2) = max(dataset.axes.y.values);
-    
 end
 
 
-% normalize populations
-if isfield(dataset.TSim.sim.simpar,'p1') && isfield(dataset.TSim.sim.simpar,'p2') && isfield(dataset.TSim.sim.simpar,'p3')
-    [normalized] = TsimPnormalizer([(dataset.TSim.sim.simpar.p1) (dataset.TSim.sim.simpar.p2) (dataset.TSim.sim.simpar.p3)]);
-    
-    dataset.TSim.sim.simpar.p1 = normalized(1);
-    dataset.TSim.sim.simpar.p2 = normalized(2);
-    dataset.TSim.sim.simpar.p3 = normalized(3);
-    
-end
-
-% D and E should follow the convention E <= 1/3 D
-if isfield(dataset.TSim.sim.simpar,'D') && isfield(dataset.TSim.sim.simpar,'E')
-    
-    converted = TsimDandEconverter(TsimDandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]));
-    
-    dataset.TSim.sim.simpar.D = converted(1);
-    dataset.TSim.sim.simpar.E = converted(2);
-    
-end
-
-
-end

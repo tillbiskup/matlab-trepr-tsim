@@ -1,0 +1,10 @@
+% Configuration file for Tsim toolbox
+%
+% Last modified: 2015-06-09 13:24:48
+
+[FigureColorDef]
+simlinecolor = [0 0.6 0];
+explinecolor = [0 0 0];
+zerolinecolor = [0.5 0.5 0.5];
+residuumlinecolor = [0 0 1];
+

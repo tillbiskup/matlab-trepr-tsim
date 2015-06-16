@@ -12,7 +12,7 @@ function dataset = TsimSim(dataset,varargin)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-10
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -44,13 +44,14 @@ dataset.calculated(:,1) = routine(dataset.TSim.sim.EasySpin.Sys,...
 % EasySpin does not normalize the spectra
 dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,1)));
 
+
 % Put Axes information for calculated in main dataset
 if min(size(dataset.data)) < 2
     % Only Simulated or 1-d Data
     dataset.axes.calculated(1).values = linspace(...
-        dataset.TSim.sim.EasySpin.Exp.Range(1),...
-        dataset.TSim.sim.EasySpin.Exp.Range(2),...
-        dataset.TSim.sim.EasySpin.Exp.nPoints);
+        dataset.TSim.sim.simpar.Range(1),...
+        dataset.TSim.sim.simpar.Range(2),...
+        dataset.TSim.sim.simpar.nPoints);
     
     dataset.axes.calculated(1).unit = 'mT';
     dataset.axes.calculated(1).measure = 'magnetic field';
@@ -58,16 +59,13 @@ if min(size(dataset.data)) < 2
 else
     % 2-D datata
     dataset.axes.calculated(2).values = linspace(...
-        dataset.TSim.sim.EasySpin.Exp.Range(1),...
-        dataset.TSim.sim.EasySpin.Exp.Range(2),...
-        dataset.TSim.sim.EasySpin.Exp.nPoints);
+        dataset.TSim.sim.simpar.Range(1),...
+        dataset.TSim.sim.simpar.Range(2),...
+        dataset.TSim.sim.simpar.nPoints);
     
     dataset.axes.calculated(2).unit = 'mT';
     dataset.axes.calculated(2).measure = 'magnetic field';
 end
-
-
-
 
 
 

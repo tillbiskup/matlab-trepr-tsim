@@ -1,2 +1,2 @@
 % trEPR Toolbox Tsim module
-% Version 0.3.1 29-May-2015
+% Version 0.3.2 16-Jun-2015

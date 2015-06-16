@@ -28,7 +28,7 @@ function parameters = TsimParameters(varargin)
 % See also TSIM
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-01
+% 2015-06-10
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -58,7 +58,7 @@ parameters(12,:) = {'DStrainE','Sys.DStrain(2)','local inhomogeneous linewidth, 
 parameters(13,:) = {'gStrainx','Sys.gStrain(1)','g strain in x direction (don''t use with D strain!)','MHz', true, true, false, false, true, 0.005, false, {'DStrainD','DStrainE','Ordering'}};
 parameters(14,:) = {'gStrainy','Sys.gStrain(2)','g strain in y direction (don''t use with D strain!)','MHz', true, true, false, false, true, 0.005, false, {'DStrainD','DStrainE','Ordering'}};
 parameters(15,:) = {'gStrainz','Sys.gStrain(3)','g strain in z direction (don''t use with D strain!)','MHz', true, true, false, false, true, 0.005, false, {'DStrainD','DStrainE','Ordering'}};
-parameters(16,:) = {'DeltaB','','Frequency correction via field offset','mT', true, false, false, false, true, 0, false, {}};
+parameters(16,:) = {'DeltaB','','Field offset','mT', true, true, false, false, true, 0, false, {}};
 parameters(17,:) = {'mwFreq','Exp.mwFreq','Microwave frequency','GHz',false, true, true, false, true, 9.7, false, {}};
 parameters(18,:) = {'nPoints','Exp.nPoints','Number of points of field axis','',false, true, true, false, true, 326, false, {}};
 parameters(19,:) = {'Range','Exp.Range','Lower and upper boundaries of field axis','mT', false, true, true, false, true, [280 410], false, {}};

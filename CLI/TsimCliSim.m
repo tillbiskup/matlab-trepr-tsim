@@ -25,54 +25,11 @@ while simouterloop
         
     siminiloop = true;
     while siminiloop
-        
-        disp(' ');
-        
-        % Display current set of simulation parameters with
-        % their values
-        disp('The simulation parameters currently chosen:')
-        
-        disp(' ');
-        
-        TsimParDisplay(dataset,'sim');
-        
-        disp(' ');
-        
-        % Change values, numbers of simulation parameters, or start
-        % simulation (changing simulation routine not implemented yet)
-        option ={...
-            'v','Change values of chosen simulation parameters';...
-            'p','Choose additional simulation parameters';...
-            'r','Change simulation routine'
-            's','Start simulation';...
-            'q','Quit'};
-        answer = cliMenu(option, 'default','s');
-        
-        disp(' ');
-        
-        switch lower(answer)
-            case 'v'
-                % Change values
-                dataset = TsimChangeSimValues(dataset);
-                siminiloop = true;
-            case 'p'
-                % Choose different simulation parameters
-                dataset = TsimChangeSimpar(dataset);
-                siminiloop = true;
-            case 'r'
-                % Change simulation routine
-                dataset = TsimChangeSimRoutine(dataset);           
-                siminiloop = true;
-            case 's'
-                % Start simulation
-                siminiloop = false;
-            case 'q'
-                % Quit
-                disp('Goodbye!');
-                return;
-            otherwise
-                % Shall never happen
-                disp('Moron!');
+        [dataset, siminiloop, quit] = TsimIniSimCli(dataset);
+        if quit
+            % Quit
+            disp('Goodbye!');
+            return;
         end
     end % siminiloop
     
@@ -107,11 +64,11 @@ while simouterloop
     while saveloop
         option = {...
             'a','Save dataset';...
+            'r','Export figure and report parameters';...
             'n','Start a new simulation';...
-            'c','Write parameters in configuration'
-            'f','Start a fit using your simulation values as starting values';...
+            'c','Write parameters to configuration'
             'q','Quit';...
-            'e', 'Exit; No autosaving'};
+            'e','Exit; No autosaving'};
         answer = cliMenu(option,'title',...
             'How to continue?','default','n');
         
@@ -139,30 +96,41 @@ while simouterloop
                 simouterloop = true;
             case 'c'
                 % Write Parameters in Config
-                TsimSimparIntoConfig(dataset)
+                TsimSimpar2ConfigFile(dataset)
+                saveloop = true;
+                simouterloop = true;
+            case 'r'
+                % figureexport and report
+                % Get figure handel
+                    h = gcf;
+                    % Suggest reasonable filename
+                    [path,name,~] = fileparts(dataset.file.name);
+                    suggestedFilename = fullfile(path,[name '_simfig']);
+                    % The "easy" way: consequently use CLI
+                    saveFilename = input(...
+                        sprintf('Filename (%s): ',suggestedFilename),...
+                        's');
+                    if isempty(saveFilename)
+                        saveFilename = suggestedFilename;
+                    end
+                    
+                    % Export figure as .fig and as .pdf
+                    [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
+                    if ~isempty(status)
+                        disp('Some problems with exporting fig-figure');
+                    end
+                    [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
+                    if ~isempty(status)
+                        disp('Some problems with exporting pdf-figure');
+                    end
+                    clear status saveFilename suggestedFilename;
+                    close(figure(1));
                 saveloop = true;
                 simouterloop = true;
             case 'n'
                 % New simulation
-                simouterloop = 1;
-                saveloop = false;
-            case 'f'
-                %
-                %                 % Start fit - give therefore control back to caller
-%                 % Test if there is experimental data and if there is
-%                 % transfer TSim structure from simdataset into expdataset        
-%                 if ~exist('expdataset','var');
-%                     command = 'fit';
-%                     return;
-%                 end
-%                 
-%                 if ~isempty(simdataset.data);
-%                     expdataset.TSim = simdataset.TSim;
-%                     simdataset = expdataset;
-%                 end
-%                 command = 'fit';
-                return;
-        
+                simouterloop = true;
+                saveloop = false;        
             case 'q'
                 % Quit
                 % Automatically save dataset to default filename

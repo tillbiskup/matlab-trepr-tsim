@@ -36,13 +36,6 @@ else
         disp(' ')
         disp('(WW) Configuation file corrupted. Fall back to default parameters.')
         dataset = initializeFallBackParameters(dataset);
-        % 
-        % Generate configGood from dist TsimConfigCreate('test') Gleicher
-        % dateiname wie correpted config
-        % newConfig = TsimConfigGet('test')
-        % config = CommonStructCopy(newConfig,config)
-        % config = TsimCleanUpConfig(config);
-        % TsimConfigSet('test',config);
     end
     
     

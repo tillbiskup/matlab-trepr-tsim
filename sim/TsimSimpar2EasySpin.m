@@ -2,7 +2,7 @@ function dataset = TsimSimpar2EasySpin(dataset)
 % TSIMSIMPAR2EASYSPIN Transfers parameters from the simpar structure to the easyspin structure.
 %
 % Usage
-%   dataset = TsimPar2SysExp(dataset)
+%   dataset = TsimSimpar2EasySpin(dataset)
 %
 %
 %   dataset - struct
@@ -12,6 +12,9 @@ function dataset = TsimSimpar2EasySpin(dataset)
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
 % 2015-05-29
+
+
+dataset = TsimApplyConventions(dataset);
 
 parameters = TsimParameters;
 
@@ -29,6 +32,7 @@ dataset.TSim.sim.EasySpin = ...
     commonSetCascadedField(dataset.TSim.sim.EasySpin,nonuserpar{cellindex},...
     nonuservalues{cellindex});
 end
+
 
 
 % Find simulationparameters user wants that don't need conversion and put
@@ -51,22 +55,28 @@ simnonconparvalues = simparvalues(isimpar);
 
 
 for cellindex = 1:length(simnonconparameters)
+    if ~isempty(simnonconparameters{cellindex})
 dataset.TSim.sim.EasySpin = ...
     commonSetCascadedField(dataset.TSim.sim.EasySpin,simnonconparameters{cellindex},...
     simnonconparvalues{cellindex});
+    end
 end
-
 
 % D and E are in minsim
 if isfield(dataset.TSim.sim.simpar,'D') && isfield(dataset.TSim.sim.simpar,'E')
     
     principalvalues = TsimDandEconverter([dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]);
     
-    % Put it in EasySpin
+% Put it in EasySpin
     dataset.TSim.sim.EasySpin.Sys = ...
-        commonSetCascadedField(dataset.TSim.sim.EasySpin.Sys,'D',principalvalues);
-    
+        commonSetCascadedField(dataset.TSim.sim.EasySpin.Sys,'D',principalvalues);    
 end
+
+% Check if DeltaB is in simpar and change Range in EasySpin accordingly
+if isfield(dataset.TSim.sim.simpar,'DeltaB')
+   dataset.TSim.sim.EasySpin.Exp.Range = dataset.TSim.sim.EasySpin.Exp.Range - dataset.TSim.sim.simpar.DeltaB;
+end
+
 
 % Remove all empty fields in EasySpin structure
 EasySpinFields = fieldnames(dataset.TSim.sim.EasySpin);

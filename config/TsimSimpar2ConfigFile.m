@@ -1,10 +1,11 @@
-function TsimSimparIntoConfig(dataset)
-% TSIMSIMPARINTOCONFIG Put SimulationParameters in simpar into 
+function TsimSimpar2ConfigFile(dataset)
+% TSIMSIMPAR2CONFIGFILE Put Simulation Parameters in simpar (and fitparameters if existing) into 
 % appropriate place in config and write config to file. If your dataset has
-% experimental data the Parameters nPoints, Range and mwFreq are not written Back.   
+% experimental data and your configuration is not corrupted the Parameters
+% nPoints, Range and mwFreq are not written Back.   
 %
 % Usage
-%   TsimSimparIntoConfig(dataset)
+%   TsimSimpar2ConfigFile(dataset)
 %
 %   dataset - struct
 %             Full trEPR toolbox dataset including TSim structure
@@ -15,11 +16,34 @@ function TsimSimparIntoConfig(dataset)
 % 2015-06-03
 
 
-% Get configuation 
+% Get configuation
 config = TsimConfigGet('parameters');
 
-% Clean Up configuarionfile
-config = TsimCleanUpConfig(config);
+if isempty(fieldnames(config))
+    Simconfig = TsimSimpar2Config(dataset);
+    Fitconfig = TsimFitpar2Config(dataset);
+    % Put it together
+    config = commonStructCopy(Simconfig,Fitconfig);
+
+    % Write Config to file
+    TsimConfigSet('parameters',config);
+    return
+end
+
+
+try
+    config = TsimCleanUpConfig(config);
+    
+catch %#ok<CTCH>
+    Simconfig = TsimSimpar2Config(dataset);
+    Fitconfig = TsimFitpar2Config(dataset);
+    % Put it together
+    config = commonStructCopy(Simconfig,Fitconfig);
+
+    % Write Config to file
+    TsimConfigSet('parameters',config);
+    return
+end
 
 
 % Put Simpar into config. All field in simpar are in StandardSimulation all
@@ -52,6 +76,13 @@ end
 % Remove Overlaps
 config.AdditionalSimulationParameters = removeFieldsInSecondThatAreInFirst(...
     config.StandardSimulationParameters,config.AdditionalSimulationParameters);
+
+% Fitparameters
+Fitconfig = TsimFitpar2Config(dataset);
+if ~isempty(Fitconfig)
+config = commonStructCopy(config,Fitconfig);    
+end
+
 
 % Write Config to file
 TsimConfigSet('parameters',config);

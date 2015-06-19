@@ -17,7 +17,10 @@ function TsimSimpar2ConfigFile(dataset)
 
 
 % Get configuation
-config = TsimConfigGet('parameters');
+
+routine = dataset.TSim.sim.routine;
+
+config = TsimConfigGet([routine 'parameters']);
 
 if isempty(fieldnames(config))
     Simconfig = TsimSimpar2Config(dataset);
@@ -26,13 +29,14 @@ if isempty(fieldnames(config))
     config = commonStructCopy(Simconfig,Fitconfig);
 
     % Write Config to file
-    TsimConfigSet('parameters',config);
+     TsimConfigSet([routine 'parameters'],config)
     return
 end
 
 
 try
-    config = TsimCleanUpConfig(config);
+    configCleanupRoutine = str2func(commonCamelCase({'TSimCleanupConfig',routine}));
+    config = @configCleanupRoutine(config);
     
 catch %#ok<CTCH>
     Simconfig = TsimSimpar2Config(dataset);
@@ -41,7 +45,7 @@ catch %#ok<CTCH>
     config = commonStructCopy(Simconfig,Fitconfig);
 
     % Write Config to file
-    TsimConfigSet('parameters',config);
+    TsimConfigSet([routine 'parameters'],config)
     return
 end
 
@@ -85,7 +89,7 @@ end
 
 
 % Write Config to file
-TsimConfigSet('parameters',config);
+ TsimConfigSet([routine 'parameters'],config)
 end
 
 function second = removeFieldsInSecondThatAreInFirst(first,second)

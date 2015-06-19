@@ -19,25 +19,32 @@ if ~isempty(fieldnames(dataset.TSim.sim.simpar))
     return
 end
 
-config = TsimConfigGet('parameters');
+
+routine = dataset.TSim.sim.routine;
+
+config = TsimConfigGet([routine 'parameters']);
 
 if isempty(fieldnames(config))
-    dataset = initializeFallBackParameters(dataset);
+    dataset = TsimInitializeFallBackParameters(dataset);
+     disp(' ')
+    disp('Missing configuration... Loaded default values.');
+     disp(' ')
 else
     % CleanUp Config for MinSim and EasySpinIncompatibilities
-    
     try
-        config = TsimCleanUpConfig(config);
-        %  Write Cleaned Up config Back
-        TsimConfigSet('parameters',config)
+        configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
+        config = configCleanupRoutine(config);
+        
+        TsimConfigSet([routine 'parameters'],config)
         % CreateSimpar from Config
         dataset.TSim.sim.simpar = config.StandardSimulationParameters;
+        
     catch %#ok<CTCH>
         disp(' ')
         disp('(WW) Configuation file corrupted. Fall back to default parameters.')
-        dataset = initializeFallBackParameters(dataset);
+         disp(' ')
+        dataset = TsimInitializeFallBackParameters(dataset);
     end
-    
     
 end
 
@@ -54,28 +61,8 @@ end
 
 dataset = TsimApplyConventions(dataset);
 
-
 end
 
 
-function dataset = initializeFallBackParameters(dataset)
-% Load Parameters
-parameters = TsimParameters;
-
-% Load minimal set of Simulation parameters
-minsim = logical(cell2mat(parameters(:,7)));
-userpar = logical(cell2mat(parameters(:,9)));
-minsimuser = userpar & minsim;
-
-minsimparameters = parameters(minsimuser,1);
-minsimparametervalues = parameters(minsimuser,10);
-
-% Create Structure
-simpar = cell2struct(minsimparametervalues, minsimparameters,1);
-
-% Put it in dataset
-dataset.TSim.sim.simpar = simpar;
-
-end
 
 

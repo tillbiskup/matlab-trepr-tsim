@@ -17,7 +17,7 @@ function dataset = TsimChangeSimpar(dataset, varargin)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-02
+% 2015-06-18
 
 Temp = CreateTemporaryParameterStruct(dataset);
 
@@ -37,7 +37,18 @@ else
     ParameterNames = parameters(:,1);
     minsim = logical(cell2mat(parameters(:,7)));
     userpar = logical(cell2mat(parameters(:,9)));
-    minsimuser = userpar & minsim;
+    pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),parameters(:,13));
+    tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),parameters(:,13));
+
+    routine = dataset.TSim.sim.routine;
+    
+    switch routine
+        case 'pepper'
+            minsimuser = userpar & minsim & pepperpar;
+        case 'tango'
+            minsimuser = userpar & minsim & tangopar;
+    end
+    
     
     MinSimParameters = ParameterNames(minsimuser);
     
@@ -48,7 +59,13 @@ else
     
     % all possible simparameters for user
     allsimpar = logical(cell2mat(parameters(:,6)));
-    allsimuser = userpar & allsimpar;
+     switch routine
+        case 'pepper'
+            allsimuser = userpar & allsimpar & pepperpar;
+        case 'tango'
+           allsimuser = userpar & allsimpar & tangopar;
+    end
+    
     PossibleUserSimulationParameterNames = ParameterNames(allsimuser);
     
     
@@ -136,12 +153,20 @@ Temp = dataset.TSim.sim.simpar;
 % Find AdditionalSimulatioParameters and theire Values
 % Value is from Config. If there is no value theire Value is from Standard
 
+routine = dataset.TSim.sim.routine;
 % all possible simparameters for user
 parameters = TsimParameters;
 ParameterNames = parameters(:,1);
 userpar = logical(cell2mat(parameters(:,9)));
 allsimpar = logical(cell2mat(parameters(:,6)));
-allsimuser = userpar & allsimpar;
+pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),parameters(:,13));
+tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),parameters(:,13));
+switch routine
+    case 'pepper'
+        allsimuser = userpar & allsimpar & pepperpar;
+    case 'tango'
+        allsimuser = userpar & allsimpar & tangopar;
+end
 allsimuser = ParameterNames(allsimuser);
 
 % Additional Parameters

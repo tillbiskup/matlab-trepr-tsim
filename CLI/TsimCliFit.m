@@ -10,7 +10,7 @@ function dataset = TsimCliFit(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-09
+% 2015-06-19
 
 
 
@@ -25,9 +25,6 @@ while fitouterloop
         dataset.TSim.fit.spectrum.tempSpectrum = dataset.data;
         dataset.TSim.fit.spectrum.tempSpectrum = dataset.TSim.fit.spectrum.tempSpectrum./sum(abs(dataset.TSim.fit.spectrum.tempSpectrum));
     end
-    
-    % Initialize minimal simulation parameters
-    dataset = TsimIniSimpar(dataset);
     
     siminiloop = true;
     while siminiloop
@@ -193,9 +190,7 @@ while fitouterloop
         comment = input('> ','s');
         dataset.TSim.remarks.comment = comment;
         
-        % Clear tempSpectrum
-        dataset.TSim.fit.spectrum.tempSpectrum = [];
-        
+       
         % Write history
         % (Orwell style - we're creating our own)
         dataset = TsimHistory('write',dataset);
@@ -207,10 +202,15 @@ while fitouterloop
             option = {...
                 'a','Save dataset';...
                 'r','Export figure and report parameters';...
+                'w','Write parameters to configuration';...
+                ' ',' ';...
                 'f','Start new fit with final values as starting point';...
-                'n','Start new fit with config values as starting point';...
-                'b','Start new fit with same initial values as before';...
-                'c','Write parameters to configuration';...
+                'i','Start new fit with ame initial values as before' ;...
+                'p','Start new fit on different position in your 2-D data with final values as starting point';...
+                'c','Start new fit on different position in your 2-D data with initial values from configuration';...
+                ' ',' ';...
+                's','Start new fit with final values as starting point using a different simulation routine';...
+                ' ',' ';...
                 'q','Quit';...
                 'e','Exit; No autosaving'};
             
@@ -234,11 +234,15 @@ while fitouterloop
                         saveFilename = suggestedFilename;
                     end
                     % Save dataset
-                    [status] = trEPRsave(saveFilename,dataset);
+                     % Clear tempSpectrum onyl in dataset that is saved
+                    savedataset = dataset;
+                    savedataset.TSim.fit.spectrum.tempSpectrum = [];
+                    [status] = trEPRsave(saveFilename,savedataset);
                     if ~isempty(status)
                         disp('Some problems with saving data');
                     end
-                    clear status saveFilename suggestedFilename;
+                    clear status saveFilename suggestedFilename savedataset;
+                    
                     saveloop = true;
                 case 'r'
                     % Get figure handel
@@ -268,10 +272,19 @@ while fitouterloop
                         disp('Some problems with exporting pdf-figure');
                     end
                     clear status saveFilename suggestedFilename;
-                    close(figure(1));
+                    close(h);
                     
                     saveloop = true;
+                case 'w'
+                    % Write Parameters in Config
+                    TsimSimpar2ConfigFile(dataset)
+                    saveloop = true;
+                    
+
+                    
                 case 'f'
+                    close(h);
+                    % Don't clear tempSpectrum
                     % Copy Values from Simpar to fitpar inivalue
                     dataset = TsimCopySimparValues2Initialvalue(dataset);
                     
@@ -280,12 +293,24 @@ while fitouterloop
                     
                     % Fit again
                     saveloop = false;
-                    fitinnerloop = true;
-                    fitouterloop = true;  
-                case 'n'
+                    
+                case 'i'
+                    close(h);
+                    % Don't clear tempSpectrum
+                    % New fit with same initial parameters as before
+                    dataset = TsimFitpar2simpar(dataset.TSim.fit.initialvalues,dataset);
+                    dataset = TsimApplyConventions(dataset);
+                    
+                    
+                    % Fit again
+                    saveloop = false;
+            
+                case 'c'
+                    close(h);
                     % New fit with default initial parameters from
                     % config
-                    % Clear simpar and fitpar
+                    % Clear simpar and fitpar and tempSpectrum
+                    dataset.TSim.fit.spectrum.tempSpectrum = [];
                     fields2beremoved = fieldnames(dataset.TSim.sim.simpar);
                     for k = 1: length(fields2beremoved)
                         dataset.TSim.sim.simpar = rmfield(dataset.TSim.sim.simpar,(fields2beremoved(k)));
@@ -294,21 +319,68 @@ while fitouterloop
                     saveloop = false;
                     fitinnerloop = false;
                     
-                case 'b'
-                    % New fit with same initial parameters as before
-                    dataset = TsimFitpar2simpar(dataset.TSim.fit.initialvalues,dataset);
-                    dataset = TsimApplyConventions(dataset);
+                case 'p'
+                    close(h);
+                    % New fit with final values as starting parameters but
+                    % different section
+                    % Clear tempSpectrum
+                    dataset.TSim.fit.spectrum.tempSpectrum = [];
+                    % Copy Values from Simpar to fitpar inivalue
+                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    
+                    % Check if boundaries are compatible with inivalue and possibly change them
+                    dataset = TsimCheckBoundaries(dataset);
+                  
+                    saveloop = false;
+                    fitinnerloop = false;
+                    
+                    
+                    
+                    
+                case 's'
+                    close(h);
+                    % New fit with final values as starting parameters but
+                    % different simulation routine, same section
+                    disp('The simulation routines currently in use:')
+                    disp(' ')
+                    disp(dataset.TSim.sim.routine);
+                    disp(' ')
+                    
+                    oldRoutine = dataset.TSim.sim.routine;
+                    dataset = TsimChangeSimRoutine(dataset);
+                    newRoutine = dataset.TSim.sim.routine;
+                    
+                    if ~strcmpi(oldRoutine,newRoutine)
+                        % Check simpar and possibly change it but don't change
+                        % values
+                        dataset = TsimCleanUpSimpar(dataset,oldRoutine);
+                        % Check fitpar. Is there a parameter that is now not
+                        % possible anymore. Change fitpar and analogously lb and
+                        % ub.
+                        dataset = TsimKickOutFitpar(dataset);
+                        
+                        %Clear initialvalues
+                        dataset.TSim.fit.initialvalues = [];
+                        
+                    end
+                    % Copy Values from Simpar to fitpar inivalue
+                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    
+                    % Check if boundaries are compatible with inivalue and possibly change them
+                    dataset = TsimCheckBoundaries(dataset);
                     
                     saveloop = false;
                     fitinnerloop = false;
-                    fitouterloop = true;
-                case 'c'
-                    % Write Parameters in Config
-                    TsimSimpar2ConfigFile(dataset)
-                    saveloop = true;
+                    
+                    
+                                       
+                    
                 case 'q'
+                    close(h);
                     % Quit
                     % Suggest reasonable filename
+                    % Clear tempSpectrum
+                    dataset.TSim.fit.spectrum.tempSpectrum = [];
                     [path,name,~] = fileparts(dataset.file.name);
                     suggestedFilename = fullfile(...
                         path,[name '_fit-' datestr(now,30) '.tez']);
@@ -322,10 +394,14 @@ while fitouterloop
                     disp('Goodbye!');
                     return
                 case 'e'
+                    close(h);
                     % Quit without saving
+                    % Clear tempSpectrum
+                    dataset.TSim.fit.spectrum.tempSpectrum = [];
                     disp('Goodbye!');
                     return,
                 otherwise
+                    close(h);
                     % Shall never happen
                     disp(['You did bullshit... '...
                         'however you managed. '...

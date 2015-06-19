@@ -23,6 +23,14 @@ function [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 quit = false;
 disp(' ');
 
+if isempty(dataset.TSim.sim.routine)
+    dataset = TsimChangeSimRoutine(dataset);
+end
+
+
+% Initialize minimal simulation parameters
+dataset = TsimIniSimpar(dataset);
+
 % Display current set of simulation parameters with
 % their values
 disp('The simulation parameters currently chosen:')
@@ -34,11 +42,10 @@ TsimParDisplay(dataset,'sim');
 disp(' ');
 
 % Change values, numbers of simulation parameters, or start
-% simulation (changing simulation routine not implemented yet)
+% simulation
 option ={...
     'v','Change values of chosen simulation parameters';...
     'p','Choose different/additional simulation parameters';...
-    'r','Change simulation routine';...
     'c','Continue';...
     'q','Quit'};
 answer = cliMenu(option,'default','c');
@@ -53,10 +60,6 @@ switch lower(answer)
     case 'p'
         % Choose different simulation parameters
         dataset = TsimChangeSimpar(dataset);
-        siminiloop = true;
-    case 'r'
-        % Change simulation routine
-        dataset = TsimChangeSimRoutine(dataset);
         siminiloop = true;
     case 'q'
         % Quit

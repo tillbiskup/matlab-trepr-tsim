@@ -2,7 +2,7 @@ function [normalized] = TsimPnormalizer(unnormalized)
 % TSIMPNORMALIZER Normalize populations
 %
 % Usage
-%   [normalized] = TsimDandEconverter(unnormalized)
+%   [normalized] = TsimPnormalizer(unnormalized)
 %
 %
 %   normalized   - vector

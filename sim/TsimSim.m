@@ -31,14 +31,12 @@ if isempty(dataset.TSim.sim.routine)
 end
 routine = str2func(dataset.TSim.sim.routine);
 
-% Calculating the spectrum using Easyspin's pepper function. The result is
-% returned in the field "calculated" of the dataset.
-
+% Calculating the spectrum 
 % Call Simpar2EasySpin
 dataset = TsimSimpar2EasySpin(dataset);
 
 % Simulate
-dataset.calculated(:,1) = routine(dataset.TSim.sim.EasySpin.Sys,...
+[~,dataset.calculated(:,1)] = routine(dataset.TSim.sim.EasySpin.Sys,...
     dataset.TSim.sim.EasySpin.Exp,dataset.TSim.sim.EasySpin.Opt);
 
 % EasySpin does not normalize the spectra

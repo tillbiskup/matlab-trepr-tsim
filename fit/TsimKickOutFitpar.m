@@ -19,6 +19,15 @@ if isempty(RemoveFromFitpar)
     return
 else
            
-dataset.TSim.fit.fitpar = intersect(dataset.TSim.fit.fitpar,fieldnames(dataset.TSim.sim.simpar));
+[dataset.TSim.fit.fitpar, ifitpar, ~] = intersect(dataset.TSim.fit.fitpar,fieldnames(dataset.TSim.sim.simpar));
+
+if ~isempty(dataset.TSim.fit.lb)
+    dataset.TSim.fit.lb = dataset.TSim.fit.lb(ifitpar);
+end
+
+if ~isempty(dataset.TSim.fit.ub)
+    dataset.TSim.fit.ub = dataset.TSim.fit.ub(ifitpar);
+end
+
 
 end

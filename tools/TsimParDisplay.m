@@ -45,6 +45,10 @@ switch lower(command)
         % Display simpar
         % TODO Can be made nicer with loading the parameters and displaying the
         % propper name (with description) instead of the internal name
+        disp({'Simulation rotine:' dataset.TSim.sim.routine});
+        
+        disp(' ')
+       
         disp(dataset.TSim.sim.simpar);
         
     case 'fit'

@@ -18,22 +18,16 @@ nPoints = 326
 Range = 280 410
 
 [AdditionalSimulationParameters]
-gStrainx = 0.005
-gStrainy = 0.005
-gStrainz = 0.005
-DStrainD = 10
-DStrainE = 5
-nKnotsOrientation = 31
-nKnotsInterpolation = 0
-Ordering = 0.3
+phi = 2
+theta = 2 
+sigma = 0.6 
 DeltaB = 0.2
 
 [FitparametersAndBoundaries]
-D = 500                    750
-E = 140                    160
-p1 = 0.25                   0.35
-p2 = 0.2                    0.4
 DeltaB = -0.1                    0.3
+lwGauss =   0                7
+lwLorentz = 0                7
+
 
 [FitOptions]
 MaximumIteration = 400

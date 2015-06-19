@@ -13,15 +13,13 @@ function dataset = TsimCliSim(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-19
 
 
 
 simouterloop = true;
 while simouterloop
         
-    % Initialize minimal simulation parameters
-    dataset = TsimIniSimpar(dataset);
         
     siminiloop = true;
     while siminiloop
@@ -42,15 +40,8 @@ while simouterloop
     % Calculate spectrum (actual simulation)
     dataset = TsimSim(dataset);
     
-    figure();
-    plot(linspace(...
-        dataset.TSim.sim.EasySpin.Exp.Range(1),...
-        dataset.TSim.sim.EasySpin.Exp.Range(2),...
-        dataset.TSim.sim.EasySpin.Exp.nPoints ...
-        ),dataset.calculated);
-    xlabel('{\it magnetic field} / mT');
-    ylabel('{\it intensity} / a.u.');
-    
+    h = TsimMakeShinyPicture(dataset);
+   
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
@@ -65,8 +56,9 @@ while simouterloop
         option = {...
             'a','Save dataset';...
             'r','Export figure and report parameters';...
-            'n','Start a new simulation';...
-            'c','Write parameters to configuration'
+            'n','Start a new simulation with same routine';...
+            's','Start a new simulation with different routine';...
+            'w','Write parameters to configuration'
             'q','Quit';...
             'e','Exit; No autosaving'};
         answer = cliMenu(option,'title',...
@@ -94,15 +86,13 @@ while simouterloop
                 clear status saveFilename suggestedFilename;
                 saveloop = true;
                 simouterloop = true;
-            case 'c'
+            case 'w'
                 % Write Parameters in Config
                 TsimSimpar2ConfigFile(dataset)
                 saveloop = true;
                 simouterloop = true;
             case 'r'
                 % figureexport and report
-                % Get figure handel
-                    h = gcf;
                     % Suggest reasonable filename
                     [path,name,~] = fileparts(dataset.file.name);
                     suggestedFilename = fullfile(path,[name '_simfig']);
@@ -124,17 +114,41 @@ while simouterloop
                         disp('Some problems with exporting pdf-figure');
                     end
                     clear status saveFilename suggestedFilename;
-                    close(figure(1));
-                saveloop = true;
-                simouterloop = true;
+                    close(h);
+                    saveloop = true;
+                    simouterloop = true;
             case 'n'
                 % New simulation
+                close(h);
                 simouterloop = true;
-                saveloop = false;        
+                saveloop = false;
+                
+            case 's'
+                % New simulation different routine but same parameters
+                close(h);
+                disp('The simulation routines currently in use:')
+                disp(' ')
+                disp(dataset.TSim.sim.routine);
+                disp(' ')
+                oldRoutine = dataset.TSim.sim.routine;
+                dataset = TsimChangeSimRoutine(dataset);
+                newRoutine = dataset.TSim.sim.routine;
+                
+                if ~strcmpi(oldRoutine,newRoutine)
+                    % Check simpar and possibly change it but don't change
+                    % values
+                    dataset = TsimCleanUpSimpar(dataset,oldRoutine);
+                end
+                
+                
+                simouterloop = true;
+                saveloop = false;
+                %
             case 'q'
                 % Quit
                 % Automatically save dataset to default filename
                 % Suggest reasonable filename
+                close(h);
                 if exist('filename','var')
                     [path,name,~] = fileparts(filename);
                     suggestedFilename = fullfile(...
@@ -153,10 +167,12 @@ while simouterloop
                 disp('Goodbye!');
                 return;
             case 'e'
+                close(h);
                 % Quit without saving
                 disp('Goodbye!');
                 return;
             otherwise
+                close(h);
                 % Shall never happen
                 disp('Something very strange happened...')
                 simouterloop = true;

@@ -11,22 +11,28 @@ function dataset = TsimChangeSimRoutine(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-19
 
-
-disp('The simulation routines currently implemented:')
-disp(' ');
 option ={...
     'p','Pepper';...
-    's','Stephan'};
-answer = cliMenu(option, 'default','p');
+    't','Tango'};
+answer = cliMenu(option,'title',...
+    'Please chose a simulation routine','default','p');
+
 switch lower(answer)
     case 'p'
         dataset.TSim.sim.routine = 'pepper';
-    case 's'
-        disp(' ');
-        disp('Sorry not implemented. Pepper will be used instead.')
-        disp(' ');
-        dataset.TSim.sim.routine = 'pepper';
+    case 't'
+        dataset.TSim.sim.routine = 'tango';
 end
+
+dataset.TSim.acknowledgement.sim = TsimAcknowledgement(dataset);
+
+disp(' ');
+disp('**********************************************************');
+cellfun(@(x)disp(['* ' x]),dataset.TSim.acknowledgement.sim);
+disp('**********************************************************');
+disp(' ');
+
+
 end

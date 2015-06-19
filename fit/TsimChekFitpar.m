@@ -17,7 +17,6 @@ function dataset = TsimChekFitpar(dataset)
 
 missingInSimpar = setdiff(dataset.TSim.fit.fitpar,fieldnames(dataset.TSim.sim.simpar));
 if isempty(missingInSimpar)
-    disp('all Parameters in fitpar are also in simpar');
     return
 else
            

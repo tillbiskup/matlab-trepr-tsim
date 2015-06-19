@@ -16,7 +16,19 @@ Parameters = TsimParameters;
 ParameterNames = Parameters(:,1);
 fitpar = logical(cell2mat(Parameters(:,5)));
 userpar = logical(cell2mat(Parameters(:,9)));
-fituser = userpar & fitpar;
+pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),Parameters(:,13));
+tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),Parameters(:,13));
+
+routine = dataset.TSim.sim.routine;
+    
+    switch routine
+        case 'pepper'
+            fituser = userpar & fitpar & pepperpar;
+        case 'tango'
+            fituser = userpar & fitpar & tangopar;
+    end
+
+
 
 % Check if there is already some information
 oldfitpar = dataset.TSim.fit.fitpar;

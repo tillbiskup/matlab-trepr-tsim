@@ -20,7 +20,9 @@ if ~isempty(dataset.TSim.fit.fitpar)
     return
 end
 
-config = TsimConfigGet('parameters');
+routine = dataset.TSim.sim.routine;
+config = TsimConfigGet([routine 'parameters']);
+
 
 if isempty(fieldnames(config))
     dataset = initializeDefaultFitParameters(dataset);
@@ -28,9 +30,10 @@ else
     % CleanUp Config for MinSim and EasySpinIncompatibilities
     
     try
-        config = TsimCleanUpConfig(config);
-        %  Write Cleaned Up config Back
-        TsimConfigSet('parameters',config)
+        configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
+        config = configCleanupRoutine(config);
+        
+        TsimConfigSet([routine 'parameters'],config)
         % CreateFitpar from Config
         dataset.TSim.fit.fitpar = fieldnames(config.FitparametersAndBoundaries);
         for k = 1:length(dataset.TSim.fit.fitpar)

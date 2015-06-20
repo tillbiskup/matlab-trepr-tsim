@@ -1,0 +1,249 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% TsimFitReport-de.tex - LaTeX template for reporting fit results from the Tsim toolbox.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% The "-de" indicates that this is a GERMAN template. Feel free to translate into any
+% other language while containing the general structure and contents.
+%
+% This template is meant to be used with the report functionality of the Tsim toolbox
+% in combination with the common toolbox and the tpl template engine.
+%
+% Make sure to set the delimiters for fields to "[[" and "]]" accordingly, as it turned 
+% out that the default "{{" and "}}" delimiters are not a very good idea for use with
+% LaTeX.
+%
+% Please note that this template makes use of knowledge about some internals of the tpl
+% template engine. It may serve as starting point for own templates for use with tpl, but
+% be aware that tpl may still change quite dramatically before it reaches a stable
+% interface.
+%
+% For LaTeX purists: This template doesn't use much of the structures LaTeX provides,
+% such as sections and title. In the future there might be a LaTeX class for those reports
+% helping with a common look and feel.
+%
+% All packages used should be fairly common and included in a standard LaTeX installation.
+%
+% A NOTE TO TEMPLATE DEVELOPERS:
+%
+% If using this template as starting point for a series of similar templates, it might be
+% wise to use the "include" hook of the tpl template engine and to separate large parts of
+% the header in an additional document that just gets added to all templates.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Copyright (c) 2015, Till Biskup
+% 2015-06-20
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HEADER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+\usepackage[paper=a4paper,left=25mm,right=25mm,top=25mm,bottom=20mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% For German reports, load appropriate language package
+\usepackage[ngerman]{babel}
+
+% Nice looking tables
+\usepackage{booktabs}
+% As "caption" shall be typeset above a table, no separation between caption and table.
+\setlength{\abovetopsep}{1em}
+
+% Math packages
+\usepackage{amsmath}
+
+% Graphics handling
+\usepackage{graphicx}
+  \DeclareGraphicsExtensions{.pdf,.jpg,.png}
+
+% Headers and footers
+\usepackage{fancyhdr}
+\fancyhead[L]{Triplett-Simulation von [[@sample.name]]}
+\pagestyle{fancy}
+
+% Change indentation and separation between paragraphs
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{1ex}
+
+% Define some basic commands
+\newcommand{\matlab}{\textsf{Matlab}}
+
+% Caption setup
+\makeatletter
+
+\setlength\abovecaptionskip{5\p@}
+\setlength\belowcaptionskip{0\p@}
+\@ifundefined{captionfontsize}{%
+  \def\captionfontsize{\small} }{}
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip\captionfontsize
+  \sbox\@tempboxa{\textbf{#1:} #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    \textbf{#1:} #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+  
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BODY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+
+\vspace*{-1.5cm}
+
+\noindent\rule[1.5ex]{\textwidth}{1pt}
+
+\begin{sffamily}\bfseries\large
+Ergebnisse der Triplett-Simulation von [[@sample.name]]
+\end{sffamily}
+
+\noindent\rule{\textwidth}{1pt}
+
+\begin{flushright}\slshape
+--- [[@history{1}.system.username]], [[@history{1}.date]]
+\end{flushright}
+
+\vspace*{1.5em}
+
+An das TREPR-Spektrum von [[@sample.name]] wurde mittels des Programms \texttt{Tsim} und unter Verwendung der Simulationsroutine \texttt{[[@TSim.sim.routine]]} eine Triplett-Simulation angepasst.
+
+[[if ~isempty(this.assignments.TSim.remarks.purpose)]]
+\textbf{Zielstellung:} [[@TSim.remarks.purpose]]
+[[end]]
+
+[[if ~isempty(this.assignments.TSim.remarks.comment)]]
+\textbf{Nutzerkommentar:} [[@TSim.remarks.comment]]
+[[end]]
+
+Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und der Anpassung an die experimentellen Daten vgl. Abb.~\ref{fig:ergebnisse}, für die zugehörigen Simulationsparameter Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}, und für die Fitparameter Tab.~\ref{tab:fitparameter}, S.~\pageref{tab:fitparameter}.
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{[[@TSim.resultsFigure]]}
+\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei xx~s (gemittelt über yy~s). Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
+\label{fig:ergebnisse}
+\end{figure}
+
+\begin{center}
+\setlength{\fboxsep}{1.5ex}\setlength{\fboxrule}{.75pt}
+\fbox{%
+\begin{minipage}{.9\textwidth}\centering
+\textbf{--- Disclaimer der Simulationsroutine ---}
+\vspace*{1ex}
+
+\slshape
+[[foreach @TSim.acknowledgement.sim]]
+[[@TSim.acknowledgement.sim]]\par
+[[end]]
+\end{minipage}
+}
+\end{center}
+
+\clearpage
+
+
+Für die Kurvenanpassung wurde die Funktion \texttt{lsqcurvefit} von \matlab{} verwendet. Die verwendeten Optionen können Tab.~\ref{tab:fitopt} entnommen werden. Das Abbruchkriterium der Kurvenanpassung lautete:
+
+\begin{quote}\small
+\ttfamily
+[[@TSim.fit.report.exitmessage]]
+\end{quote}
+
+Gemessene Daten und Simulation wurden für die Kurvenanpassung jeweils auf gleiche Fläche normiert. Zusätzlich kamen folgende Gewichtungen für bestimmte Bereiche des Spektrums zum Einsatz:
+
+\begin{center}
+\begin{tabular}{cc}
+\toprule
+\textbf{Bereich} & \textbf{Gewicht}
+\\
+\midrule
+340--350 mT      & 0
+\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+\begin{table}[h]
+\caption{\textbf{Übersicht über die Simulationsparameter.} Die Simulationsparameter sind der vollständige Satz an Parametern, die für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendet wurden. $\Gamma$ steht für die Linienbreite, mit der die Simulation gefaltet wurde. Welche Parameter für die Kurvenanpassung wie variiert wurden, kann der Tab.~\ref{tab:fitparameter} entnommen werden.}
+\label{tab:simparameter}
+\centering
+\begin{tabular}{cccccccc} 
+\toprule
+\multicolumn{8}{c}{\textbf{Standardparameter} }
+\\
+\midrule 
+$g_x$      & $g_y$      & $g_z$      & $p_1$   & $p_2$   & $p_3$   & $D$ / MHz & $E$ / MHz \\
+[[@TSim.sim.simpar.gx|f=7.5f]] & [[@TSim.sim.simpar.gy|f=7.5f]] & [[@TSim.sim.simpar.gz|f=7.5f]] & [[@TSim.sim.simpar.p1|f=5.3f]] & [[@TSim.sim.simpar.p2|f=5.3f]] & [[@TSim.sim.simpar.p3|f=5.3f]] & [[@TSim.sim.simpar.D|f=7.1f]]  & [[@TSim.sim.simpar.E|f=7.1f]]     \\ 
+\bottomrule
+\end{tabular}
+
+\begin{tabular}{cc}
+\toprule
+\textbf{Parameter} & \textbf{Wert}
+\\
+\midrule
+[[if isfield(this.assignments.TSim.sim.simpar,'lwGauss')]]
+$\Gamma_\text{Gauß}$ / mT & $[[@TSim.sim.simpar.lwGauss]]$
+\\
+[[end]]
+[[if isfield(this.assignments.TSim.sim.simpar,'lwLorentz')]]
+$\Gamma_\text{Lorentz}$ / mT & $[[@TSim.sim.simpar.lwLorentz]]$
+\\
+[[end]]
+[[if isfield(this.assignments.TSim.sim.simpar,'DeltaB')]]
+$\Delta B$ / mT & $[[@TSim.sim.simpar.DeltaB]]$
+\\
+[[end]]
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{\textbf{Übersicht über die Fitparameter.} Diese Parameter stellen in der Regel eine Untermenge der für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendeten Parameter dar. Für einen vollständigen Satz der Simulationsparameter vgl. Tab.~\ref{tab:simparameter}. Der Fehler für jeden Parameter ist die Standardabweichung, die aus der Jacobi-Matrix berechnet wird.}
+\label{tab:fitparameter}
+\centering
+\begin{tabular}{cccccc}
+\toprule
+\textbf{Parameter} & \textbf{Startwert} & \textbf{untere Grenze} & \textbf{obere Grenze} & \textbf{Endwert} & \textbf{Fehler}
+\\
+\midrule
+%$g_x$ & 2.002 & 2.000 & 2.005 & 2.003
+[[foreach element of @TSim.fit.fitpar]]
+\texttt{[[@TSim.fit.fitpar([[@element]])]]} & [[@TSim.fit.initialvalue([[@element]])]] & [[@TSim.fit.lb([[@element]])]] & [[@TSim.fit.ub([[@element]])]] & [[@TSim.fit.finalvalue([[@element]])]] & [[@TSim.fit.report.stdDev([[@element]])]]
+\\
+[[end]]
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{\textbf{Übersicht über die Optionen der \matlab-Routine \texttt{lsqcurvefit}, die bei der Kurvenanpassung Verwendung fanden.} Vergleiche auch das Abbruchkriterium der Funktion \texttt{lsqcurvefit} weiter oben.}
+\label{tab:fitopt}
+\centering
+\begin{tabular}{lr}
+\toprule
+\textbf{Parameter} & \textbf{Wert}
+\\
+\midrule
+%\texttt{TolFun} & 1e-18
+[[foreach @TSim.fit.fitopt]]
+\texttt{[[@TSim.fit.fitopt.fieldname]]} & [[@TSim.fit.fitopt.fieldvalue|f=4.2e]]
+\\
+[[end]]
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\end{document}

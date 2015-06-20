@@ -1,25 +1,25 @@
-function Acknowledgement = TsimAcknowledgement(dataset)
-% TSIMPARDISPLAY Display parameters for simulating and/or fitting
-% triplet spectra with Tsim.
+function acknowledgement = TsimAcknowledgement(dataset)
+% TSIMPARDISPLAY Return acknowledgements for simulation routine depending
+% on the routine chosen.
 %
 % Usage
-%   TsimAcknowledgement(dataset);
+%   acknowledgement = TsimAcknowledgement(dataset);
 %
-%   dataset       - struct
-%                   Full trEPR toolbox dataset including TSim structure
+%   dataset        - struct
+%                    Full trEPR toolbox dataset including TSim structure
 %
-%  Acknowledgment - cell
-%                   Contains acknowledgement for simulation routine 
+%   acknowledgment - cell
+%                    Contains acknowledgement for simulation routine 
 %                        
 %
 % See also TSIM
 
-% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-05-29
+% Copyright (c) 2015, Deborah Meyer, Till Biskup
+% 2015-06-20
 
 switch lower(dataset.TSim.sim.routine)
     case 'tango' 
-        Acknowledgement = {...
+        acknowledgement = {...
             'If you''re using this routine for simulating your data,'...
             'please acknowledge the following people:'...
             ' ' ...
@@ -27,11 +27,12 @@ switch lower(dataset.TSim.sim.routine)
             };
         
     case 'pepper'
-        Acknowledgement = {...
+        acknowledgement = {...
             'If you''re using this routine for simulating your data,'...
             'please cite the publications you will find at:'...
             ' ' ...
             'http://www.easyspin.org/' ...
             };
 end
+
 end

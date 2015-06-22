@@ -12,55 +12,51 @@ function dataset = TsimMakeBoundaries(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-11
+% 2015-06-22
 
 
 
 % Check if there is already some information
 
 fitpar = dataset.TSim.fit.fitpar;
-config = TsimConfigGet('parameters');
+routine = dataset.TSim.sim.routine;
+config = TsimConfigGet([routine 'parameters']);
 
 if isempty(fieldnames(config))
-    dataset = MakeStandardBoundary(dataset);
+    dataset = TsimMakeStandardBoundary(dataset);
 else
+    
     % CleanUp Config for MinSim and EasySpinIncompatibilities
     
     try
-        config = TsimCleanUpConfig(config);
+        configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
+        config = configCleanupRoutine(config);
         %  Write Cleaned Up config Back
-        TsimConfigSet('parameters',config)
-        % CreateFitpar from Config
+        TsimConfigSet([routine 'parameters'],config)
         
-        FoundInConfig = intersect(fieldnames(config.FitparametersAndBoundaries),fitpar);
+        % CreateFitpar from Config
+        FoundInConfig = intersect(fieldnames(config.FitparametersAndBoundaries),fitpar,'stable');
         NotFoundInConfig = setdiff(fitpar,fieldnames(config.FitparametersAndBoundaries));
         
-        dataset = MakeStandardBoundary(dataset,NotFoundInConfig);
+        dataset.TSim.fit.lb = zeros(1,length(fitpar));
+        dataset.TSim.fit.ub = zeros(1,length(fitpar));
         
-        for k = (length(NotFoundInConfig)+1):1:(length(FoundInConfig)+length(NotFoundInConfig))
-            dataset.TSim.fit.lb(k) = config.FitparametersAndBoundaries.(FoundInConfig{k})(1);
-            dataset.TSim.fit.ub(k) = config.FitparametersAndBoundaries.(FoundInConfig{k})(2);
+        dataset = TsimMakeStandardBoundary(dataset,NotFoundInConfig);
+       
+        [~,index,~] = intersect(dataset.TSim.fit.fitpar,FoundInConfig,'stable');
+
+        
+        for k = 1:length(index)
+            dataset.TSim.fit.lb(index(k)) = config.FitparametersAndBoundaries.(FoundInConfig{k})(1);
+            dataset.TSim.fit.ub(index(k)) = config.FitparametersAndBoundaries.(FoundInConfig{k})(2);
         end
-    catch %#ok<CTCH>
-        dataset = MakeStandardBoundary(dataset);
+        
+    catch  ME
+        rethrow(ME)
+        disp(['(EE) ' ME.message])
+        
+        dataset = TsimMakeStandardBoundary(dataset);
     end
 end
 end
 
-function dataset = MakeStandardBoundary(dataset,varargin)
-fraction = 1/20;
-if ~isempty(varargin)
-    fitpar = varargin;
-else
-    fitpar = dataset.TSim.fit.fitpar;
-end
-
-dataset.TSim.fit.lb = [];
-dataset.TSim.fit.ub = [];
-
-for u = 1:length(fitpar)
-    dataset.TSim.fit.lb(u) = dataset.TSim.fit.initialvalue(u)-dataset.TSim.fit.initialvalue(u)*fraction;
-    dataset.TSim.fit.ub(u) = dataset.TSim.fit.initialvalue(u)+dataset.TSim.fit.initialvalue(u)*fraction;
-end
-
-end

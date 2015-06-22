@@ -43,11 +43,11 @@ dataset = TsimSim(dataset);
 % Fill in some information
 dataset.TSim.fit.routine = 'lsqcurvefit';
 dataset.TSim.fit.algorithm = output.algorithm;
-dataset.TSim.fit.report.residual = residual;
-dataset.TSim.fit.report.jacobian = jacobian;
-dataset.TSim.fit.report.exitmessage = output.message;
+dataset.TSim.fit.fitreport.residual = residual;
+dataset.TSim.fit.fitreport.jacobian = jacobian;
+dataset.TSim.fit.fitreport.exitmessage = output.message;
 
-variance = var(dataset.TSim.fit.report.residual);
-dataset.TSim.fit.report.stdDev = commonFitStdDev(dataset.TSim.fit.report.jacobian,variance);
+variance = var(dataset.TSim.fit.fitreport.residual);
+dataset.TSim.fit.fitreport.stdDev = commonFitStdDev(dataset.TSim.fit.fitreport.jacobian,variance);
 
 end

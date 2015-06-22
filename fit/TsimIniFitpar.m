@@ -62,7 +62,7 @@ else
     
 end
 
-% Chek if fitpar is subset of (or equal to) simpar and add parameters if necessary  
+% Chek if fitpar is subset of (or equal to) simpar and add parameters in simpar if necessary  
 dataset = TsimChekFitpar(dataset);
 
 % Copy Values from Simpar to fitpar inivalue

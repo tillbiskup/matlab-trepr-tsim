@@ -1,6 +1,6 @@
 function acknowledgement = TsimAcknowledgement(dataset)
-% TSIMPARDISPLAY Return acknowledgements for simulation routine depending
-% on the routine chosen.
+% TSIMACKNOWLEDGEMENT Return acknowledgements for simulation routine
+% depending on the routine chosen.
 %
 % Usage
 %   acknowledgement = TsimAcknowledgement(dataset);
@@ -10,12 +10,11 @@ function acknowledgement = TsimAcknowledgement(dataset)
 %
 %   acknowledgment - cell
 %                    Contains acknowledgement for simulation routine 
-%                        
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-20
+% 2015-06-22
 
 switch lower(dataset.TSim.sim.routine)
     case 'tango' 

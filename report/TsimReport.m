@@ -63,20 +63,21 @@ if isempty(filename)
     end
 end
 
-% TODO: Create central figure for first page of report showing simulation
-% or fit together with experimental data
-% Might be a call of "MakeShinyFigure" followed by fig2file or something
-% similar...
-
-% After creating the figure, assign the figure file name to a field to
-% dataset that get's only used here for the template.
-% HINT: May be same name as dataset filename
-dataset.TSim.resultsFigure = filename;
-
 % TODO: Handle slice/average and assign to some other temporary fields in
 % dataset that get used only here for creating the template.
 % Reason: Normally, you want to tell the reader center position and width
 % of an average, but what you get is only start and end positions.
+switch length(dataset.TSim.fit.spectrum.section)
+    case 1
+        dataset.TSim.fit.spectrum.sectionCenter = ...
+            dataset.TSim.fit.spectrum.section;
+        dataset.TSim.fit.spectrum.sectionWidth = [];
+    case 2
+        dataset.TSim.fit.spectrum.sectionCenter = ...
+            sum(dataset.TSim.fit.spectrum.section)/2;
+        dataset.TSim.fit.spectrum.sectionWidth = ...
+            abs(diff(dataset.TSim.fit.spectrum.section));
+end
 
 % Prepare template engine "tpl"
 t = tpl();

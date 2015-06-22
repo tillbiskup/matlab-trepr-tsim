@@ -106,7 +106,7 @@ switch lower(command)
         
         disp(' ')
         
-        disp((dataset.TSim.fit.report.stdDev)');
+        disp((dataset.TSim.fit.fitreport.stdDev)');
         
         disp(' ')
     otherwise

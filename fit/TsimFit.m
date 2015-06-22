@@ -11,7 +11,7 @@ function dataset = TsimFit(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-06-22
 
 
 Magfieldaxis = linspace(...
@@ -47,7 +47,9 @@ dataset.TSim.fit.fitreport.residual = residual;
 dataset.TSim.fit.fitreport.jacobian = jacobian;
 dataset.TSim.fit.fitreport.exitmessage = output.message;
 
+
 variance = var(dataset.TSim.fit.fitreport.residual);
-dataset.TSim.fit.fitreport.stdDev = commonFitStdDev(dataset.TSim.fit.fitreport.jacobian,variance);
+dataset.TSim.fit.fitreport.stdDev = ...
+    full(commonFitStdDev(dataset.TSim.fit.fitreport.jacobian,variance));
 
 end

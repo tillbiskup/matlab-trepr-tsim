@@ -27,30 +27,44 @@ zeroLineProperties = struct(...
     'LineWidth',config.FigureLineWidthDef.zerolinewidth ...
     );
 
-Magfieldaxis =  linspace(...
-    dataset.TSim.sim.simpar.Range(1),...
-    dataset.TSim.sim.simpar.Range(2),...
-    dataset.TSim.sim.simpar.nPoints);
+if isfield(dataset,'TSim')
+    Magfieldaxis =  linspace(...
+        dataset.TSim.sim.simpar.Range(1),...
+        dataset.TSim.sim.simpar.Range(2),...
+        dataset.TSim.sim.simpar.nPoints);
+    
+    hasFit = ~isempty(dataset.TSim.fit.fitpar);
+else
+    [~,idxMax] = max(max(dataset.data));
+    Magfieldaxis = dataset.axes.data(2).values;
+    
+    figure(1);
+    plot(Magfieldaxis,dataset.data(:,idxMax),'color',explinecolor);
+    legend({'Originaldata'},'Location','SouthEast');
 
-tester = isempty(dataset.TSim.fit.spectrum.tempSpectrum);
-
-switch tester
-    case true
-        % simulation     
-    plot(Magfieldaxis,dataset.calculated);
     set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
-    if strcmpi(config.SimFigureAppearance.xlabel,'on')
-    xlabel(config.FigureAxesLabelDef.xlabel);
-    end
-    
-    if strcmpi(config.SimFigureAppearance.ylabel,'on')
-        ylabel(config.FigureAxesLabelDef.ylabel);
-    end
-    set(gcf,'DefaultAxesColorOrder',simlinecolor);
-    addZeroLines(zeroLineProperties)
-    
-    
+
+    % commonplot(dataset,'kind','data','type','1d','direction','magnetic field','position','max');
+    return;
+end
+
+switch hasFit
     case false
+        % simulation
+        plot(Magfieldaxis,dataset.calculated);
+        set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+        if strcmpi(config.SimFigureAppearance.xlabel,'on')
+            xlabel(config.FigureAxesLabelDef.xlabel);
+        end
+        
+        if strcmpi(config.SimFigureAppearance.ylabel,'on')
+            ylabel(config.FigureAxesLabelDef.ylabel);
+        end
+        set(gcf,'DefaultAxesColorOrder',simlinecolor);
+        addZeroLines(zeroLineProperties)
+        
+        
+    case true
         % fit
         % since spectrum is probably weighted calculated it new.
         % Check if 2d or 1d data

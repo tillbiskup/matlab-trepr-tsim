@@ -5,6 +5,8 @@
 *.toc
 *.log
 *.tez
+*.fig
+*.gz
 
 # Use wildcards as well
 *~

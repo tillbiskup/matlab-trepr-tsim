@@ -19,7 +19,12 @@ while fitouterloop
     
     % Check if 2d or 1d data
     if size(dataset.data) > 1
-        dataset = TsimDefineFitsection(dataset);
+        [dataset, quit] = TsimDefineFitsection(dataset);
+        if quit
+            % Quit
+            disp('Goodbye!');
+            return;
+        end
     else
         % 1D data
         dataset.TSim.fit.spectrum.tempSpectrum = dataset.data;
@@ -234,7 +239,7 @@ while fitouterloop
                         saveFilename = suggestedFilename;
                     end
                     % Save dataset
-                     % Clear tempSpectrum onyl in dataset that is saved
+                    % Clear tempSpectrum onyl in dataset that is saved
                     savedataset = dataset;
                     savedataset.TSim.fit.spectrum.tempSpectrum = [];
                     [status] = trEPRsave(saveFilename,savedataset);
@@ -253,7 +258,7 @@ while fitouterloop
                     end
                     % Suggest reasonable filename
                     [path,name,~] = fileparts(dataset.file.name);
-                    suggestedFilename = fullfile(path,[name '_fitfig']);
+                    suggestedFilename = fullfile(path,[name '_fit']);
                     % The "easy" way: consequently use CLI
                     saveFilename = input(...
                         sprintf('Filename (%s): ',suggestedFilename),...
@@ -261,18 +266,32 @@ while fitouterloop
                     if isempty(saveFilename)
                         saveFilename = suggestedFilename;
                     end
+                    % Put FigureFileName in Dataset
+                    dataset.TSim.results.figureFileName = [saveFilename '-fig'];
                     
                     % Export figure as .fig and as .pdf
-                    [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
+                    [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'fig' );
                     if ~isempty(status)
                         disp('Some problems with exporting fig-figure');
                     end
-                    [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
+                    [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'pdf' );
                     if ~isempty(status)
                         disp('Some problems with exporting pdf-figure');
-                    end
-                    clear status saveFilename suggestedFilename;
-                    close(h);
+                    end                     
+                    
+                    % Save dataset
+                    % Clear tempSpectrum onyl in dataset that is saved
+                    savedataset = dataset;
+                    savedataset.TSim.fit.spectrum.tempSpectrum = [];
+                    [status] = trEPRsave(saveFilename,savedataset);
+                    if ~isempty(status)
+                        disp('Some problems with saving data');
+                    end                    
+                    
+                    % Make Report
+                    TsimReport(dataset);
+                                        
+                    clear status saveFilename suggestedFilename savedataset;
                     
                     saveloop = true;
                 case 'w'
@@ -371,12 +390,11 @@ while fitouterloop
                     
                     saveloop = false;
                     fitinnerloop = false;
-                    
-                    
-                                       
-                    
+                         
                 case 'q'
-                    close(h);
+                    if ~ishandle(h)
+                        close(h);
+                    end
                     % Quit
                     % Suggest reasonable filename
                     % Clear tempSpectrum
@@ -394,14 +412,18 @@ while fitouterloop
                     disp('Goodbye!');
                     return
                 case 'e'
-                    close(h);
+                    if ~ishandle(h)
+                        close(h);
+                    end
                     % Quit without saving
                     % Clear tempSpectrum
                     dataset.TSim.fit.spectrum.tempSpectrum = [];
                     disp('Goodbye!');
                     return,
                 otherwise
-                    close(h);
+                    if ~ishandle(h)
+                        close(h);
+                    end
                     % Shall never happen
                     disp(['You did bullshit... '...
                         'however you managed. '...

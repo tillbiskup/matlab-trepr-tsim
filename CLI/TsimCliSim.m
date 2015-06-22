@@ -13,9 +13,11 @@ function dataset = TsimCliSim(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-06-22
 
-
+% Empty fit branch of TSim structure
+tempdataset = TsimDataset();
+dataset.TSim.fit = tempdataset.TSim.fit;
 
 simouterloop = true;
 while simouterloop

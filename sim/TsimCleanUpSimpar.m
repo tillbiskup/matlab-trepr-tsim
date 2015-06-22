@@ -15,33 +15,43 @@ function dataset = TsimCleanUpSimpar(dataset, oldroutine)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-06-22
 
 
 parameters = TsimParameters;
 ParameterNames = parameters(:,1);
 pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),parameters(:,13));
-pepperpar = ParameterNames(pepperpar);
+pepperparnames = ParameterNames(pepperpar);
 tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),parameters(:,13));
-tangopar = ParameterNames(tangopar);
+tangoparnames = ParameterNames(tangopar);
+minsim = logical(cell2mat(parameters(:,7)));
+userpar = logical(cell2mat(parameters(:,9)));
 
 switch oldroutine
     case 'tango'
         % tango to pepper
-        fields2beRemoved = setdiff(tangopar,pepperpar);
-        
+        fields2beRemoved = setdiff(tangoparnames,pepperparnames);
+        fields2beAdded = ParameterNames(minsim & pepperpar & userpar);
+
     case 'pepper'
         % pepper to tango
-        fields2beRemoved = setdiff(pepperpar,tangopar);
+        fields2beRemoved = setdiff(pepperparnames,tangoparnames);
+        fields2beAdded = ParameterNames(minsim & tangopar & userpar);
         
 end
 
 for k=1:length(fields2beRemoved)
-    if isfield(dataset.TSim.sim.simpar,fields2beRemoved(k))
-        dataset.TSim.sim.simpar = rmfield(dataset.TSim.sim.simpar,fields2beRemoved(k));
+    if isfield(dataset.TSim.sim.simpar,fields2beRemoved{k})
+        dataset.TSim.sim.simpar = rmfield(dataset.TSim.sim.simpar,fields2beRemoved{k});
     end
 end
 
+parameterstruct = TsimParameters('struct',true);
 
+for k= 1:length(fields2beAdded)
+    if ~isfield(dataset.TSim.sim.simpar,fields2beAdded{k})
+        dataset.TSim.sim.simpar.(fields2beAdded{k}) = parameterstruct.(fields2beAdded{k}).standardvalue;
+    end
+end
 
 end

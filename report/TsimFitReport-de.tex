@@ -33,8 +33,8 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Copyright (c) 2015, Till Biskup
-% 2015-06-20
+% Copyright (c) 2015, Till Biskup, Deborah Meyer
+% 2015-06-22
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HEADER
@@ -129,8 +129,12 @@ Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und de
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{[[@TSim.resultsFigure]]}
-\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei xx~s (gemittelt über yy~s). Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
+[[if ~isempty(this.assignments.TSim.results.figureFileName)]]
+\includegraphics[width=\textwidth]{[[@TSim.results.figureFileName]]}
+[[end]]
+\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei [[@TSim.fit.spectrum.sectionCenter|f=5.2e]]~s 
+%
+[[if ~isempty(this.assignments.TSim.fit.spectrum.sectionWidth)]](gemittelt über [[@TSim.fit.spectrum.sectionWidth|f=5.2e]]~s)[[end]]. Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
 \label{fig:ergebnisse}
 \end{figure}
 
@@ -156,7 +160,7 @@ Für die Kurvenanpassung wurde die Funktion \texttt{lsqcurvefit} von \matlab{} v
 
 \begin{quote}\small
 \ttfamily
-[[@TSim.fit.report.exitmessage]]
+[[@TSim.fit.fitreport.exitmessage]]
 \end{quote}
 
 Gemessene Daten und Simulation wurden für die Kurvenanpassung jeweils auf gleiche Fläche normiert. Zusätzlich kamen folgende Gewichtungen für bestimmte Bereiche des Spektrums zum Einsatz:
@@ -220,7 +224,7 @@ $\Delta B$ / mT & $[[@TSim.sim.simpar.DeltaB]]$
 \midrule
 %$g_x$ & 2.002 & 2.000 & 2.005 & 2.003
 [[foreach element of @TSim.fit.fitpar]]
-\texttt{[[@TSim.fit.fitpar([[@element]])]]} & [[@TSim.fit.initialvalue([[@element]])]] & [[@TSim.fit.lb([[@element]])]] & [[@TSim.fit.ub([[@element]])]] & [[@TSim.fit.finalvalue([[@element]])]] & [[@TSim.fit.report.stdDev([[@element]])]]
+\texttt{[[@TSim.fit.fitpar([[@element]])]]} & [[@TSim.fit.initialvalue([[@element]])]] & [[@TSim.fit.lb([[@element]])]] & [[@TSim.fit.ub([[@element]])]] & [[@TSim.fit.finalvalue([[@element]])]] & [[@TSim.fit.fitreport.stdDev([[@element]])]]
 \\
 [[end]]
 \bottomrule

@@ -10,8 +10,12 @@ function parameters = TsimParameters(varargin)
 %                 variable name, evaluation string, description, unit 
 %                 for each parameter, whether it is a fitparameter, 
 %                 wether it is a simulation parameter, 
-%                 wether it is necessary for a simulation and wether the 
-%                 user can change its value.
+%                 wether it is necessary for a simulation, if it is a 
+%                 fitoption parameter, wether the 
+%                 user can change its value, a standardvalue, a inforamtion
+%                 about conversion, information about incompatibilities
+%                 with other parameters and the program name for which you
+%                 can use the parameter
 %
 %
 %                 If you prefer to get a struct rather than a cell array,
@@ -28,7 +32,7 @@ function parameters = TsimParameters(varargin)
 % See also TSIM
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-18
+% 2015-06-22
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -73,7 +77,8 @@ parameters(27,:) = {'TerminationTolerance','TolFun','Termination tolerance of al
 parameters(28,:) = {'Phi','Opt.phi','azimut angel phi for powder averaging','rad', true, true, false, false, true, 0, false, {}, {'tango'}};
 parameters(29,:) = {'Theta','Opt.theta','polar angel theta for powder averaging','rad', true, true, false, false, true, 0, false, {}, {'tango'}};
 parameters(30,:) = {'Sigma','Opt.sigma','Full Width at Half Maximum of gaussian in powder averaging','rad', true, true, false, false, true, 0, false, {}, {'tango'}};
-parameters(31,:) = {'spline','Opt.spline','Interpolation of magnetic field','', false, true, true, false, true, 'Interpol', false, {}, {'tango'}};
+parameters(31,:) = {'InterpolB0','Opt.InterpolB0','Interpolation of magnetic field (spline or none)','', false, true, true, false, true, 'spline', false, {}, {'tango'}};
+%parameters(32,:) = {'InterpolPowder','Opt.InterpolPowder','Interpolation in powder average','', false, true, true, false, true, 'none', false, {}, {'tango'}};
 
 
 % If user prefers structs over cell arrays, convert into struct

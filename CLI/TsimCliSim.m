@@ -41,9 +41,10 @@ while simouterloop
     
     % Calculate spectrum (actual simulation)
     dataset = TsimSim(dataset);
-    
+    figure();
     h = TsimMakeShinyPicture(dataset);
-   
+    set(h,'Tag','simulationFigure');
+    
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
@@ -116,18 +117,24 @@ while simouterloop
                         disp('Some problems with exporting pdf-figure');
                     end
                     clear status saveFilename suggestedFilename;
-                    close(h);
+                  
+                    if ishandle(h)
+                        close(h);
+                    end
                     saveloop = true;
                     simouterloop = true;
             case 'n'
                 % New simulation
-                close(h);
+            
                 simouterloop = true;
                 saveloop = false;
                 
             case 's'
                 % New simulation different routine but same parameters
-                close(h);
+               
+                if ishandle(h)
+                    close(h);
+                end
                 disp('The simulation routines currently in use:')
                 disp(' ')
                 disp(dataset.TSim.sim.routine);
@@ -150,7 +157,11 @@ while simouterloop
                 % Quit
                 % Automatically save dataset to default filename
                 % Suggest reasonable filename
-                close(h);
+               
+                if ishandle(h)
+                    close(h);
+                end
+                
                 if exist('filename','var')
                     [path,name,~] = fileparts(filename);
                     suggestedFilename = fullfile(...
@@ -166,15 +177,21 @@ while simouterloop
                     disp('Some problems with saving data');
                 end
                 clear status saveFilename suggestedFilename;
-                disp('Goodbye!');
+                disp('Goodbye! Your dataset has been saved.');
                 return;
             case 'e'
-                close(h);
+              
+                if ishandle(h)
+                    close(h);
+                end
                 % Quit without saving
                 disp('Goodbye!');
                 return;
             otherwise
-                close(h);
+               
+                if ishandle(h)
+                    close(h);
+                end
                 % Shall never happen
                 disp('Something very strange happened...')
                 simouterloop = true;

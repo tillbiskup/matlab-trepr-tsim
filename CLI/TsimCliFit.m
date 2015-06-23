@@ -10,7 +10,7 @@ function dataset = TsimCliFit(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-06-22
 
 
 
@@ -299,10 +299,13 @@ while fitouterloop
                     TsimSimpar2ConfigFile(dataset)
                     saveloop = true;
                     
-
+                    
                     
                 case 'f'
-                    close(h);
+                   
+                    if ishandle(h)
+                        close(h);
+                    end
                     % Don't clear tempSpectrum
                     % Copy Values from Simpar to fitpar inivalue
                     dataset = TsimCopySimparValues2Initialvalue(dataset);
@@ -314,7 +317,10 @@ while fitouterloop
                     saveloop = false;
                     
                 case 'i'
-                    close(h);
+                   
+                    if ishandle(h)
+                        close(h);
+                    end
                     % Don't clear tempSpectrum
                     % New fit with same initial parameters as before
                     dataset = TsimFitpar2simpar(dataset.TSim.fit.initialvalues,dataset);
@@ -323,9 +329,12 @@ while fitouterloop
                     
                     % Fit again
                     saveloop = false;
-            
+                    
                 case 'c'
-                    close(h);
+                   
+                    if ishandle(h)
+                        close(h);
+                    end
                     % New fit with default initial parameters from
                     % config
                     % Clear simpar and fitpar and tempSpectrum
@@ -339,7 +348,10 @@ while fitouterloop
                     fitinnerloop = false;
                     
                 case 'p'
-                    close(h);
+                   
+                    if ishandle(h)
+                        close(h);
+                    end
                     % New fit with final values as starting parameters but
                     % different section
                     % Clear tempSpectrum
@@ -357,7 +369,10 @@ while fitouterloop
                     
                     
                 case 's'
-                    close(h);
+                   
+                    if ishandle(h)
+                        close(h);
+                    end
                     % New fit with final values as starting parameters but
                     % different simulation routine, same section
                     disp('The simulation routines currently in use:')
@@ -392,7 +407,8 @@ while fitouterloop
                     fitinnerloop = false;
                          
                 case 'q'
-                    if ~ishandle(h)
+                   
+                    if ishandle(h)
                         close(h);
                     end
                     % Quit
@@ -412,7 +428,8 @@ while fitouterloop
                     disp('Goodbye!');
                     return
                 case 'e'
-                    if ~ishandle(h)
+                    
+                    if ishandle(h)
                         close(h);
                     end
                     % Quit without saving
@@ -421,7 +438,8 @@ while fitouterloop
                     disp('Goodbye!');
                     return,
                 otherwise
-                    if ~ishandle(h)
+                   
+                    if ishandle(h)
                         close(h);
                     end
                     % Shall never happen

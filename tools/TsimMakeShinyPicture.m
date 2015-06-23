@@ -13,7 +13,7 @@ function h = TsimMakeShinyPicture(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-06-18
+% 2015-06-23
 
 % get config
 config = TsimConfigGet('figure');
@@ -27,6 +27,7 @@ zeroLineProperties = struct(...
     'LineWidth',config.FigureLineWidthDef.zerolinewidth ...
     );
 
+% Make Axes for TSim
 if isfield(dataset,'TSim')
     Magfieldaxis =  linspace(...
         dataset.TSim.sim.simpar.Range(1),...
@@ -35,6 +36,7 @@ if isfield(dataset,'TSim')
     
     hasFit = ~isempty(dataset.TSim.fit.fitpar);
 else
+    % No TSim, hence only experimental
     [~,idxMax] = max(max(dataset.data));
     Magfieldaxis = dataset.axes.data(2).values;
     
@@ -44,7 +46,7 @@ else
 
     set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
 
-    % commonplot(dataset,'kind','data','type','1d','direction','magnetic field','position','max');
+     h = gcf;
     return;
 end
 

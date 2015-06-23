@@ -11,7 +11,7 @@ function dataset=Tsim()
 %
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-06-23
 
 
 
@@ -26,6 +26,9 @@ else
     clear status missing
 end
 
+TsimWelcomeMessage
+disp(' ')
+
 % Load existing data
 answer = cliMenu({'y','Yes';'n','No';'q','Quit'},'default','n','title',...
     'Do you wish to load an existing (experimental) dataset');
@@ -37,8 +40,7 @@ switch answer
             return;
         end
     case 'n'
-        % load nothing and start simlation;
-        disp('Welcome to BetterTSim, the simulation program for triplett spectra!');
+        % load nothing and start simulation
         dataset = TsimDataset();
         dataset = TsimCliSim(dataset);
         return;
@@ -51,18 +53,17 @@ switch answer
 end
 
 
+
 % Check what kind of dataset and what size of data you have
 % only simulation, only experimental or simulation and experimental
 % and display some figures
 
 if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(dataset.data)
-    % only simulation 
-    disp('Welcome to BetterTSim, the simulation program for triplet spectra!');
-    
-    %figure(1);
-    %plot(dataset.axes.calculated(1).values,dataset.calculated)
-    % commonplot(dataset,'kind','calculated');
+    % only simulation
+    % Figure
+    figure();
     b = TsimMakeShinyPicture(dataset);
+    set(b,'Tag','simulationDataFigure');
     
     % Should not be necessary
     % TSim structure is added
@@ -77,33 +78,11 @@ end
 
 if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dataset.data)
     % simulation and experimental
-    disp('Welcome to BetterTSim, the simulation and fitting program for triplett spectra!');
-   % if size(dataset.data) > 1
-    %    [~,idxMax] = max(max(dataset.data));
-        
-        b = TsimMakeShinyPicture(dataset);
-%         figure(1);
-%         plot(dataset.axes.data(2).values,dataset.data(:,idxMax))
-%         legend({'Originaldata'},'Location','SouthEast');
-%         commonplot(dataset,'kind','data','type','1d','direction','magnetic field','position','max');
-%         
-%         figure(2);
-%         plot(dataset.axes.calculated(2).values,dataset.calculated)
-%         commonplot(dataset,'kind','calculated');
-        
-  %  else
-%         figure(1);
-%         plot(expdataset.axes.data(1).values,dataset.data)
-%         legend({'Originaldata'},'Location','SouthEast');
-%         commonplot(dataset,'kind','data');
-%         
-%         figure(2);
-%         plot(datset.axes.calculated(1).values,dataset.calculated)
-%         commonplot(dataset,'kind','calculated');
-        
-  %  end
     
-   
+    % Figure
+    figure();
+    b = TsimMakeShinyPicture(dataset);
+    set(b,'Tag','experimentalDataAndFitFigure');
     
     % Should not be necessary
     % TSim structure is added
@@ -130,22 +109,10 @@ end
 if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(dataset.data)
     % only experimental
     
-    disp('Welcome to BetterTSim, the simulation and fitting program for triplet spectra!');
-%     if size(dataset.data) > 1
-%         [~,idxMax] = max(max(dataset.data));
-%         
-%         figure(1);
-%         plot(dataset.axes.data(2).values,dataset.data(:,idxMax))
-%         legend({'Originaldata'},'Location','SouthEast');
-%         % commonplot(dataset,'kind','data','type','1d','direction','magnetic field','position','max');
-%         
-%     else
-%         figure(1);
-%         plot(expdataset.axes.data(1).values,dataset.data)
-%         legend({'Originaldata'},'Location','SouthEast');
-%         % commonplot(dataset,'kind','data');
-%     end
-    b = TsimMakeShinyPicture(dataset);    
+    % Figure
+    figure();
+    b = TsimMakeShinyPicture(dataset);
+    set(b,'Tag','experimentalDataFigure');
     
     if  ~isfield(dataset,'TSim')
         % TSim structure is added

@@ -24,7 +24,7 @@ function [dataset,varargout] = TsimWeightSpectrum(dataset,keyword)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-16
+% 2015-06-23
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -64,16 +64,8 @@ end
 
 function spectrum = weighting(spectrum, dataset)
 
-% Check if 2d or 1d data
-if size(dataset.data) > 1
-    inx = interp1(dataset.axes.data(2).values,1:length(dataset.axes.data(2).values),dataset.TSim.fit.weighting.weightingArea,'nearest');
-    weightingArea = inx;
-    
-else
-    % 1D data
-    inx = interp1(dataset.axes.data(1).values,1:length(dataset.axes.data(1).values),dataset.TSim.fit.weighting.weightingArea,'nearest');
-    weightingArea = inx;
-end
+inx = interp1(dataset.axes.data(2).values,1:length(dataset.axes.data(2).values),dataset.TSim.fit.weighting.weightingArea,'nearest');
+weightingArea = inx;
 weightingFactor = dataset.TSim.fit.weighting.weightingFactor;
 
 for k = 1:length(weightingFactor)

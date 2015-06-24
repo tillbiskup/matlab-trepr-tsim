@@ -10,7 +10,7 @@ function dataset = TsimCliFit(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-06-24
 
 
 
@@ -210,7 +210,7 @@ while fitouterloop
                 'w','Write parameters to configuration';...
                 ' ',' ';...
                 'f','Start new fit with final values as starting point';...
-                'i','Start new fit with ame initial values as before' ;...
+                'i','Start new fit with same initial values as before' ;...
                 'p','Start new fit on different position in your 2-D data with final values as starting point';...
                 'c','Start new fit on different position in your 2-D data with initial values from configuration';...
                 ' ',' ';...
@@ -323,7 +323,7 @@ while fitouterloop
                     end
                     % Don't clear tempSpectrum
                     % New fit with same initial parameters as before
-                    dataset = TsimFitpar2simpar(dataset.TSim.fit.initialvalues,dataset);
+                    dataset = TsimFitpar2simpar(dataset.TSim.fit.initialvalue,dataset);
                     dataset = TsimApplyConventions(dataset);
                     
                     

@@ -22,7 +22,7 @@ function TsimReport(dataset,varargin)
 % See also TSIM, tpl
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-20
+% 2015-06-25
 
 try
     % Parse input arguments using the inputParser functionality
@@ -68,6 +68,9 @@ end
 % Reason: Normally, you want to tell the reader center position and width
 % of an average, but what you get is only start and end positions.
 switch length(dataset.TSim.fit.spectrum.section)
+    case 0
+        dataset.TSim.fit.spectrum.sectionCenter = ...
+            dataset.axes.data(1).values;
     case 1
         dataset.TSim.fit.spectrum.sectionCenter = ...
             dataset.TSim.fit.spectrum.section;

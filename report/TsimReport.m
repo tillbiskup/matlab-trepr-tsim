@@ -22,7 +22,7 @@ function TsimReport(dataset,varargin)
 % See also TSIM, tpl
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-20
+% 2015-07-02
 
 try
     % Parse input arguments using the inputParser functionality
@@ -54,7 +54,9 @@ if ~exist(p.Results.template,'file')
 end
 
 % Get filename of dataset loaded
-[~,filename,~] = fileparts(dataset.file.name);
+%[~,filename,~] = fileparts(dataset.file.name);
+filename = TSim.results.figureFileName;
+[~,filename] = regexp(filename,'-fig','match','split');
 % If field is empty, ask user to provide some
 if isempty(filename)
     filename = cliInput('Filename for report (without extension)');

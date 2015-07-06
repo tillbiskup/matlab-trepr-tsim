@@ -22,7 +22,7 @@ function TsimReport(dataset,varargin)
 % See also TSIM, tpl
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-07-02
+% 2015-07-06
 
 try
     % Parse input arguments using the inputParser functionality
@@ -54,9 +54,9 @@ if ~exist(p.Results.template,'file')
 end
 
 % Get filename of dataset loaded
-%[~,filename,~] = fileparts(dataset.file.name);
-filename = TSim.results.figureFileName;
+filename = dataset.TSim.results.figureFileName;
 [~,filename] = regexp(filename,'-fig','match','split');
+filename = char(cellstr(filename{1,1}));
 % If field is empty, ask user to provide some
 if isempty(filename)
     filename = cliInput('Filename for report (without extension)');
@@ -70,6 +70,9 @@ end
 % Reason: Normally, you want to tell the reader center position and width
 % of an average, but what you get is only start and end positions.
 switch length(dataset.TSim.fit.spectrum.section)
+    case 0
+        dataset.TSim.fit.spectrum.sectionCenter = ...
+            dataset.axes.data(1).values;
     case 1
         dataset.TSim.fit.spectrum.sectionCenter = ...
             dataset.TSim.fit.spectrum.section;

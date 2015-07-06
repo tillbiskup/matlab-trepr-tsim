@@ -12,7 +12,7 @@ function dataset = TsimChangeSimValues(dataset,varargin)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-07-06
 
 changeloop = true;
 while changeloop
@@ -43,7 +43,12 @@ while changeloop
             DefaultValue = SimulationParameterValues(match);
             Name = SimulationParameters{match};
             prompt = 'Please enter new value: ';
-            NewValue = cliInput(prompt,'default',num2str(cell2mat(DefaultValue)),'numeric',true);
+            
+            if strcmp(Name,'InterpolB0')
+                NewValue = cliInput(prompt,'default',cell2mat(DefaultValue),'numeric',false);
+            else
+                NewValue = cliInput(prompt,'default',num2str(cell2mat(DefaultValue)),'numeric',true);
+            end
             
             dataset.TSim.sim.simpar.(Name) = NewValue;
             

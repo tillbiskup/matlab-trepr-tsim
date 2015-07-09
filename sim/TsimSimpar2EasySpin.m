@@ -11,8 +11,11 @@ function dataset = TsimSimpar2EasySpin(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-07-09
 
+% Create Empty EasySpinStructure with all possible fields
+EmptyDataset = TsimDataset;
+dataset.TSim.sim.EasySpin = EmptyDataset.TSim.sim.EasySpin;
 
 dataset = TsimApplyConventions(dataset);
 

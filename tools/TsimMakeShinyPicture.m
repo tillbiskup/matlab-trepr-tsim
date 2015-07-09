@@ -13,7 +13,7 @@ function h = TsimMakeShinyPicture(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-06-23
+% 2015-07-07
 
 % get config
 config = TsimConfigGet('figure');
@@ -62,8 +62,9 @@ switch hasFit
         if strcmpi(config.SimFigureAppearance.ylabel,'on')
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
-        set(gcf,'DefaultAxesColorOrder',simlinecolor);
         addZeroLines(zeroLineProperties)
+        set(gcf,'DefaultAxesColorOrder',simlinecolor);
+        
         
         
     case true
@@ -104,19 +105,18 @@ switch hasFit
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
         
-        set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+        
         legend({'Original','Fit'},'Location',config.Legend.location);
         set(gca,'XTickLabel',{})
-      
-        
         addZeroLines(zeroLineProperties)
+        set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+        
         subplot(6,1,6);
         plot(Magfieldaxis,difference,'LineWidth',1,'Color',residuumlinecolor);
-        set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
             xlabel(config.FigureAxesLabelDef.xlabel);
         end
-        
+        set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
 end
 
  h = gcf;

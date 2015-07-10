@@ -13,7 +13,7 @@ function TsimSimpar2ConfigFile(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-03
+% 2015-07-10
 
 
 % Get configuation
@@ -35,8 +35,9 @@ end
 
 
 try
-    configCleanupRoutine = str2func(commonCamelCase({'TSimCleanupConfig',routine}));
-    config = @configCleanupRoutine(config);
+    
+    configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
+    config = configCleanupRoutine(config);
     
 catch %#ok<CTCH>
     Simconfig = TsimSimpar2Config(dataset);

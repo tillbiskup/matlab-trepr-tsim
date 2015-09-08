@@ -13,42 +13,118 @@ function dataset = TsimCliSim(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-08-26
 
 % Empty fit branch of TSim structure
 tempdataset = TsimDataset();
 dataset.TSim.fit = tempdataset.TSim.fit;
 
+
 simouterloop = true;
 while simouterloop
-        
-        
-    siminiloop = true;
-    while siminiloop
-        [dataset, siminiloop, quit] = TsimIniSimCli(dataset);
-        if quit
-            % Quit
-            disp('Goodbye!');
-            return;
-        end
-    end % siminiloop
     
+    option = {...
+        'o','no, only one';...
+        's','yes, superposition'};
+    answer = cliMenu(option,'title',...
+        'Do you wish to simulate a superposition of two or more triplets?','default','o');
+    
+    display(' ')
+    
+    
+    
+    switch lower(answer)
+        case 'o'
+            NumOfTrip = 1;
+        case 's'
+            disp(' ');
+            disp('How many Triplets:');
+            NumOfTrip = input('> ','s');
+            NumOfTrip = str2double(NumOfTrip);
+    end
+    
+     celldatasets = cell(1,NumOfTrip);
+      
+    for Triplet = 1:NumOfTrip
+       
+        celldatasets{Triplet} = dataset ;
+        siminiloop = true;
+        while siminiloop
+            [celldatasets{Triplet}, siminiloop, quit] = TsimIniSimCli(celldatasets{Triplet});
+            if quit
+                % Quit
+                disp('Goodbye!');
+                return;
+            end
+        end  % siminiloop
+        
+    end % for loop over number of triplets
+   
     % Enter purpose
     disp(' ');
     disp('Enter a purpose:');
     purpose = input('> ','s');
-    dataset.TSim.remarks.purpose = purpose;
+   
+    celldatasets{Triplet}.TSim.remarks.purpose = purpose;
+    
     
     % Calculate spectrum (actual simulation)
-    dataset = TsimSim(dataset);
+    
+    for Triplet = 1:NumOfTrip
+        celldatasets{Triplet} = TsimSim(celldatasets{Triplet});
+      
+        figure(Triplet)
+        h = TsimMakeShinyPicture(celldatasets{Triplet});
+        set(h,'Tag',['superSimulationFigure', num2str(Triplet)]);
+        
+    end % for loop over number of triplets
+        
+if length(celldatasets) ~= 1
+       
+    weighting = ones(1,length(celldatasets));
+        
+        superpositionloop = true;
+        while superpositionloop
+            superdataset = TsimMakeSuperposition(celldatasets, weighting);
+                     
+            figure(Triplet + 1)
+            c = TsimMakeShinyPicture(superdataset);
+            set(c,'Tag','superPositionSimulationFigure');
+            
+            disp('Your current weithing is:');
+            disp(' ');
+            disp(weighting);
+            disp(' ');
+            
+            prompt = 'Please enter values for weighting the simulations. Hit enter for return';
+            answerstr = cliInput(prompt);
+            
+            if  isempty(answerstr)
+                superpositionloop = false;
+                dataset = superdataset;
+            else
+                weighting = str2num(answerstr);
+                superpositionloop = true;
+                
+            end
+        end  % superpositionloop
+else
+    dataset = celldatasets{1};
+    
     figure();
     h = TsimMakeShinyPicture(dataset);
     set(h,'Tag','simulationFigure');
+end
+    
     
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
-    dataset.TSim.remarks.comment = comment;
+    if iscell(dataset.TSim)
+        dataset.TSim{1}.remarks.comment = comment;
+    else
+        dataset.TSim.remarks.comment = comment;
+    end
     
     % Write history
     % (Orwell style - we're creating our own)

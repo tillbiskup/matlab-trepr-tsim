@@ -1,4 +1,4 @@
-function h = TsimMakeShinyPicture(dataset)
+function h = TsimMakeSuperpositionShinyPicture(dataset)
 % TSIMMAKESHINYPICTURE Make a nice figure of sim and fit.
 %
 %
@@ -13,7 +13,7 @@ function h = TsimMakeShinyPicture(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-08-20
+% 2015-07-31
 
 % get config
 config = TsimConfigGet('figure');
@@ -28,24 +28,13 @@ zeroLineProperties = struct(...
     );
 
 % Make Axes for TSim
-if isfield(dataset,'TSim')
-    if iscell(dataset.TSim)
-        
-        Magfieldaxis =  linspace(...
-            dataset.TSim{1}.sim.simpar.Range(1),...
-            dataset.TSim{1}.sim.simpar.Range(2),...
-            dataset.TSim{1}.sim.simpar.nPoints);
-        
-        hasFit = ~isempty(dataset.TSim{1}.fit.fitpar);
-    else
-        
-        Magfieldaxis =  linspace(...
-            dataset.TSim.sim.simpar.Range(1),...
-            dataset.TSim.sim.simpar.Range(2),...
-            dataset.TSim.sim.simpar.nPoints);
-        
-        hasFit = ~isempty(dataset.TSim.fit.fitpar);
-    end
+if isfield(dataset,'TSim1')
+    Magfieldaxis =  linspace(...
+        dataset.TSim1.sim.simpar.Range(1),...
+        dataset.TSim1.sim.simpar.Range(2),...
+        dataset.TSim1.sim.simpar.nPoints);
+    
+    hasFit = ~isempty(dataset.TSim1.fit.fitpar);
 else
     % No TSim, hence only experimental
     [~,idxMax] = max(max(dataset.data));

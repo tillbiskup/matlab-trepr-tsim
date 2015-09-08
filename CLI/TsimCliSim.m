@@ -22,26 +22,11 @@ dataset.TSim.fit = tempdataset.TSim.fit;
 
 simouterloop = true;
 while simouterloop
-    
-    option = {...
-        'o','no, only one';...
-        's','yes, superposition'};
-    answer = cliMenu(option,'title',...
-        'Do you wish to simulate a superposition of two or more triplets?','default','o');
-    
-    display(' ')
-    
-    
-    
-    switch lower(answer)
-        case 'o'
-            NumOfTrip = 1;
-        case 's'
-            disp(' ');
-            disp('How many Triplets:');
+   
+            disp('How many Triplets should be simulated');
             NumOfTrip = input('> ','s');
             NumOfTrip = str2double(NumOfTrip);
-    end
+   
     
      celldatasets = cell(1,NumOfTrip);
       

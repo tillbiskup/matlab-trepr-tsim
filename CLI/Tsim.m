@@ -11,8 +11,7 @@ function dataset=Tsim()
 %
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-06-23
-
+% 2015-09-08
 
 
 % Check for dependencies
@@ -35,10 +34,60 @@ answer = cliMenu({'y','Yes';'n','No';'q','Quit'},'default','n','title',...
 
 switch answer
     case 'y'
+        
         dataset = loaddata();
         if isempty(fieldnames(dataset))
             return;
         end
+        
+        %%%%%%%%%%%%%%%%%%%
+        if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(dataset.data)
+            % only simulation
+            % Figure
+            figure();
+            b = TsimMakeShinyPicture(dataset);
+            set(b,'Tag','simulationDataFigure');
+            
+            % Should not be necessary
+            % TSim structure is added
+            if  ~isfield(dataset,'TSim')
+                dataset = TsimDataset(dataset);
+            end    
+        end
+        %%%%%%%%%%%%%%%%%%%%%%
+        if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dataset.data)
+            % simulation and experimental
+            
+            % Figure
+            figure();
+            b = TsimMakeShinyPicture(dataset);
+            set(b,'Tag','experimentalDataAndFitFigure');
+            
+            % Should not be necessary
+            % TSim structure is added
+            if  ~isfield(dataset,'TSim')
+                dataset = TsimDataset(dataset);
+            end
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%
+        if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(dataset.data)
+            % only experimental
+            
+            % Figure
+            figure();
+            b = TsimMakeShinyPicture(dataset);
+            set(b,'Tag','experimentalDataFigure');
+            
+            if  ~isfield(dataset,'TSim')
+                % TSim structure is added
+                dataset = TsimDataset(dataset);
+            end  
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        dataset = TsimCliSim(dataset);
+        return;
+        
     case 'n'
         % load nothing and start simulation
         dataset = TsimDataset();
@@ -53,90 +102,6 @@ switch answer
 end
 
 
-
-% Check what kind of dataset and what size of data you have
-% only simulation, only experimental or simulation and experimental
-% and display some figures
-
-if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(dataset.data)
-    % only simulation
-    % Figure
-    figure();
-    b = TsimMakeShinyPicture(dataset);
-    set(b,'Tag','simulationDataFigure');
-    
-    % Should not be necessary
-    % TSim structure is added
-    if  ~isfield(dataset,'TSim')
-        dataset = TsimDataset(dataset);
-    end
-    
-    dataset = TsimCliSim(dataset);
-    return;
-    
-end
-
-if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dataset.data)
-    % simulation and experimental
-    
-    % Figure
-    figure();
-    b = TsimMakeShinyPicture(dataset);
-    set(b,'Tag','experimentalDataAndFitFigure');
-    
-    % Should not be necessary
-    % TSim structure is added
-    if  ~isfield(dataset,'TSim')
-        dataset = TsimDataset(dataset);
-    end
-    
-    % Ask what to do
-    option = {'f', 'fit';'s','simulate'};
-    answer = cliMenu(option,'title','Do you wish to simulate or fit?','default','f');
-    
-    disp(' ');
-    
-    switch lower(answer)
-        case 's'
-            dataset = TsimCliSim(dataset);
-            return;
-        case 'f'
-            dataset = TsimCliFit(dataset);
-            return;
-    end
-end
-
-if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(dataset.data)
-    % only experimental
-    
-    % Figure
-    figure();
-    b = TsimMakeShinyPicture(dataset);
-    set(b,'Tag','experimentalDataFigure');
-    
-    if  ~isfield(dataset,'TSim')
-        % TSim structure is added
-        dataset = TsimDataset(dataset);
-    end
-    
-    % Ask what to do
-    option = {'f', 'fit';'s','simulate'};
-    answer = cliMenu(option,'title','Do you wish to simulate or fit?','default','f');
-    
-    disp(' ');
-    
-    switch lower(answer)
-        case 's'
-            dataset = TsimCliSim(dataset);
-            return;
-        case 'f'
-            dataset = TsimCliFit(dataset);
-            return;
-    end
-end
-
-%%%
-disp('You seem to have a rather strange dataset... Goodbye!')
 
 end
 

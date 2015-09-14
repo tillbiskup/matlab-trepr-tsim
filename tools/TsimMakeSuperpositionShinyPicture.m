@@ -8,12 +8,12 @@ function h = TsimMakeSuperpositionShinyPicture(dataset)
 %   h       - figure handle
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-07-31
+% 2015-09-14
 
 % get config
 config = TsimConfigGet('figure');
@@ -27,7 +27,7 @@ zeroLineProperties = struct(...
     'LineWidth',config.FigureLineWidthDef.zerolinewidth ...
     );
 
-% Make Axes for TSim
+% Make Axes for Tsim
 if isfield(dataset,'TSim1')
     Magfieldaxis =  linspace(...
         dataset.TSim1.sim.simpar.Range(1),...
@@ -36,7 +36,7 @@ if isfield(dataset,'TSim1')
     
     hasFit = ~isempty(dataset.TSim1.fit.fitpar);
 else
-    % No TSim, hence only experimental
+    % No Tsim, hence only experimental
     [~,idxMax] = max(max(dataset.data));
     Magfieldaxis = dataset.axes.data(2).values;
     
@@ -72,25 +72,25 @@ switch hasFit
         % since spectrum is probably weighted calculated it new.
         % Check if 2d or 1d data
         if size(dataset.data) > 1
-            inx = interp1(dataset.axes.data(1).values,1:length(dataset.axes.data(1).values),dataset.TSim.fit.spectrum.section,'nearest');
+            inx = interp1(dataset.axes.data(1).values,1:length(dataset.axes.data(1).values),dataset.Tsim.fit.spectrum.section,'nearest');
             
             if isscalar(inx)
-                dataset.TSim.fit.spectrum.tempSpectrum = dataset.data(:,inx);
+                dataset.Tsim.fit.spectrum.tempSpectrum = dataset.data(:,inx);
             else
                 parameters.start.index = inx(1);
                 parameters.stop.index = inx(2);
                 parameters.dimension = 'x';
                 avgData = trEPRAVG(dataset,parameters);
-                dataset.TSim.fit.spectrum.tempSpectrum = avgData.data;
+                dataset.Tsim.fit.spectrum.tempSpectrum = avgData.data;
             end
         else
             % 1D data
-            dataset.TSim.fit.spectrum.tempSpectrum = dataset.data;
+            dataset.Tsim.fit.spectrum.tempSpectrum = dataset.data;
             
         end
         
-        dataset.TSim.fit.spectrum.tempSpectrum = dataset.TSim.fit.spectrum.tempSpectrum./sum(abs(dataset.TSim.fit.spectrum.tempSpectrum));
-        difference = dataset.TSim.fit.spectrum.tempSpectrum-dataset.calculated;
+        dataset.Tsim.fit.spectrum.tempSpectrum = dataset.Tsim.fit.spectrum.tempSpectrum./sum(abs(dataset.Tsim.fit.spectrum.tempSpectrum));
+        difference = dataset.Tsim.fit.spectrum.tempSpectrum-dataset.calculated;
         
         figure('Name', ['Data from ' dataset.file.name])
         
@@ -99,7 +99,7 @@ switch hasFit
         
         plot(...
             Magfieldaxis,...
-            [dataset.TSim.fit.spectrum.tempSpectrum,dataset.calculated],...
+            [dataset.Tsim.fit.spectrum.tempSpectrum,dataset.calculated],...
             'LineWidth',1);
         if strcmpi(config.SimFigureAppearance.ylabel,'on')
             ylabel(config.FigureAxesLabelDef.ylabel);

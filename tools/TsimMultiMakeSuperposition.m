@@ -1,13 +1,13 @@
 function superdataset = TsimMultiMakeSuperposition(celldataset, weighting)
 % TSIMMULTIMAKESUPERPOSITION Makes a superposition of calculateddata in celldataset
-% with given weighting. It gives back a common dataset, with TSim as cell 
+% with given weighting. It gives back a common dataset, with Tsim as cell 
 %
 %
 % Usage
 %   superdataset = TsimMultiMakeSuperpostition(celldataset, weighting)
 %
 %   celldataset - cell
-%                 cell of full trEPR toolbox dataset structs including TSim structure
+%                 cell of full trEPR toolbox dataset structs including Tsim structure
 %
 %   weighting - vector
 %               vector as long as length of celldataset with weighting factors for each dataset
@@ -19,14 +19,14 @@ function superdataset = TsimMultiMakeSuperposition(celldataset, weighting)
 
 
 superdataset = celldataset{end};
-temppurpose = superdataset.TSim.remarks.purpose;
-    superdataset = rmfield(superdataset,'TSim');
+temppurpose = superdataset.Tsim.remarks.purpose;
+    superdataset = rmfield(superdataset,'Tsim');
 superdataset.calculated = cell(1);
-superdataset.TSim = cell(1);
+superdataset.Tsim = cell(1);
     
 for supercounter = 1:length(celldataset);
     
-    superdataset.TSim{supercounter} = celldataset{supercounter}.TSim;
+    superdataset.Tsim{supercounter} = celldataset{supercounter}.Tsim;
     
     superdataset.TSimWeighting = weighting./weighting(1);
     superdataset.calculated{supercounter} =...
@@ -44,7 +44,7 @@ superdataset.calculated = sum(superdataset.tempcalculated,1);
 superdataset.calculated = ...
     superdataset.calculated/sum(abs(superdataset.calculated));
 
-superdataset.TSim{1}.remarks.purpose = temppurpose;
+superdataset.Tsim{1}.remarks.purpose = temppurpose;
 
 end
 

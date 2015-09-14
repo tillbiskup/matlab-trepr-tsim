@@ -50,7 +50,7 @@ while simouterloop
     disp('Enter a purpose:');
     purpose = input('> ','s');
    
-    celldatasets{Triplet}.TSim.remarks.purpose = purpose;
+    celldatasets{Triplet}.Tsim.remarks.purpose = purpose;
     
     % Calculate spectrum (actual simulation)
     
@@ -104,10 +104,10 @@ end
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
-    if iscell(dataset.TSim)
-        dataset.TSim{1}.remarks.comment = comment;
+    if iscell(dataset.Tsim)
+        dataset.Tsim{1}.remarks.comment = comment;
     else
-        dataset.TSim.remarks.comment = comment;
+        dataset.Tsim.remarks.comment = comment;
     end
     
     % Write history

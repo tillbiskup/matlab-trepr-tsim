@@ -34,7 +34,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Copyright (c) 2015, Till Biskup, Deborah Meyer
-% 2015-06-22
+% 2015-09-14
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HEADER
@@ -132,9 +132,7 @@ Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und de
 [[if ~isempty(this.assignments.TSim.results.figureFileName)]]
 \includegraphics[width=\textwidth]{[[@TSim.results.figureFileName]]}
 [[end]]
-\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei [[@TSim.fit.spectrum.sectionCenter|f=5.2e]]~s 
-%
-[[if ~isempty(this.assignments.TSim.fit.spectrum.sectionWidth)]](gemittelt über [[@TSim.fit.spectrum.sectionWidth|f=5.2e]]~s)[[end]]. Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
+\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei [[@TSim.fit.spectrum.sectionCenter|f=5.2e]]~s[[if ~isempty(this.assignments.TSim.fit.spectrum.sectionWidth)]] (gemittelt über [[@TSim.fit.spectrum.sectionWidth|f=5.2e]]~s)[[end]]. Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
 \label{fig:ergebnisse}
 \end{figure}
 
@@ -163,20 +161,25 @@ Für die Kurvenanpassung wurde die Funktion \texttt{lsqcurvefit} von \matlab{} v
 [[@TSim.fit.fitreport.exitmessage]]
 \end{quote}
 
-Gemessene Daten und Simulation wurden für die Kurvenanpassung jeweils auf gleiche Fläche normiert. Zusätzlich kamen folgende Gewichtungen für bestimmte Bereiche des Spektrums zum Einsatz:
+Gemessene Daten und Simulation wurden für die Kurvenanpassung jeweils auf gleiche Fläche normiert.[[if ~isempty(this.assignments.TSim.fit.weighting.weightingArea)]] Zusätzlich kamen folgende Gewichtungen für bestimmte Bereiche des Spektrums zum Einsatz:
 
-\begin{center}
+\begin{table}[h]
+\caption{\textbf{Übersicht über die Gewichtungbereiche und Gewichte.} Die Gewichtungen, welche während des Fittens genutzt wurden, um den Algorithmus in ein entsprechendes Minimum zu zwingen.}
+\label{tab:gewichte}
+\centering
 \begin{tabular}{cc}
 \toprule
 \textbf{Bereich} & \textbf{Gewicht}
 \\
-\midrule
-340--350 mT      & 0
+\midrule 
+[[foreach element of @TSim.fit.weighting.weightingFactor]]
+[[@TSim.fit.weighting.weightingArea(2*[[@element]]-1)]]--[[@TSim.fit.weighting.weightingArea(2*[[@element]])]] mT      & [[@TSim.fit.weighting.weightingFactor([[@element]])]]
 \\
+[[end]]
 \bottomrule
 \end{tabular}
-\end{center}
-
+\end{table}
+[[end]]
 
 \begin{table}[h]
 \caption{\textbf{Übersicht über die Simulationsparameter.} Die Simulationsparameter sind der vollständige Satz an Parametern, die für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendet wurden. $\Gamma$ steht für die Linienbreite, mit der die Simulation gefaltet wurde. Welche Parameter für die Kurvenanpassung wie variiert wurden, kann der Tab.~\ref{tab:fitparameter} entnommen werden.}

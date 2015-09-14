@@ -13,7 +13,7 @@ function dataset = TsimDefineWeightRegion(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-16
+% 2015-09-14
 
 
 
@@ -40,16 +40,21 @@ while weightloop
             ChooseRegionLoop = true;
             while ChooseRegionLoop
                 
-                prompt = 'Please enter two or more magnetic field values for weighting this/these region(s). Hit enter for return';
+                prompt = 'Please enter pairs of magnetic field values in mT for weighting this/these region(s). Hit enter for return';
                 answerstr = cliInput(prompt);
                 
-                if  isempty(answerstr)
+                if mod(dataset.TSim.fit.weighting.weightingArea,2)
+                    disp('Please enter PAIRS of magnetic field values...');
+                    ChooseRegionLoop = true;
+                    
+                elseif  isempty(answerstr)
                     weightloop = true;
                     ChooseRegionLoop = false;
                     
                 else
                     dataset.TSim.fit.weighting.weightingArea = str2num(answerstr);
-                   
+                    
+                    
                     prompt = 'Please enter the weighting factor(s) for your region(s)';
                     answerstr = cliInput(prompt);
                     

@@ -7,19 +7,19 @@ function dataset = TsimMakeBoundaries(dataset)
 %   dataset = TsimMakeBoundaries(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-09-14
 
 
 
 % Check if there is already some information
 
-fitpar = dataset.TSim.fit.fitpar;
-routine = dataset.TSim.sim.routine;
+fitpar = dataset.Tsim.fit.fitpar;
+routine = dataset.Tsim.sim.routine;
 config = TsimConfigGet([routine 'parameters']);
 
 if isempty(fieldnames(config))
@@ -38,17 +38,17 @@ else
         FoundInConfig = intersect(fieldnames(config.FitparametersAndBoundaries),fitpar,'stable');
         NotFoundInConfig = setdiff(fitpar,fieldnames(config.FitparametersAndBoundaries));
         
-        dataset.TSim.fit.lb = zeros(1,length(fitpar));
-        dataset.TSim.fit.ub = zeros(1,length(fitpar));
+        dataset.Tsim.fit.lb = zeros(1,length(fitpar));
+        dataset.Tsim.fit.ub = zeros(1,length(fitpar));
         
         dataset = TsimMakeStandardBoundary(dataset,NotFoundInConfig);
        
-        [~,index,~] = intersect(dataset.TSim.fit.fitpar,FoundInConfig,'stable');
+        [~,index,~] = intersect(dataset.Tsim.fit.fitpar,FoundInConfig,'stable');
 
         
         for k = 1:length(index)
-            dataset.TSim.fit.lb(index(k)) = config.FitparametersAndBoundaries.(FoundInConfig{k})(1);
-            dataset.TSim.fit.ub(index(k)) = config.FitparametersAndBoundaries.(FoundInConfig{k})(2);
+            dataset.Tsim.fit.lb(index(k)) = config.FitparametersAndBoundaries.(FoundInConfig{k})(1);
+            dataset.Tsim.fit.ub(index(k)) = config.FitparametersAndBoundaries.(FoundInConfig{k})(2);
         end
         
     catch  ME

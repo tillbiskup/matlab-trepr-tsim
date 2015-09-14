@@ -6,11 +6,11 @@ function dataset = TsimCliFit(dataset)
 %   dataset=TsimCliFit(dataset)
 %
 %   dataset  - struct
-%              Full trEPR toolbox dataset including TSim structure
+%              Full trEPR toolbox dataset including Tsim structure
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-24
+% 2015-09-14
 
 
 
@@ -27,8 +27,8 @@ while fitouterloop
         end
     else
         % 1D data
-        dataset.TSim.fit.spectrum.tempSpectrum = dataset.data;
-        dataset.TSim.fit.spectrum.tempSpectrum = dataset.TSim.fit.spectrum.tempSpectrum./sum(abs(dataset.TSim.fit.spectrum.tempSpectrum));
+        dataset.Tsim.fit.spectrum.tempSpectrum = dataset.data;
+        dataset.Tsim.fit.spectrum.tempSpectrum = dataset.Tsim.fit.spectrum.tempSpectrum./sum(abs(dataset.Tsim.fit.spectrum.tempSpectrum));
     end
     
     siminiloop = true;
@@ -175,7 +175,7 @@ while fitouterloop
         display('Enter a purpose:');
         purpose = input('> ','s');
         disp(' ');
-        dataset.TSim.remarks.purpose = purpose;
+        dataset.Tsim.remarks.purpose = purpose;
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
         % Fitting
@@ -193,7 +193,7 @@ while fitouterloop
         % Enter comment
         disp('Enter a comment:');
         comment = input('> ','s');
-        dataset.TSim.remarks.comment = comment;
+        dataset.Tsim.remarks.comment = comment;
         
        
         % Write history
@@ -206,7 +206,7 @@ while fitouterloop
             % Ask how to continue
             option = {...
                 'a','Save dataset';...
-                'r','Export figure and report parameters';...
+                'r','Export figure, save dataset and create report';...
                 'w','Write parameters to configuration';...
                 ' ',' ';...
                 'f','Start new fit with final values as starting point';...
@@ -241,7 +241,7 @@ while fitouterloop
                     % Save dataset
                     % Clear tempSpectrum onyl in dataset that is saved
                     savedataset = dataset;
-                    savedataset.TSim.fit.spectrum.tempSpectrum = [];
+                    savedataset.Tsim.fit.spectrum.tempSpectrum = [];
                     [status] = trEPRsave(saveFilename,savedataset);
                     if ~isempty(status)
                         disp('Some problems with saving data');
@@ -267,29 +267,32 @@ while fitouterloop
                         saveFilename = suggestedFilename;
                     end
                     % Put FigureFileName in Dataset
-                    dataset.TSim.results.figureFileName = [saveFilename '-fig'];
+                    dataset.Tsim.results.figureFileName = [saveFilename '-fig'];
                     
-                    % Export figure as .fig and as .pdf
-                    [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'fig' );
-                    if ~isempty(status)
-                        disp('Some problems with exporting fig-figure');
-                    end
-                    [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'pdf' );
-                    if ~isempty(status)
-                        disp('Some problems with exporting pdf-figure');
-                    end                     
+                    % Export figure as .pdf and as .fig
+                    
+                    commonFigureExport(h,[saveFilename '-fig']);
+                    
+%                     [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'pdf' );
+%                     if ~isempty(status)
+%                         disp('Some problems with exporting pdf-figure');
+%                     end                     
+%                     [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'fig' );
+%                     if ~isempty(status)
+%                         disp('Some problems with exporting fig-figure');
+%                     end
                     
                     % Save dataset
                     % Clear tempSpectrum onyl in dataset that is saved
                     savedataset = dataset;
-                    savedataset.TSim.fit.spectrum.tempSpectrum = [];
+                    savedataset.Tsim.fit.spectrum.tempSpectrum = [];
                     [status] = trEPRsave(saveFilename,savedataset);
                     if ~isempty(status)
                         disp('Some problems with saving data');
                     end                    
                     
                     % Make Report
-                    TsimReport(dataset);
+                    TsimReport(dataset,'template','TsimFitReport-de.tex');
                                         
                     clear status saveFilename suggestedFilename savedataset;
                     
@@ -323,7 +326,7 @@ while fitouterloop
                     end
                     % Don't clear tempSpectrum
                     % New fit with same initial parameters as before
-                    dataset = TsimFitpar2simpar(dataset.TSim.fit.initialvalue,dataset);
+                    dataset = TsimFitpar2simpar(dataset.Tsim.fit.initialvalue,dataset);
                     dataset = TsimApplyConventions(dataset);
                     
                     
@@ -338,12 +341,12 @@ while fitouterloop
                     % New fit with default initial parameters from
                     % config
                     % Clear simpar and fitpar and tempSpectrum
-                    dataset.TSim.fit.spectrum.tempSpectrum = [];
-                    fields2beremoved = fieldnames(dataset.TSim.sim.simpar);
+                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
+                    fields2beremoved = fieldnames(dataset.Tsim.sim.simpar);
                     for k = 1: length(fields2beremoved)
-                        dataset.TSim.sim.simpar = rmfield(dataset.TSim.sim.simpar,(fields2beremoved(k)));
+                        dataset.Tsim.sim.simpar = rmfield(dataset.Tsim.sim.simpar,(fields2beremoved(k)));
                     end
-                    dataset.TSim.fit.fitpar = {};
+                    dataset.Tsim.fit.fitpar = {};
                     saveloop = false;
                     fitinnerloop = false;
                     
@@ -355,7 +358,7 @@ while fitouterloop
                     % New fit with final values as starting parameters but
                     % different section
                     % Clear tempSpectrum
-                    dataset.TSim.fit.spectrum.tempSpectrum = [];
+                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
                     % Copy Values from Simpar to fitpar inivalue
                     dataset = TsimCopySimparValues2Initialvalue(dataset);
                     
@@ -377,12 +380,12 @@ while fitouterloop
                     % different simulation routine, same section
                     disp('The simulation routines currently in use:')
                     disp(' ')
-                    disp(dataset.TSim.sim.routine);
+                    disp(dataset.Tsim.sim.routine);
                     disp(' ')
                     
-                    oldRoutine = dataset.TSim.sim.routine;
+                    oldRoutine = dataset.Tsim.sim.routine;
                     dataset = TsimChangeSimRoutine(dataset);
-                    newRoutine = dataset.TSim.sim.routine;
+                    newRoutine = dataset.Tsim.sim.routine;
                     
                     if ~strcmpi(oldRoutine,newRoutine)
                         % Check simpar and possibly change it but don't change
@@ -394,7 +397,7 @@ while fitouterloop
                         dataset = TsimKickOutFitpar(dataset);
                         
                         %Clear initialvalues
-                        dataset.TSim.fit.initialvalues = [];
+                        dataset.Tsim.fit.initialvalues = [];
                         
                     end
                     % Copy Values from Simpar to fitpar inivalue
@@ -414,7 +417,7 @@ while fitouterloop
                     % Quit
                     % Suggest reasonable filename
                     % Clear tempSpectrum
-                    dataset.TSim.fit.spectrum.tempSpectrum = [];
+                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
                     [path,name,~] = fileparts(dataset.file.name);
                     suggestedFilename = fullfile(...
                         path,[name '_fit-' datestr(now,30) '.tez']);
@@ -434,7 +437,7 @@ while fitouterloop
                     end
                     % Quit without saving
                     % Clear tempSpectrum
-                    dataset.TSim.fit.spectrum.tempSpectrum = [];
+                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
                     disp('Goodbye!');
                     return,
                 otherwise

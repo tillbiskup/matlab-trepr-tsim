@@ -6,7 +6,7 @@ function TsimParDisplay(dataset,command,varargin)
 %   TsimSimini(dataset,<command>);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 %   command - string
 %             one of 'sim', 'fit', 'opt', fitreport
@@ -26,7 +26,7 @@ function TsimParDisplay(dataset,command,varargin)
 % See also TSIM
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-09-14
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -45,28 +45,28 @@ switch lower(command)
         % Display simpar
         % TODO Can be made nicer with loading the parameters and displaying the
         % propper name (with description) instead of the internal name
-        disp({'Simulation rotine:' dataset.TSim.sim.routine});
+        disp({'Simulation rotine:' dataset.Tsim.sim.routine});
         
         disp(' ')
        
-        disp(dataset.TSim.sim.simpar);
+        disp(dataset.Tsim.sim.simpar);
         
     case 'fit'
         % Display fitpar, initialvalues, lb and ub
-        disp(dataset.TSim.fit.fitpar');
-        disp(dataset.TSim.fit.lb);
-        disp(dataset.TSim.fit.initialvalue);
-        disp(dataset.TSim.fit.ub);
+        disp(dataset.Tsim.fit.fitpar');
+        disp(dataset.Tsim.fit.lb);
+        disp(dataset.Tsim.fit.initialvalue);
+        disp(dataset.Tsim.fit.ub);
         
     case 'opt'
-        disp(dataset.TSim.fit.fitopt);
+        disp(dataset.Tsim.fit.fitopt);
         disp(' ')
         
         disp('Defined regions for weighting:')
         
         disp(' ')
        
-        disp(dataset.TSim.fit.weighting.weightingArea)
+        disp(dataset.Tsim.fit.weighting.weightingArea)
         
         disp(' ')
         
@@ -78,7 +78,7 @@ switch lower(command)
         
         disp(' ')
         
-        disp(dataset.TSim.sim.simpar);
+        disp(dataset.Tsim.sim.simpar);
         
         disp(' ')
         
@@ -87,10 +87,10 @@ switch lower(command)
         disp(' ')
         
         % Display fitpar, initialvalues, lb ub, and finalvalues
-        disp(dataset.TSim.fit.fitpar');
-        disp(dataset.TSim.fit.lb);
-        disp(dataset.TSim.fit.initialvalue);
-        disp(dataset.TSim.fit.ub);
+        disp(dataset.Tsim.fit.fitpar');
+        disp(dataset.Tsim.fit.lb);
+        disp(dataset.Tsim.fit.initialvalue);
+        disp(dataset.Tsim.fit.ub);
         
         disp(' ')
         
@@ -98,7 +98,7 @@ switch lower(command)
         
         disp(' ')
         
-        disp(dataset.TSim.fit.finalvalue);
+        disp(dataset.Tsim.fit.finalvalue);
          
         disp(' ')
         
@@ -106,7 +106,7 @@ switch lower(command)
         
         disp(' ')
         
-        disp((dataset.TSim.fit.fitreport.stdDev)');
+        disp((dataset.Tsim.fit.fitreport.stdDev)');
         
         disp(' ')
     otherwise

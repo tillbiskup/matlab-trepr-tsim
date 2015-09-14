@@ -1,5 +1,5 @@
 function varargout = TsimHistory(varargin)
-% TSIMHISTORY Manage history records of the TSim module (create, ...)
+% TSIMHISTORY Manage history records of the Tsim module (create, ...)
 %
 % Usage
 %   dataset = TsimHistory('write',dataset);
@@ -9,12 +9,12 @@ function varargout = TsimHistory(varargin)
 %               'write' - write history record
 %
 %   dataset   - struct
-%               Full trEPR toolbox dataset including TSim structure
+%               Full trEPR toolbox dataset including Tsim structure
 %
 % See also TREPRDATASTRUCTURE.
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-09-14
 
 if ~nargin && ~nargout
     help TsimHistory
@@ -42,9 +42,9 @@ if nargin && ischar(varargin{1})
             history = trEPRdataStructure('history');
             % TODO: Proper name of method taken from TsimInfo
             history.method = 'Tsim';
-            history.parameters.TSim = dataset.TSim;
-            history.parameters.TSim.fit.spectrum = rmfield(...
-                history.parameters.TSim.fit.spectrum,'tempSpectrum');
+            history.parameters.Tsim = dataset.Tsim;
+            history.parameters.Tsim.fit.spectrum = rmfield(...
+                history.parameters.Tsim.fit.spectrum,'tempSpectrum');
             dataset.history{end+1} = history;
             clear history;
             varargout{1} = dataset;            

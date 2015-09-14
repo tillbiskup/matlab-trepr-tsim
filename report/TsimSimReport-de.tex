@@ -61,7 +61,7 @@
 
 % Headers and footers
 \usepackage{fancyhdr}
-\fancyhead[L]{Triplett-Simulation von [[@sample.name]]}
+\fancyhead[L]{Triplett-Simulation[[if ~isempty(this.assignments.sample.name)]] von [[@sample.name]][[end]]}
 \pagestyle{fancy}
 
 % Change indentation and separation between paragraphs
@@ -103,7 +103,7 @@
 \noindent\rule[1.5ex]{\textwidth}{1pt}
 
 \begin{sffamily}\bfseries\large
-Ergebnisse der Triplett-Simulation von [[@sample.name]]
+Ergebnisse der Triplett-Simulation [[if ~isempty(this.assignments.sample.name)]]von [[@sample.name]] [[end]]
 \end{sffamily}
 
 \noindent\rule{\textwidth}{1pt}
@@ -114,7 +114,8 @@ Ergebnisse der Triplett-Simulation von [[@sample.name]]
 
 \vspace*{1.5em}
 
-An das TREPR-Spektrum von [[@sample.name]] wurde mittels des Programms \texttt{Tsim} und unter Verwendung der Simulationsroutine \texttt{[[@Tsim.sim.routine]]} eine Triplett-Simulation angepasst.
+Das Programm \texttt{Tsim} hat unter Verwendung der Simulationsroutine \texttt{[[@Tsim.sim.routine]]} eine Triplett-Simulation durchgeführt.
+[[if ~isempty(this.assignments.sample.name)]]Als Vorlage diente das das TREPR-Spektrum von [[@sample.name]].[[end]]
 
 [[if ~isempty(this.assignments.Tsim.remarks.purpose)]]
 \textbf{Zielstellung:} [[@Tsim.remarks.purpose]]
@@ -124,7 +125,7 @@ An das TREPR-Spektrum von [[@sample.name]] wurde mittels des Programms \texttt{T
 \textbf{Nutzerkommentar:} [[@Tsim.remarks.comment]]
 [[end]]
 
-Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und der Anpassung an die experimentellen Daten vgl. Abb.~\ref{fig:ergebnisse}, für die zugehörigen Simulationsparameter Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}, und für die Fitparameter Tab.~\ref{tab:fitparameter}, S.~\pageref{tab:fitparameter}.
+Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation vgl. Abb.~\ref{fig:ergebnisse}, für die zugehörigen Simulationsparameter Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.
 
 
 \begin{figure}[h]
@@ -153,33 +154,6 @@ Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und de
 
 \clearpage
 
-
-Für die Kurvenanpassung wurde die Funktion \texttt{lsqcurvefit} von \matlab{} verwendet. Die verwendeten Optionen können Tab.~\ref{tab:fitopt} entnommen werden. Das Abbruchkriterium der Kurvenanpassung lautete:
-
-\begin{quote}\small
-\ttfamily
-[[@Tsim.fit.fitreport.exitmessage]]
-\end{quote}
-
-Gemessene Daten und Simulation wurden für die Kurvenanpassung jeweils auf gleiche Fläche normiert.[[if ~isempty(this.assignments.Tsim.fit.weighting.weightingArea)]] Zusätzlich kamen folgende Gewichtungen für bestimmte Bereiche des Spektrums zum Einsatz:
-
-\begin{table}[h]
-\caption{\textbf{Übersicht über die Gewichtungbereiche und Gewichte.} Die Gewichtungen, welche während des Fittens genutzt wurden, um den Algorithmus in ein entsprechendes Minimum zu zwingen.}
-\label{tab:gewichte}
-\centering
-\begin{tabular}{cc}
-\toprule
-\textbf{Bereich} & \textbf{Gewicht}
-\\
-\midrule 
-[[foreach element of @Tsim.fit.weighting.weightingFactor]]
-[[@Tsim.fit.weighting.weightingArea(2*[[@element]]-1)]]--[[@Tsim.fit.weighting.weightingArea(2*[[@element]])]] mT      & [[@Tsim.fit.weighting.weightingFactor([[@element]])]]
-\\
-[[end]]
-\bottomrule
-\end{tabular}
-\end{table}
-[[end]]
 
 \begin{table}[h]
 \caption{\textbf{Übersicht über die Simulationsparameter.} Die Simulationsparameter sind der vollständige Satz an Parametern, die für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendet wurden. $\Gamma$ steht für die Linienbreite, mit der die Simulation gefaltet wurde. Welche Parameter für die Kurvenanpassung wie variiert wurden, kann der Tab.~\ref{tab:fitparameter} entnommen werden.}
@@ -210,42 +184,6 @@ $\Gamma_\text{Lorentz}$ / mT & $[[@Tsim.sim.simpar.lwLorentz]]$
 [[end]]
 [[if isfield(this.assignments.Tsim.sim.simpar,'DeltaB')]]
 $\Delta B$ / mT & $[[@Tsim.sim.simpar.DeltaB]]$
-\\
-[[end]]
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[h]
-\caption{\textbf{Übersicht über die Fitparameter.} Diese Parameter stellen in der Regel eine Untermenge der für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendeten Parameter dar. Für einen vollständigen Satz der Simulationsparameter vgl. Tab.~\ref{tab:simparameter}. Der Fehler für jeden Parameter ist die Standardabweichung, die aus der Jacobi-Matrix berechnet wird.}
-\label{tab:fitparameter}
-\centering
-\begin{tabular}{cccccc}
-\toprule
-\textbf{Parameter} & \textbf{Startwert} & \textbf{untere Grenze} & \textbf{obere Grenze} & \textbf{Endwert} & \textbf{Fehler}
-\\
-\midrule
-%$g_x$ & 2.002 & 2.000 & 2.005 & 2.003
-[[foreach element of @Tsim.fit.fitpar]]
-\texttt{[[@Tsim.fit.fitpar([[@element]])]]} & [[@Tsim.fit.initialvalue([[@element]])]] & [[@Tsim.fit.lb([[@element]])]] & [[@Tsim.fit.ub([[@element]])]] & [[@Tsim.fit.finalvalue([[@element]])]] & [[@Tsim.fit.fitreport.stdDev([[@element]])]]
-\\
-[[end]]
-\bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[h]
-\caption{\textbf{Übersicht über die Optionen der \matlab-Routine \texttt{lsqcurvefit}, die bei der Kurvenanpassung Verwendung fanden.} Vergleiche auch das Abbruchkriterium der Funktion \texttt{lsqcurvefit} weiter oben.}
-\label{tab:fitopt}
-\centering
-\begin{tabular}{lr}
-\toprule
-\textbf{Parameter} & \textbf{Wert}
-\\
-\midrule
-%\texttt{TolFun} & 1e-18
-[[foreach @Tsim.fit.fitopt]]
-\texttt{[[@Tsim.fit.fitopt.fieldname]]} & [[@Tsim.fit.fitopt.fieldvalue|f=4.2e]]
 \\
 [[end]]
 \bottomrule

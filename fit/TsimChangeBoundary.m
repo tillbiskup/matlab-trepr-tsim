@@ -6,19 +6,19 @@ function dataset = TsimChangeBoundary(dataset)
 %   dataset = TsimChangeBoundary(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-11
+% 2015-09-14
 
 
 % Find boundaries user has
 
-FitParameters = dataset.TSim.fit.fitpar;
-FitParameterLb = dataset.TSim.fit.lb;
-FitParameterUb = dataset.TSim.fit.ub;
+FitParameters = dataset.Tsim.fit.fitpar;
+FitParameterLb = dataset.Tsim.fit.lb;
+FitParameterUb = dataset.Tsim.fit.ub;
 
 changeloop = true;
 while changeloop
@@ -46,8 +46,8 @@ while changeloop
             DefaultValue = [FitParameterLb(match) FitParameterUb(match)];
             prompt = 'Please enter new boundaries: ';
             NewValues = cliInput(prompt,'default',num2str(DefaultValue),'numeric',true);
-            dataset.TSim.fit.lb(match) = NewValues(1);
-            dataset.TSim.fit.ub(match) = NewValues(2);
+            dataset.Tsim.fit.lb(match) = NewValues(1);
+            dataset.Tsim.fit.ub(match) = NewValues(2);
             
             dataset = TsimCheckBoundaries(dataset);
             

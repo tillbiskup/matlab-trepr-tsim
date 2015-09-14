@@ -7,12 +7,12 @@ function TsimSimparIntoConfig(dataset)
 %   TsimSimparIntoConfig(dataset)
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-03
+% 2015-09-14
 
 
 % Get configuation
@@ -43,17 +43,17 @@ end
 if ~isempty(dataset.data)
 % You have experimental data
 ToBeRemoved = {'nPoints';'Range';'mwFreq'};
-FlatFieldnames = fieldnames(rmfield(dataset.TSim.sim.simpar,ToBeRemoved));
+FlatFieldnames = fieldnames(rmfield(dataset.Tsim.sim.simpar,ToBeRemoved));
 else
-FlatFieldnames = fieldnames(dataset.TSim.sim.simpar);
+FlatFieldnames = fieldnames(dataset.Tsim.sim.simpar);
 end
 
     
 for k = 1:length(FlatFieldnames)
-    config.StandardSimulationParameters.(FlatFieldnames{k}) = dataset.TSim.sim.simpar.(FlatFieldnames{k});
+    config.StandardSimulationParameters.(FlatFieldnames{k}) = dataset.Tsim.sim.simpar.(FlatFieldnames{k});
 end
 
-FlatFieldnames = fieldnames(dataset.TSim.sim.simpar);
+FlatFieldnames = fieldnames(dataset.Tsim.sim.simpar);
 FieldsToBeShifted = setdiff(fieldnames(config.StandardSimulationParameters),FlatFieldnames);
 
 for k=1:length(FieldsToBeShifted)

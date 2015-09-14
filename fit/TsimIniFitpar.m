@@ -8,19 +8,19 @@ function dataset = TsimIniFitpar(dataset)
 %   dataset = TsimIniFitpar(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-01
+% 2015-09-14
 
 % Check if there is already some information
-if ~isempty(dataset.TSim.fit.fitpar)
+if ~isempty(dataset.Tsim.fit.fitpar)
     return
 end
 
-routine = dataset.TSim.sim.routine;
+routine = dataset.Tsim.sim.routine;
 config = TsimConfigGet([routine 'parameters']);
 
 
@@ -35,22 +35,22 @@ else
         
         TsimConfigSet([routine 'parameters'],config)
         % CreateFitpar from Config
-        dataset.TSim.fit.fitpar = fieldnames(config.FitparametersAndBoundaries);
-        for k = 1:length(dataset.TSim.fit.fitpar)
-            dataset.TSim.fit.lb(k) = config.FitparametersAndBoundaries.(dataset.TSim.fit.fitpar{k})(1);
-            dataset.TSim.fit.ub(k) = config.FitparametersAndBoundaries.(dataset.TSim.fit.fitpar{k})(2);
+        dataset.Tsim.fit.fitpar = fieldnames(config.FitparametersAndBoundaries);
+        for k = 1:length(dataset.Tsim.fit.fitpar)
+            dataset.Tsim.fit.lb(k) = config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k})(1);
+            dataset.Tsim.fit.ub(k) = config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k})(2);
         end
         
         if isfield(config.FitOptions, 'MaximumIteration')
-            dataset.TSim.fit.fitopt.MaxIter = config.FitOptions.MaximumIteration;
+            dataset.Tsim.fit.fitopt.MaxIter = config.FitOptions.MaximumIteration;
         end
         
         if isfield(config.FitOptions,'MaximumFunctionEvaluation')
-            dataset.TSim.fit.fitopt.MaxFunEval = config.FitOptions.MaximumFunctionEvaluation;
+            dataset.Tsim.fit.fitopt.MaxFunEval = config.FitOptions.MaximumFunctionEvaluation;
         end
         
         if isfield(config.FitOptions, 'TerminationTolerance')
-            dataset.TSim.fit.fitopt.TolFun = config.FitOptions.TerminationTolerance;
+            dataset.Tsim.fit.fitopt.TolFun = config.FitOptions.TerminationTolerance;
         end
                 
     catch %#ok<CTCH>
@@ -75,8 +75,8 @@ end
 
 
 function dataset = initializeDefaultFitParameters(dataset)
-dataset.TSim.fit.fitpar = {'D';'E';'p1';'p2';'p3';'DeltaB';'lwGauss'};
-dataset.TSim.fit.lb = [300, 20, 0, 0, 0, -2, 0];
-dataset.TSim.fit.ub = [700, 200, 1, 1, 1, 2, 10];
+dataset.Tsim.fit.fitpar = {'D';'E';'p1';'p2';'p3';'DeltaB';'lwGauss'};
+dataset.Tsim.fit.lb = [300, 20, 0, 0, 0, -2, 0];
+dataset.Tsim.fit.ub = [700, 200, 1, 1, 1, 2, 10];
 
 end

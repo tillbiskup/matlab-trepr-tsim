@@ -6,19 +6,19 @@ function dataset = TsimChangeSimValues(dataset,varargin)
 %
 %
 %   dataset -  struct
-%              Full trEPR toolbox dataset including TSim structure
+%              Full trEPR toolbox dataset including Tsim structure
 % 
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-07-06
+% 2015-09-14
 
 changeloop = true;
 while changeloop
     
-    SimulationParameters = fieldnames(dataset.TSim.sim.simpar);
-    SimulationParameterValues = struct2cell(dataset.TSim.sim.simpar);
+    SimulationParameters = fieldnames(dataset.Tsim.sim.simpar);
+    SimulationParameterValues = struct2cell(dataset.Tsim.sim.simpar);
     
     disp(' ');
     
@@ -50,7 +50,7 @@ while changeloop
                 NewValue = cliInput(prompt,'default',num2str(cell2mat(DefaultValue)),'numeric',true);
             end
             
-            dataset.TSim.sim.simpar.(Name) = NewValue;
+            dataset.Tsim.sim.simpar.(Name) = NewValue;
             
             % Apply conventions
             dataset = TsimApplyConventions(dataset,'populations',false);

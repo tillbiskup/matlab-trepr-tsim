@@ -9,7 +9,7 @@ function dataset = TsimMakeStandardBoundary(dataset,varargin)
 %   dataset = TsimMakeStandardBoundary(dataset,parameter)
 %
 %   dataset   - struct
-%               Full trEPR toolbox dataset including TSim structure
+%               Full trEPR toolbox dataset including Tsim structure
 %
 %   parameter - cell
 %               names of fitparameters to create boundaries for
@@ -17,7 +17,7 @@ function dataset = TsimMakeStandardBoundary(dataset,varargin)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-09-14
 
 
 % Set default values
@@ -41,14 +41,14 @@ if isempty(parameter) && ~isempty(varargin)
 end
 
 if isempty(varargin)
-    parameter = dataset.TSim.fit.fitpar;
+    parameter = dataset.Tsim.fit.fitpar;
 end
 
-[~,indexNotFound,~] = intersect(dataset.TSim.fit.fitpar,parameter,'stable');
+[~,indexNotFound,~] = intersect(dataset.Tsim.fit.fitpar,parameter,'stable');
 
 for k=indexNotFound
-    dataset.TSim.fit.lb(k) = dataset.TSim.fit.initialvalue(k)-dataset.TSim.fit.initialvalue(k)*fraction;
-    dataset.TSim.fit.ub(k) = dataset.TSim.fit.initialvalue(k)+dataset.TSim.fit.initialvalue(k)*fraction;
+    dataset.Tsim.fit.lb(k) = dataset.Tsim.fit.initialvalue(k)-dataset.Tsim.fit.initialvalue(k)*fraction;
+    dataset.Tsim.fit.ub(k) = dataset.Tsim.fit.initialvalue(k)+dataset.Tsim.fit.initialvalue(k)*fraction;
 end
 
 end

@@ -6,7 +6,7 @@ function [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 %
 %
 %   dataset    -  struct
-%                 Full trEPR toolbox dataset including TSim structure
+%                 Full trEPR toolbox dataset including Tsim structure
 % 
 %   siminiloop - boolean
 %                
@@ -15,7 +15,7 @@ function [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-15
+% 2015-09-14
 
 
 
@@ -23,7 +23,7 @@ function [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 quit = false;
 disp(' ');
 
-if isempty(dataset.TSim.sim.routine)
+if isempty(dataset.Tsim.sim.routine)
     dataset = TsimChangeSimRoutine(dataset);
 end
 

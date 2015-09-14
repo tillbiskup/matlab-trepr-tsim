@@ -5,12 +5,12 @@ function dataset = TsimChangeFitpar(dataset)
 %   dataset = TsimChangeFitpar(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-14
 
 Parameters = TsimParameters;
 ParameterNames = Parameters(:,1);
@@ -19,7 +19,7 @@ userpar = logical(cell2mat(Parameters(:,9)));
 pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),Parameters(:,13));
 tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),Parameters(:,13));
 
-routine = dataset.TSim.sim.routine;
+routine = dataset.Tsim.sim.routine;
     
     switch routine
         case 'pepper'
@@ -31,7 +31,7 @@ routine = dataset.TSim.sim.routine;
 
 
 % Check if there is already some information
-oldfitpar = dataset.TSim.fit.fitpar;
+oldfitpar = dataset.Tsim.fit.fitpar;
 
 % Find default indices
 Lia = ismember(ParameterNames(fituser), oldfitpar);
@@ -59,7 +59,7 @@ answer = cliMenu(option,...
 Big=cellstr(ParameterNames(fituser));
 NewFitParameters=Big(str2double(answer));
 
-dataset.TSim.fit.fitpar = NewFitParameters;
+dataset.Tsim.fit.fitpar = NewFitParameters;
 
 dataset = TsimChekFitpar(dataset);
 

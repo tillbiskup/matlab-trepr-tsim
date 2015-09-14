@@ -7,12 +7,12 @@ function dataset = TsimInitializeFallBackParameters(dataset)
 %
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-18
+% 2015-09-14
 
 
 % Load Parameters
@@ -30,7 +30,7 @@ minsimparametervalues = parameters(minsimuser,10);
 simpar = cell2struct(minsimparametervalues, minsimparameters,1);
 
 % Put it in dataset
-dataset.TSim.sim.simpar = simpar;
+dataset.Tsim.sim.simpar = simpar;
 
 end
 

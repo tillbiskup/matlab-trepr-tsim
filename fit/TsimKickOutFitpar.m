@@ -6,27 +6,27 @@ function dataset = TsimKickOutFitpar(dataset)
 %   dataset = TsimKickOutFitpar(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-14
 
 
-RemoveFromFitpar = setdiff(dataset.TSim.fit.fitpar,fieldnames(dataset.TSim.sim.simpar));
+RemoveFromFitpar = setdiff(dataset.Tsim.fit.fitpar,fieldnames(dataset.Tsim.sim.simpar));
 if isempty(RemoveFromFitpar)
     return
 else
            
-[dataset.TSim.fit.fitpar, ifitpar, ~] = intersect(dataset.TSim.fit.fitpar,fieldnames(dataset.TSim.sim.simpar));
+[dataset.Tsim.fit.fitpar, ifitpar, ~] = intersect(dataset.Tsim.fit.fitpar,fieldnames(dataset.Tsim.sim.simpar));
 
-if ~isempty(dataset.TSim.fit.lb)
-    dataset.TSim.fit.lb = dataset.TSim.fit.lb(ifitpar);
+if ~isempty(dataset.Tsim.fit.lb)
+    dataset.Tsim.fit.lb = dataset.Tsim.fit.lb(ifitpar);
 end
 
-if ~isempty(dataset.TSim.fit.ub)
-    dataset.TSim.fit.ub = dataset.TSim.fit.ub(ifitpar);
+if ~isempty(dataset.Tsim.fit.ub)
+    dataset.Tsim.fit.ub = dataset.Tsim.fit.ub(ifitpar);
 end
 
 

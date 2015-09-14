@@ -11,7 +11,7 @@ function [dataset,varargout] = TsimWeightSpectrum(dataset,keyword)
 %
 %
 %   dataset   - struct
-%               Full trEPR toolbox dataset including TSim structure
+%               Full trEPR toolbox dataset including Tsim structure
 %
 %   keyword   - string
 %               can be one of the following: spectrum or calculated
@@ -24,7 +24,7 @@ function [dataset,varargout] = TsimWeightSpectrum(dataset,keyword)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-23
+% 2015-09-14
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -42,16 +42,16 @@ parser.parse(dataset,keyword);
 switch lower(keyword)
     
     case 'spectrum'
-        if isempty(dataset.TSim.fit.weighting.weightingArea) || isempty(dataset.TSim.fit.weighting.weightingFactor)
-        spectrum = dataset.TSim.fit.spectrum.tempSpectrum;
+        if isempty(dataset.Tsim.fit.weighting.weightingArea) || isempty(dataset.Tsim.fit.weighting.weightingFactor)
+            spectrum = dataset.Tsim.fit.spectrum.tempSpectrum;
         else
-        dataset.TSim.fit.spectrum.tempSpectrum = weighting(dataset.TSim.fit.spectrum.tempSpectrum,dataset);
-        spectrum = dataset.TSim.fit.spectrum.tempSpectrum;
+            dataset.Tsim.fit.spectrum.tempSpectrum = weighting(dataset.Tsim.fit.spectrum.tempSpectrum,dataset);
+            spectrum = dataset.Tsim.fit.spectrum.tempSpectrum;
         end
         varargout{1} = spectrum;
         
     case 'calculated'
-        if isempty(dataset.TSim.fit.weighting.weightingArea) || isempty(dataset.TSim.fit.weighting.weightingFactor)
+        if isempty(dataset.Tsim.fit.weighting.weightingArea) || isempty(dataset.Tsim.fit.weighting.weightingFactor)
             varargout{1} = dataset.calculated;
         else
             varargout{1} = weighting(dataset.calculated,dataset);
@@ -63,13 +63,12 @@ end
 
 
 function spectrum = weighting(spectrum, dataset)
-
-inx = interp1(dataset.axes.data(2).values,1:length(dataset.axes.data(2).values),dataset.TSim.fit.weighting.weightingArea,'nearest');
-weightingArea = inx;
-weightingFactor = dataset.TSim.fit.weighting.weightingFactor;
+% indices are calculated by nearest neighbour table lookup
+weightingArea = interp1(dataset.axes.data(2).values,1:length(dataset.axes.data(2).values),dataset.Tsim.fit.weighting.weightingArea,'nearest');
+weightingFactor = dataset.Tsim.fit.weighting.weightingFactor;
 
 for k = 1:length(weightingFactor)
-    spectrum(weightingArea(k):weightingArea(k+1)) = spectrum(weightingArea(k):weightingArea(k+1)).*weightingFactor(k);
+    spectrum(weightingArea(2*k-1):weightingArea(2*k)) = spectrum(weightingArea(2*k-1):weightingArea(2*k)).*weightingFactor(k);
 end
 end
 

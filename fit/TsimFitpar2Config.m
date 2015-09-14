@@ -8,19 +8,19 @@ function config = TsimFitpar2Config(dataset)
 %             configuration structure
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-14
 
-if isempty(dataset.TSim.fit.fitpar)
+if isempty(dataset.Tsim.fit.fitpar)
     return
 else
     
-    for k = 1:length(dataset.TSim.fit.fitpar)
-        config.FitparametersAndBoundaries.(dataset.TSim.fit.fitpar{k}) = [dataset.TSim.fit.lb(k) dataset.TSim.fit.ub(k)] ;
+    for k = 1:length(dataset.Tsim.fit.fitpar)
+        config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k}) = [dataset.Tsim.fit.lb(k) dataset.Tsim.fit.ub(k)] ;
     end
     
     % Add other Blocks to config

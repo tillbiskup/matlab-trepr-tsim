@@ -1,9 +1,9 @@
-function dataset=Tsim()
-% TSIM for simulating spin-polarized EPR spectra
+function dataset=TsimMulti()
+% TSIMMULTI for simulating superpositions of spin-polarized EPR spectra
 % of triplets.
 %
 % Usage
-%   dataset = Tsim()
+%   dataset = TsimMulti()
 %
 %
 %   dataset - struct
@@ -11,7 +11,7 @@ function dataset=Tsim()
 %
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-09-08
+% 2015-09-14
 
 
 % Check for dependencies
@@ -85,13 +85,13 @@ switch answer
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%
         
-        dataset = TsimCliSim(dataset);
+        dataset = TsimMultiCliSim(dataset);
         return;
         
     case 'n'
         % load nothing and start simulation
         dataset = TsimDataset();
-        dataset = TsimCliSim(dataset);
+        dataset = TsimMultiCliSim(dataset);
         return;
     case 'q'
         disp('Goodbye!');

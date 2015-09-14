@@ -1,19 +1,19 @@
-function dataset = TsimCliSim(dataset)
-% TSIMCLISIM Subfunction of the Tsim CLI handling the
+function dataset = TsimMultiCliSim(dataset)
+% TSIMMULTICLISIM Subfunction of the TsimMulti CLI handling the
 % simulation part.
 %
 % If the user decides at some point to start a fit with the given
 % simulation parameters, control is handed back to the caller.
 %
 % Usage
-%   dataset = TsimCliSim(dataset)
+%   dataset = TsimMultiCliSim(dataset)
 %
 %   dataset  - struct
 %              Full trEPR toolbox dataset including Tsim structure
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-08-26
+% 2015-09-14
 
 % Empty fit branch of TSim structure
 tempdataset = TsimDataset();
@@ -70,7 +70,7 @@ if length(celldatasets) ~= 1
         
         superpositionloop = true;
         while superpositionloop
-            superdataset = TsimMakeSuperposition(celldatasets, weighting);
+            superdataset = TsimMultiMakeSuperposition(celldatasets, weighting);
                      
             figure(Triplet + 1)
             c = TsimMakeShinyPicture(superdataset);

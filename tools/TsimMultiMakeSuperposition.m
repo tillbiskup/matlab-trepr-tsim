@@ -1,10 +1,10 @@
-function superdataset = TsimMakeSuperposition(celldataset, weighting)
-% TSIMMAKESUPERPOSITION Makes a superposition of calculateddata in celldataset
+function superdataset = TsimMultiMakeSuperposition(celldataset, weighting)
+% TSIMMULTIMAKESUPERPOSITION Makes a superposition of calculateddata in celldataset
 % with given weighting. It gives back a common dataset, with TSim as cell 
 %
 %
 % Usage
-%   superdataset = TsimMakeSuperpostition(celldataset, weighting)
+%   superdataset = TsimMultiMakeSuperpostition(celldataset, weighting)
 %
 %   celldataset - cell
 %                 cell of full trEPR toolbox dataset structs including TSim structure
@@ -15,7 +15,7 @@ function superdataset = TsimMakeSuperposition(celldataset, weighting)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer
-% 2015-08-26
+% 2015-09-14
 
 
 superdataset = celldataset{end};

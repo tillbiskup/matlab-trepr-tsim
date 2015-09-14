@@ -7,22 +7,22 @@ function dataset = TsimCheckBoundaries(dataset)
 %   dataset = TsimCheckBoundary(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-11
+% 2015-09-14
 
 fraction = 1/20;
 
-for k= 1:length(dataset.TSim.fit.fitpar)
-if ~(dataset.TSim.fit.lb(k) < dataset.TSim.fit.initialvalue(k))
-    dataset.TSim.fit.lb(k) = dataset.TSim.fit.initialvalue(k)-(dataset.TSim.fit.initialvalue(k)*fraction);
+for k= 1:length(dataset.Tsim.fit.fitpar)
+if ~(dataset.Tsim.fit.lb(k) < dataset.Tsim.fit.initialvalue(k))
+    dataset.Tsim.fit.lb(k) = dataset.Tsim.fit.initialvalue(k)-(dataset.Tsim.fit.initialvalue(k)*fraction);
 end
 
-if ~(dataset.TSim.fit.ub(k) > dataset.TSim.fit.initialvalue(k))
-    dataset.TSim.fit.ub(k) = dataset.TSim.fit.initialvalue(k)+(dataset.TSim.fit.initialvalue(k)*fraction);
+if ~(dataset.Tsim.fit.ub(k) > dataset.Tsim.fit.initialvalue(k))
+    dataset.Tsim.fit.ub(k) = dataset.Tsim.fit.initialvalue(k)+(dataset.Tsim.fit.initialvalue(k)*fraction);
 end
 
 end

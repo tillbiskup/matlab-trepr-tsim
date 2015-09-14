@@ -1,17 +1,17 @@
 function dataset = TsimChangeSimRoutine(dataset)
-% TSIMCHANGESIMROUTINE changes simulation routine in TSim structure
+% TSIMCHANGESIMROUTINE changes simulation routine in Tsim structure
 %
 % Usage
 %   dataset = TsimChangeSimRoutine(dataset)
 %
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-09-22
 
 option ={...
     'p','Pepper';...
@@ -21,12 +21,12 @@ answer = cliMenu(option,'title',...
 
 switch lower(answer)
     case 'p'
-        dataset.TSim.sim.routine = 'pepper';
+        dataset.Tsim.sim.routine = 'pepper';
     case 't'
-        dataset.TSim.sim.routine = 'tango';
+        dataset.Tsim.sim.routine = 'tango';
 end
 
-dataset.TSim.acknowledgement.sim = TsimAcknowledgement(dataset);
+dataset.Tsim.acknowledgement.sim = TsimAcknowledgement(dataset);
 
 disp(' ');
 disp('**********************************************************');
@@ -35,7 +35,7 @@ disp('**                    DISCLAIMER                        **');
 disp('**********************************************************');
 disp('**********************************************************');
 disp('**');
-cellfun(@(x)disp(['** ' x]),dataset.TSim.acknowledgement.sim);
+cellfun(@(x)disp(['** ' x]),dataset.Tsim.acknowledgement.sim);
 disp('**');
 disp('**********************************************************');
 disp('**********************************************************');

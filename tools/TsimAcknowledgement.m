@@ -6,7 +6,7 @@ function acknowledgement = TsimAcknowledgement(dataset)
 %   acknowledgement = TsimAcknowledgement(dataset);
 %
 %   dataset        - struct
-%                    Full trEPR toolbox dataset including TSim structure
+%                    Full trEPR toolbox dataset including Tsim structure
 %
 %   acknowledgment - cell
 %                    Contains acknowledgement for simulation routine 
@@ -14,9 +14,9 @@ function acknowledgement = TsimAcknowledgement(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-09-14
 
-switch lower(dataset.TSim.sim.routine)
+switch lower(dataset.Tsim.sim.routine)
     case 'tango' 
         acknowledgement = {...
             'If you''re using this routine for simulating your data,'...

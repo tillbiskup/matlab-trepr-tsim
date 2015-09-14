@@ -7,7 +7,7 @@ function dataset = TsimDefineWeightRegion(dataset)
 %
 %
 %   dataset -  struct
-%              Full trEPR toolbox dataset including TSim structure
+%              Full trEPR toolbox dataset including Tsim structure
 % 
 %
 % See also TSIM
@@ -33,8 +33,8 @@ while weightloop
     switch lower(answer)
         case 'c'
             % Clear weighting
-            dataset.TSim.fit.weighting.weightingArea = [];
-            dataset.TSim.fit.weighting.weightingFactor = [];
+            dataset.Tsim.fit.weighting.weightingArea = [];
+            dataset.Tsim.fit.weighting.weightingFactor = [];
             weightloop = false;
         case 'w'
             ChooseRegionLoop = true;
@@ -43,7 +43,7 @@ while weightloop
                 prompt = 'Please enter pairs of magnetic field values in mT for weighting this/these region(s). Hit enter for return';
                 answerstr = cliInput(prompt);
                 
-                if mod(dataset.TSim.fit.weighting.weightingArea,2)
+                if mod(dataset.Tsim.fit.weighting.weightingArea,2)
                     disp('Please enter PAIRS of magnetic field values...');
                     ChooseRegionLoop = true;
                     
@@ -52,13 +52,13 @@ while weightloop
                     ChooseRegionLoop = false;
                     
                 else
-                    dataset.TSim.fit.weighting.weightingArea = str2num(answerstr);
+                    dataset.Tsim.fit.weighting.weightingArea = str2num(answerstr);
                     
                     
                     prompt = 'Please enter the weighting factor(s) for your region(s)';
                     answerstr = cliInput(prompt);
                     
-                    dataset.TSim.fit.weighting.weightingFactor = str2num(answerstr);
+                    dataset.Tsim.fit.weighting.weightingFactor = str2num(answerstr);
                     weightloop = false;
                     ChooseRegionLoop = false;
                 end

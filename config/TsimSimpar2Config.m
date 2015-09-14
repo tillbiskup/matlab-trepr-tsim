@@ -8,18 +8,18 @@ function config = TsimSimpar2Config(dataset)
 %             configuration structure
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-14
 
 % Put Fields in Simpar in config
-FlatFieldnames = fieldnames(dataset.TSim.sim.simpar);
+FlatFieldnames = fieldnames(dataset.Tsim.sim.simpar);
     
 for k = 1:length(FlatFieldnames)
-    config.StandardSimulationParameters.(FlatFieldnames{k}) = dataset.TSim.sim.simpar.(FlatFieldnames{k});
+    config.StandardSimulationParameters.(FlatFieldnames{k}) = dataset.Tsim.sim.simpar.(FlatFieldnames{k});
 end
 
 

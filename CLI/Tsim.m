@@ -7,11 +7,11 @@ function dataset=Tsim()
 %
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-06-23
+% 2015-09-14
 
 
 
@@ -66,8 +66,8 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(data
     set(b,'Tag','simulationDataFigure');
     
     % Should not be necessary
-    % TSim structure is added
-    if  ~isfield(dataset,'TSim')
+    % Tsim structure is added
+    if  ~isfield(dataset,'Tsim')
         dataset = TsimDataset(dataset);
     end
     
@@ -85,8 +85,8 @@ if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dat
     set(b,'Tag','experimentalDataAndFitFigure');
     
     % Should not be necessary
-    % TSim structure is added
-    if  ~isfield(dataset,'TSim')
+    % Tsim structure is added
+    if  ~isfield(dataset,'Tsim')
         dataset = TsimDataset(dataset);
     end
     
@@ -114,8 +114,8 @@ if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(d
     b = TsimMakeShinyPicture(dataset);
     set(b,'Tag','experimentalDataFigure');
     
-    if  ~isfield(dataset,'TSim')
-        % TSim structure is added
+    if  ~isfield(dataset,'Tsim')
+        % Tsim structure is added
         dataset = TsimDataset(dataset);
     end
     

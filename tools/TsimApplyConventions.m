@@ -7,7 +7,7 @@ function dataset = TsimApplyConventions(dataset,varargin)
 %   dataset = TsimApplyConventions(dataset,<parameter>,<value>)
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % You can specify optional parameters as key-value pairs. Valid parameters
 % and their values are:
@@ -23,7 +23,7 @@ function dataset = TsimApplyConventions(dataset,varargin)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-09-14
 
 try
     % Parse input arguments using the inputParser functionality
@@ -42,29 +42,29 @@ end
 
 % Normalize populations
 if p.Results.populations
-    if isfield(dataset.TSim.sim.simpar,'p1') ...
-            && isfield(dataset.TSim.sim.simpar,'p2') ...
-            && isfield(dataset.TSim.sim.simpar,'p3')
-        [normalized] = TsimPnormalizer([(dataset.TSim.sim.simpar.p1) ...
-            (dataset.TSim.sim.simpar.p2) (dataset.TSim.sim.simpar.p3)]);
+    if isfield(dataset.Tsim.sim.simpar,'p1') ...
+            && isfield(dataset.Tsim.sim.simpar,'p2') ...
+            && isfield(dataset.Tsim.sim.simpar,'p3')
+        [normalized] = TsimPnormalizer([(dataset.Tsim.sim.simpar.p1) ...
+            (dataset.Tsim.sim.simpar.p2) (dataset.Tsim.sim.simpar.p3)]);
         
-        dataset.TSim.sim.simpar.p1 = normalized(1);
-        dataset.TSim.sim.simpar.p2 = normalized(2);
-        dataset.TSim.sim.simpar.p3 = normalized(3);
+        dataset.Tsim.sim.simpar.p1 = normalized(1);
+        dataset.Tsim.sim.simpar.p2 = normalized(2);
+        dataset.Tsim.sim.simpar.p3 = normalized(3);
         
     end
 end
 
 % D and E should follow the convention E <= 1/3 D
 if p.Results.zfs
-    if isfield(dataset.TSim.sim.simpar,'D') ...
-            && isfield(dataset.TSim.sim.simpar,'E')
+    if isfield(dataset.Tsim.sim.simpar,'D') ...
+            && isfield(dataset.Tsim.sim.simpar,'E')
         
         converted = TsimDandEconverter(TsimDandEconverter([...
-            dataset.TSim.sim.simpar.D dataset.TSim.sim.simpar.E]));
+            dataset.Tsim.sim.simpar.D dataset.Tsim.sim.simpar.E]));
         
-        dataset.TSim.sim.simpar.D = converted(1);
-        dataset.TSim.sim.simpar.E = converted(2);
+        dataset.Tsim.sim.simpar.D = converted(1);
+        dataset.Tsim.sim.simpar.E = converted(2);
     end
     
 end

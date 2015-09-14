@@ -6,16 +6,16 @@ function dataset = TsimCopySimparValues2Initialvalue(dataset)
 %   dataset = TsimCopySimparValues2Initialvalue(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-14
 
-dataset.TSim.fit.initialvalue = [];
+dataset.Tsim.fit.initialvalue = [];
 
-for k=1:length(dataset.TSim.fit.fitpar)
-dataset.TSim.fit.initialvalue(k) = dataset.TSim.sim.simpar.(dataset.TSim.fit.fitpar{k});    
+for k=1:length(dataset.Tsim.fit.fitpar)
+dataset.Tsim.fit.initialvalue(k) = dataset.Tsim.sim.simpar.(dataset.Tsim.fit.fitpar{k});    
 end
  

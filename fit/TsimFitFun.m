@@ -9,12 +9,12 @@ function sim = TsimFitFun(fitparvalues,~,dataset)
 %              simulation parametervalues
 %
 %   dataset  - struct
-%              Full trEPR toolbox dataset including TSim structure
+%              Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-19
+% 2015-09-14
 
 
 % Set simpar parameters according to parameters that shall be fitted

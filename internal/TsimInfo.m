@@ -7,7 +7,7 @@ function varargout = TsimInfo(varargin)
 %
 % If called with an output parameter, TsimInfo returns a structure
 % "info" that contains all the information known to Matlab(r) about the
-% trEPR toolbox TSim module.
+% trEPR toolbox Tsim module.
 %
 % Usage
 %   TsimInfo
@@ -60,7 +60,7 @@ function varargout = TsimInfo(varargin)
 % See also VER
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-05-29
+% 2015-09-14
 
 % The place to centrally manage the revision number and date is the file
 % "Contents.m" in the root directory of the trEPR toolbox SIM module.

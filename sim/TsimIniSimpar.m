@@ -7,20 +7,20 @@ function dataset = TsimIniSimpar(dataset)
 %   dataset = TsimIniSimpar(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-01
+% 2015-09-14
 
 % Check if there is already some information
-if ~isempty(fieldnames(dataset.TSim.sim.simpar))
+if ~isempty(fieldnames(dataset.Tsim.sim.simpar))
     return
 end
 
 
-routine = dataset.TSim.sim.routine;
+routine = dataset.Tsim.sim.routine;
 
 config = TsimConfigGet([routine 'parameters']);
 
@@ -37,7 +37,7 @@ else
         
         TsimConfigSet([routine 'parameters'],config)
         % CreateSimpar from Config
-        dataset.TSim.sim.simpar = config.StandardSimulationParameters;
+        dataset.Tsim.sim.simpar = config.StandardSimulationParameters;
         
     catch %#ok<CTCH>
         disp(' ')
@@ -53,10 +53,10 @@ if ~isempty(dataset.data)
     % Write experimental things to simpar
     dataset = trEPRconvertUnits(dataset,'G2mT');
     
-    dataset.TSim.sim.simpar.nPoints = length(dataset.axes.data(2).values);
-    dataset.TSim.sim.simpar.Range(1) = min(dataset.axes.data(2).values);
-    dataset.TSim.sim.simpar.Range(2) = max(dataset.axes.data(2).values);
-    dataset.TSim.sim.simpar.mwFreq = dataset.parameters.bridge.MWfrequency.value;
+    dataset.Tsim.sim.simpar.nPoints = length(dataset.axes.data(2).values);
+    dataset.Tsim.sim.simpar.Range(1) = min(dataset.axes.data(2).values);
+    dataset.Tsim.sim.simpar.Range(2) = max(dataset.axes.data(2).values);
+    dataset.Tsim.sim.simpar.mwFreq = dataset.parameters.bridge.MWfrequency.value;
 end
 
 dataset = TsimApplyConventions(dataset);

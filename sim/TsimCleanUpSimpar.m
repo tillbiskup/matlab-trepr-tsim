@@ -7,7 +7,7 @@ function dataset = TsimCleanUpSimpar(dataset, oldroutine)
 %
 %
 %   dataset    - struct
-%                Full trEPR toolbox dataset including TSim structure
+%                Full trEPR toolbox dataset including Tsim structure
 %
 %   oldroutine - string
 %                name of oldroutine. 
@@ -15,7 +15,7 @@ function dataset = TsimCleanUpSimpar(dataset, oldroutine)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-09-14
 
 
 parameters = TsimParameters;
@@ -41,16 +41,16 @@ switch oldroutine
 end
 
 for k=1:length(fields2beRemoved)
-    if isfield(dataset.TSim.sim.simpar,fields2beRemoved{k})
-        dataset.TSim.sim.simpar = rmfield(dataset.TSim.sim.simpar,fields2beRemoved{k});
+    if isfield(dataset.Tsim.sim.simpar,fields2beRemoved{k})
+        dataset.Tsim.sim.simpar = rmfield(dataset.Tsim.sim.simpar,fields2beRemoved{k});
     end
 end
 
 parameterstruct = TsimParameters('struct',true);
 
 for k= 1:length(fields2beAdded)
-    if ~isfield(dataset.TSim.sim.simpar,fields2beAdded{k})
-        dataset.TSim.sim.simpar.(fields2beAdded{k}) = parameterstruct.(fields2beAdded{k}).standardvalue;
+    if ~isfield(dataset.Tsim.sim.simpar,fields2beAdded{k})
+        dataset.Tsim.sim.simpar.(fields2beAdded{k}) = parameterstruct.(fields2beAdded{k}).standardvalue;
     end
 end
 

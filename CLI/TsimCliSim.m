@@ -13,11 +13,11 @@ function dataset = TsimCliSim(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-22
+% 2015-09-14
 
-% Empty fit branch of TSim structure
+% Empty fit branch of Tsim structure
 tempdataset = TsimDataset();
-dataset.TSim.fit = tempdataset.TSim.fit;
+dataset.Tsim.fit = tempdataset.Tsim.fit;
 
 simouterloop = true;
 while simouterloop
@@ -37,7 +37,7 @@ while simouterloop
     disp(' ');
     disp('Enter a purpose:');
     purpose = input('> ','s');
-    dataset.TSim.remarks.purpose = purpose;
+    dataset.Tsim.remarks.purpose = purpose;
     
     % Calculate spectrum (actual simulation)
     dataset = TsimSim(dataset);
@@ -48,7 +48,7 @@ while simouterloop
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
-    dataset.TSim.remarks.comment = comment;
+    dataset.Tsim.remarks.comment = comment;
     
     % Write history
     % (Orwell style - we're creating our own)
@@ -96,36 +96,50 @@ while simouterloop
                 simouterloop = true;
             case 'r'
                 % figureexport and report
-                    % Suggest reasonable filename
-                    [path,name,~] = fileparts(dataset.file.name);
-                    suggestedFilename = fullfile(path,[name '_simfig']);
-                    % The "easy" way: consequently use CLI
-                    saveFilename = input(...
-                        sprintf('Filename (%s): ',suggestedFilename),...
-                        's');
-                    if isempty(saveFilename)
-                        saveFilename = suggestedFilename;
-                    end
-                    
-                    % Export figure as .fig and as .pdf
-                    [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
-                    if ~isempty(status)
-                        disp('Some problems with exporting fig-figure');
-                    end
-                    [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
-                    if ~isempty(status)
-                        disp('Some problems with exporting pdf-figure');
-                    end
-                    clear status saveFilename suggestedFilename;
-                  
-                    if ishandle(h)
-                        close(h);
-                    end
-                    saveloop = true;
-                    simouterloop = true;
+                % Suggest reasonable filename
+                [path,name,~] = fileparts(dataset.file.name);
+                suggestedFilename = fullfile(path,[name '_simfig']);
+                % The "easy" way: consequently use CLI
+                saveFilename = input(...
+                    sprintf('Filename (%s): ',suggestedFilename),...
+                    's');
+                if isempty(saveFilename)
+                    saveFilename = suggestedFilename;
+                end
+                
+                % Export figure as .fig and as .pdf
+                [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
+                if ~isempty(status)
+                    disp('Some problems with exporting fig-figure');
+                end
+                [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
+                if ~isempty(status)
+                    disp('Some problems with exporting pdf-figure');
+                end
+                
+                % Save dataset
+                % Clear tempSpectrum onyl in dataset that is saved
+                savedataset = dataset;
+                savedataset.Tsim.fit.spectrum.tempSpectrum = [];
+                [status] = trEPRsave(saveFilename,savedataset);
+                if ~isempty(status)
+                    disp('Some problems with saving data');
+                end
+                
+                % Make Report
+                TsimReport(dataset,'template','TsimSimReport-de.tex');
+                
+                clear status saveFilename suggestedFilename savedataset;
+                if ishandle(h)
+                    close(h);
+                end
+                
+                saveloop = true;
+                simouterloop = true;
+                
             case 'n'
                 % New simulation
-            
+                
                 simouterloop = true;
                 saveloop = false;
                 
@@ -137,11 +151,11 @@ while simouterloop
                 end
                 disp('The simulation routines currently in use:')
                 disp(' ')
-                disp(dataset.TSim.sim.routine);
+                disp(dataset.Tsim.sim.routine);
                 disp(' ')
-                oldRoutine = dataset.TSim.sim.routine;
+                oldRoutine = dataset.Tsim.sim.routine;
                 dataset = TsimChangeSimRoutine(dataset);
-                newRoutine = dataset.TSim.sim.routine;
+                newRoutine = dataset.Tsim.sim.routine;
                 
                 if ~strcmpi(oldRoutine,newRoutine)
                     % Check simpar and possibly change it but don't change

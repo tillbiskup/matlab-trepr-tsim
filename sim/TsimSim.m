@@ -7,12 +7,12 @@ function dataset = TsimSim(dataset,varargin)
 %   dataset = TsimSim(dataset)
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-22
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -26,18 +26,18 @@ parser.parse(dataset,varargin{:});
 
 
 % Define simulation routine
-if isempty(dataset.TSim.sim.routine)
-    dataset.TSim.sim.routine = parser.Results.routine;
+if isempty(dataset.Tsim.sim.routine)
+    dataset.Tsim.sim.routine = parser.Results.routine;
 end
-routine = str2func(dataset.TSim.sim.routine);
+routine = str2func(dataset.Tsim.sim.routine);
 
 % Calculating the spectrum 
 % Call Simpar2EasySpin
 dataset = TsimSimpar2EasySpin(dataset);
 
 % Simulate
-[~,dataset.calculated(:,1)] = routine(dataset.TSim.sim.EasySpin.Sys,...
-    dataset.TSim.sim.EasySpin.Exp,dataset.TSim.sim.EasySpin.Opt);
+[~,dataset.calculated(:,1)] = routine(dataset.Tsim.sim.EasySpin.Sys,...
+    dataset.Tsim.sim.EasySpin.Exp,dataset.Tsim.sim.EasySpin.Opt);
 
 % EasySpin does not normalize the spectra
 dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,1)));
@@ -47,9 +47,9 @@ dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,
 if min(size(dataset.data)) < 2
     % Only Simulated or 1-d Data
     dataset.axes.calculated(1).values = linspace(...
-        dataset.TSim.sim.simpar.Range(1),...
-        dataset.TSim.sim.simpar.Range(2),...
-        dataset.TSim.sim.simpar.nPoints);
+        dataset.Tsim.sim.simpar.Range(1),...
+        dataset.Tsim.sim.simpar.Range(2),...
+        dataset.Tsim.sim.simpar.nPoints);
     
     dataset.axes.calculated(1).unit = 'mT';
     dataset.axes.calculated(1).measure = 'magnetic field';
@@ -57,9 +57,9 @@ if min(size(dataset.data)) < 2
 else
     % 2-D datata
     dataset.axes.calculated(2).values = linspace(...
-        dataset.TSim.sim.simpar.Range(1),...
-        dataset.TSim.sim.simpar.Range(2),...
-        dataset.TSim.sim.simpar.nPoints);
+        dataset.Tsim.sim.simpar.Range(1),...
+        dataset.Tsim.sim.simpar.Range(2),...
+        dataset.Tsim.sim.simpar.nPoints);
     
     dataset.axes.calculated(2).unit = 'mT';
     dataset.axes.calculated(2).measure = 'magnetic field';

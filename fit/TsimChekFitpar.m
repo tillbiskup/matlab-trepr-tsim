@@ -7,15 +7,15 @@ function dataset = TsimChekFitpar(dataset)
 %   dataset = TsimCheckFitpar(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-10
+% 2015-09-14
 
 
-missingInSimpar = setdiff(dataset.TSim.fit.fitpar,fieldnames(dataset.TSim.sim.simpar));
+missingInSimpar = setdiff(dataset.Tsim.fit.fitpar,fieldnames(dataset.Tsim.sim.simpar));
 if isempty(missingInSimpar)
     return
 else

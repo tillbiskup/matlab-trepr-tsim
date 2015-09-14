@@ -14,7 +14,7 @@ function dataset = TsimChangeFitopt(dataset, keyword)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-06-16
+% 2015-09-14
 
 
 % Parse input arguments using the inputParser functionality
@@ -29,7 +29,7 @@ parser.parse(dataset,keyword);
 
 
 prompt = 'Please enter new value: ';
-NewValue = cliInput(prompt,'default',num2str(dataset.TSim.fit.fitopt.(keyword)),'numeric',true);
-dataset.TSim.fit.fitopt.(keyword) = NewValue;
+NewValue = cliInput(prompt,'default',num2str(dataset.Tsim.fit.fitopt.(keyword)),'numeric',true);
+dataset.Tsim.fit.fitopt.(keyword) = NewValue;
 
 end

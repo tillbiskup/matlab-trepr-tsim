@@ -9,7 +9,7 @@ function dataset = TsimChangeSimpar(dataset, varargin)
 %
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 %   varargin - string
 %              name of parameterst to ADD to simpar. 
@@ -17,12 +17,12 @@ function dataset = TsimChangeSimpar(dataset, varargin)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-06-18
+% 2015-09-14
 
 Temp = CreateTemporaryParameterStruct(dataset);
 
 if ~isempty(varargin)
-    old = fieldnames(dataset.TSim.sim.simpar);
+    old = fieldnames(dataset.Tsim.sim.simpar);
     for k=1:length(varargin)
         add(k) = varargin{k}';
     end
@@ -40,7 +40,7 @@ else
     pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),parameters(:,13));
     tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),parameters(:,13));
 
-    routine = dataset.TSim.sim.routine;
+    routine = dataset.Tsim.sim.routine;
     
     switch routine
         case 'pepper'
@@ -55,7 +55,7 @@ else
     
     % Find simulationparameters user already has in simpar this is needed for
     % default
-    OldUserSimulationParameters = fieldnames(dataset.TSim.sim.simpar);
+    OldUserSimulationParameters = fieldnames(dataset.Tsim.sim.simpar);
     
     % all possible simparameters for user
     allsimpar = logical(cell2mat(parameters(:,6)));
@@ -124,7 +124,7 @@ for k=1:length(NewUserSimulationParameters)
     simpar.(NewUserSimulationParameters{k}) = Temp.(NewUserSimulationParameters{k});
 end
 
-dataset.TSim.sim.simpar = simpar;
+dataset.Tsim.sim.simpar = simpar;
 
 end
 
@@ -148,12 +148,12 @@ end
 
 
 function Temp = CreateTemporaryParameterStruct(dataset)
-Temp = dataset.TSim.sim.simpar;
+Temp = dataset.Tsim.sim.simpar;
 
 % Find AdditionalSimulatioParameters and theire Values
 % Value is from Config. If there is no value theire Value is from Standard
 
-routine = dataset.TSim.sim.routine;
+routine = dataset.Tsim.sim.routine;
 % all possible simparameters for user
 parameters = TsimParameters;
 ParameterNames = parameters(:,1);
@@ -170,7 +170,7 @@ end
 allsimuser = ParameterNames(allsimuser);
 
 % Additional Parameters
-AdditionalParameters = setdiff(allsimuser,fieldnames(dataset.TSim.sim.simpar));
+AdditionalParameters = setdiff(allsimuser,fieldnames(dataset.Tsim.sim.simpar));
 
 % Values for additional Parameters
 % Is Parameter in config

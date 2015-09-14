@@ -7,7 +7,7 @@ function TsimReport(dataset,varargin)
 %   TsimReport(dataset);
 %
 %   dataset - struct
-%             Full trEPR toolbox dataset including TSim structure
+%             Full trEPR toolbox dataset including Tsim structure
 %
 % If you want to generate a report for a dataset saved as TEZ file, use
 % something like
@@ -22,7 +22,7 @@ function TsimReport(dataset,varargin)
 % See also TSIM, tpl
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-07-06
+% 2015-09-14
 
 try
     % Parse input arguments using the inputParser functionality
@@ -39,8 +39,8 @@ catch exception
 end
 
 % Check whether we have the structure in dataset we need to report on
-if ~isfield(dataset,'TSim')
-    disp('(WW) Dataset doen''t contain "TSim" structure... aborting.');
+if ~isfield(dataset,'Tsim')
+    disp('(WW) Dataset doen''t contain "Tsim" structure... aborting.');
     return;
 end
 
@@ -54,7 +54,7 @@ if ~exist(p.Results.template,'file')
 end
 
 % Get filename of dataset loaded
-filename = dataset.TSim.results.figureFileName;
+filename = dataset.Tsim.results.figureFileName;
 [~,filename] = regexp(filename,'-fig','match','split');
 filename = char(cellstr(filename{1,1}));
 % If field is empty, ask user to provide some
@@ -69,19 +69,19 @@ end
 % dataset that get used only here for creating the template.
 % Reason: Normally, you want to tell the reader center position and width
 % of an average, but what you get is only start and end positions.
-switch length(dataset.TSim.fit.spectrum.section)
+switch length(dataset.Tsim.fit.spectrum.section)
     case 0
-        dataset.TSim.fit.spectrum.sectionCenter = ...
+        dataset.Tsim.fit.spectrum.sectionCenter = ...
             dataset.axes.data(1).values;
     case 1
-        dataset.TSim.fit.spectrum.sectionCenter = ...
-            dataset.TSim.fit.spectrum.section;
-        dataset.TSim.fit.spectrum.sectionWidth = [];
+        dataset.Tsim.fit.spectrum.sectionCenter = ...
+            dataset.Tsim.fit.spectrum.section;
+        dataset.Tsim.fit.spectrum.sectionWidth = [];
     case 2
-        dataset.TSim.fit.spectrum.sectionCenter = ...
-            sum(dataset.TSim.fit.spectrum.section)/2;
-        dataset.TSim.fit.spectrum.sectionWidth = ...
-            abs(diff(dataset.TSim.fit.spectrum.section));
+        dataset.Tsim.fit.spectrum.sectionCenter = ...
+            sum(dataset.Tsim.fit.spectrum.section)/2;
+        dataset.Tsim.fit.spectrum.sectionWidth = ...
+            abs(diff(dataset.Tsim.fit.spectrum.section));
 end
 
 % Prepare template engine "tpl"

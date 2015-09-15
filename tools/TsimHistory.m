@@ -14,7 +14,7 @@ function varargout = TsimHistory(varargin)
 % See also TREPRDATASTRUCTURE.
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
 if ~nargin && ~nargout
     help TsimHistory
@@ -43,8 +43,10 @@ if nargin && ischar(varargin{1})
             % TODO: Proper name of method taken from TsimInfo
             history.method = 'Tsim';
             history.parameters.Tsim = dataset.Tsim;
-            history.parameters.Tsim.fit.spectrum = rmfield(...
-                history.parameters.Tsim.fit.spectrum,'tempSpectrum');
+            for counter = 1:length(dataset.Tsim)
+                history.parameters.Tsim(counter).fit.spectrum = rmfield(...
+                    history.parameters.Tsim(counter).fit.spectrum,'tempSpectrum');
+            end
             dataset.history{end+1} = history;
             clear history;
             varargout{1} = dataset;            

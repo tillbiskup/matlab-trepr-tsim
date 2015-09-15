@@ -12,15 +12,15 @@ function dataset = TsimIniSimpar(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
 % Check if there is already some information
-if ~isempty(fieldnames(dataset.Tsim.sim.simpar))
+if ~isempty(fieldnames(dataset.Tsim(1).sim.simpar))
     return
 end
 
 
-routine = dataset.Tsim.sim.routine;
+routine = dataset.Tsim(1).sim.routine;
 
 config = TsimConfigGet([routine 'parameters']);
 
@@ -37,7 +37,7 @@ else
         
         TsimConfigSet([routine 'parameters'],config)
         % CreateSimpar from Config
-        dataset.Tsim.sim.simpar = config.StandardSimulationParameters;
+        dataset.Tsim(1).sim.simpar = config.StandardSimulationParameters;
         
     catch %#ok<CTCH>
         disp(' ')
@@ -53,10 +53,10 @@ if ~isempty(dataset.data)
     % Write experimental things to simpar
     dataset = trEPRconvertUnits(dataset,'G2mT');
     
-    dataset.Tsim.sim.simpar.nPoints = length(dataset.axes.data(2).values);
-    dataset.Tsim.sim.simpar.Range(1) = min(dataset.axes.data(2).values);
-    dataset.Tsim.sim.simpar.Range(2) = max(dataset.axes.data(2).values);
-    dataset.Tsim.sim.simpar.mwFreq = dataset.parameters.bridge.MWfrequency.value;
+    dataset.Tsim(1).sim.simpar.nPoints = length(dataset.axes.data(2).values);
+    dataset.Tsim(1).sim.simpar.Range(1) = min(dataset.axes.data(2).values);
+    dataset.Tsim(1).sim.simpar.Range(2) = max(dataset.axes.data(2).values);
+    dataset.Tsim(1).sim.simpar.mwFreq = dataset.parameters.bridge.MWfrequency.value;
 end
 
 dataset = TsimApplyConventions(dataset);

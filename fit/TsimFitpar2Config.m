@@ -13,14 +13,15 @@ function config = TsimFitpar2Config(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
-if isempty(dataset.Tsim.fit.fitpar)
+if isempty(dataset.Tsim(1).fit.fitpar)
+    config = [];
     return
 else
     
-    for k = 1:length(dataset.Tsim.fit.fitpar)
-        config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k}) = [dataset.Tsim.fit.lb(k) dataset.Tsim.fit.ub(k)] ;
+    for k = 1:length(dataset.Tsim(1).fit.fitpar)
+        config.FitparametersAndBoundaries.(dataset.Tsim(1).fit.fitpar{k}) = [dataset.Tsim(1).fit.lb(k) dataset.Tsim(1).fit.ub(k)] ;
     end
     
     % Add other Blocks to config

@@ -13,7 +13,7 @@ function dataset = TsimCliSim(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
 % Empty fit branch of Tsim structure
 tempdataset = TsimDataset();
@@ -96,9 +96,16 @@ while simouterloop
                 simouterloop = true;
             case 'r'
                 % figureexport and report
+                
+                
+                if ~ishandle(h)
+                    disp('You stupid git deleted your figure!')
+                    saveloop = true;
+                    continue
+                end
                 % Suggest reasonable filename
                 [path,name,~] = fileparts(dataset.file.name);
-                suggestedFilename = fullfile(path,[name '_simfig']);
+                suggestedFilename = fullfile(path,[name '_sim']);
                 % The "easy" way: consequently use CLI
                 saveFilename = input(...
                     sprintf('Filename (%s): ',suggestedFilename),...
@@ -106,16 +113,13 @@ while simouterloop
                 if isempty(saveFilename)
                     saveFilename = suggestedFilename;
                 end
+                % Put FigureFileName in Dataset
+                dataset.Tsim.results.figureFileName = [saveFilename '-fig'];
                 
-                % Export figure as .fig and as .pdf
-                [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
-                if ~isempty(status)
-                    disp('Some problems with exporting fig-figure');
-                end
-                [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
-                if ~isempty(status)
-                    disp('Some problems with exporting pdf-figure');
-                end
+                % Export figure as .pdf and as .fig
+                
+                commonFigureExport(h,[saveFilename '-fig']);
+                
                 
                 % Save dataset
                 % Clear tempSpectrum onyl in dataset that is saved

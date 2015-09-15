@@ -13,12 +13,12 @@ function TsimSimpar2ConfigFile(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
 
 % Get configuation
 
-routine = dataset.Tsim.sim.routine;
+routine = dataset.Tsim(1).sim.routine;
 
 config = TsimConfigGet([routine 'parameters']);
 
@@ -57,17 +57,17 @@ end
 if ~isempty(dataset.data)
 % You have experimental data
 ToBeRemoved = {'nPoints';'Range';'mwFreq'};
-FlatFieldnames = fieldnames(rmfield(dataset.Tsim.sim.simpar,ToBeRemoved));
+FlatFieldnames = fieldnames(rmfield(dataset.Tsim(1).sim.simpar,ToBeRemoved));
 else
-FlatFieldnames = fieldnames(dataset.Tsim.sim.simpar);
+FlatFieldnames = fieldnames(dataset.Tsim(1).sim.simpar);
 end
 
     
 for k = 1:length(FlatFieldnames)
-    config.StandardSimulationParameters.(FlatFieldnames{k}) = dataset.Tsim.sim.simpar.(FlatFieldnames{k});
+    config.StandardSimulationParameters.(FlatFieldnames{k}) = dataset.Tsim(1).sim.simpar.(FlatFieldnames{k});
 end
 
-FlatFieldnames = fieldnames(dataset.Tsim.sim.simpar);
+FlatFieldnames = fieldnames(dataset.Tsim(1).sim.simpar);
 FieldsToBeShifted = setdiff(fieldnames(config.StandardSimulationParameters),FlatFieldnames);
 
 for k=1:length(FieldsToBeShifted)

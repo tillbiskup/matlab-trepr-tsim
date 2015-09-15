@@ -26,18 +26,20 @@ parser.parse(dataset,varargin{:});
 
 
 % Define simulation routine
-if isempty(dataset.Tsim.sim.routine)
-    dataset.Tsim.sim.routine = parser.Results.routine;
+if isempty(dataset.Tsim(1).sim.routine)
+    dataset.Tsim(1).sim.routine = parser.Results.routine;
 end
-routine = str2func(dataset.Tsim.sim.routine);
+routine = str2func(dataset.Tsim(1).sim.routine);
 
 % Calculating the spectrum 
 % Call Simpar2EasySpin
 dataset = TsimSimpar2EasySpin(dataset);
 
+ 
 % Simulate
-[~,dataset.calculated(:,1)] = routine(dataset.Tsim.sim.EasySpin.Sys,...
-    dataset.Tsim.sim.EasySpin.Exp,dataset.Tsim.sim.EasySpin.Opt);
+[~,dataset.calculated(:,1)] = routine(dataset.Tsim(1).sim.EasySpin.Sys,...
+    dataset.Tsim(1).sim.EasySpin.Exp,dataset.Tsim(1).sim.EasySpin.Opt);
+
 
 % EasySpin does not normalize the spectra
 dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,1)));
@@ -47,9 +49,9 @@ dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,
 if min(size(dataset.data)) < 2
     % Only Simulated or 1-d Data
     dataset.axes.calculated(1).values = linspace(...
-        dataset.Tsim.sim.simpar.Range(1),...
-        dataset.Tsim.sim.simpar.Range(2),...
-        dataset.Tsim.sim.simpar.nPoints);
+        dataset.Tsim(1).sim.simpar.Range(1),...
+        dataset.Tsim(1).sim.simpar.Range(2),...
+        dataset.Tsim(1).sim.simpar.nPoints);
     
     dataset.axes.calculated(1).unit = 'mT';
     dataset.axes.calculated(1).measure = 'magnetic field';
@@ -57,9 +59,9 @@ if min(size(dataset.data)) < 2
 else
     % 2-D datata
     dataset.axes.calculated(2).values = linspace(...
-        dataset.Tsim.sim.simpar.Range(1),...
-        dataset.Tsim.sim.simpar.Range(2),...
-        dataset.Tsim.sim.simpar.nPoints);
+        dataset.Tsim(1).sim.simpar.Range(1),...
+        dataset.Tsim(1).sim.simpar.Range(2),...
+        dataset.Tsim(1).sim.simpar.nPoints);
     
     dataset.axes.calculated(2).unit = 'mT';
     dataset.axes.calculated(2).measure = 'magnetic field';

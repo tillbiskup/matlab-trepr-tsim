@@ -1,6 +1,6 @@
 function superdataset = TsimMultiMakeSuperposition(celldataset, weighting)
-% TSIMMULTIMAKESUPERPOSITION Makes a superposition of calculateddata in celldataset
-% with given weighting. It gives back a common dataset, with Tsim as cell 
+% TSIMMULTIMAKESUPERPOSITION Makes a superposition of calculated data in celldataset
+% with given weighting. It gives back a common dataset, with Tsim as array of structs 
 %
 %
 % Usage
@@ -15,22 +15,21 @@ function superdataset = TsimMultiMakeSuperposition(celldataset, weighting)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer
-% 2015-09-14
+% 2015-09-15
 
 
-superdataset = celldataset{end};
-temppurpose = superdataset.Tsim.remarks.purpose;
-    superdataset = rmfield(superdataset,'Tsim');
+superdataset = celldataset{1};
+temppurpose = superdataset.Tsim(1).remarks.purpose;
 superdataset.calculated = cell(1);
-superdataset.Tsim = cell(1);
+
     
 for supercounter = 1:length(celldataset);
     
-    superdataset.Tsim{supercounter} = celldataset{supercounter}.Tsim;
-    
-    superdataset.TSimWeighting = weighting./weighting(1);
+    superdataset.Tsim(supercounter) = celldataset{supercounter}.Tsim(1);
     superdataset.calculated{supercounter} =...
         weighting(supercounter).* celldataset{supercounter}.calculated;
+    superdataset.Tsim(supercounter).remarks.purpose = temppurpose;
+    superdataset.Tsim(supercounter).weighting = weighting(supercounter)/weighting(1);
 end
 
 
@@ -38,14 +37,14 @@ superdataset.tempcalculated = [];
 for datasetNumber = 1:length(celldataset)
     superdataset.tempcalculated(datasetNumber,:) = ...
         celldataset{datasetNumber}.calculated*...
-        superdataset.TSimWeighting(datasetNumber);
+        superdataset.Tsim(datasetNumber).weighting;
 end
 superdataset.calculated = sum(superdataset.tempcalculated,1);
 superdataset.calculated = ...
     superdataset.calculated/sum(abs(superdataset.calculated));
 
-superdataset.Tsim{1}.remarks.purpose = temppurpose;
-
+superdataset=rmfield(superdataset,'tempcalculated') ;
+superdataset.calculated = superdataset.calculated';
 end
 
 

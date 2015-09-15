@@ -13,7 +13,7 @@ function dataset = TsimMultiCliSim(dataset)
 %
 
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
 % Empty fit branch of Tsim structure
 tempdataset = TsimDataset();
@@ -50,7 +50,7 @@ while simouterloop
     disp('Enter a purpose:');
     purpose = input('> ','s');
    
-    celldatasets{Triplet}.Tsim.remarks.purpose = purpose;
+    celldatasets{Triplet}.Tsim(1).remarks.purpose = purpose;
     
     % Calculate spectrum (actual simulation)
     
@@ -69,8 +69,9 @@ if length(celldatasets) ~= 1
         
         superpositionloop = true;
         while superpositionloop
+           
             superdataset = TsimMultiMakeSuperposition(celldatasets, weighting);
-                     
+                   
             figure(Triplet + 1)
             c = TsimMakeShinyPicture(superdataset);
             set(c,'Tag','superPositionSimulationFigure');
@@ -104,10 +105,9 @@ end
     % Enter comment
     disp('Enter a comment:');
     comment = input('> ','s');
-    if iscell(dataset.Tsim)
-        dataset.Tsim{1}.remarks.comment = comment;
-    else
-        dataset.Tsim.remarks.comment = comment;
+    
+    for counter = 1:length(dataset.Tsim)
+    dataset.Tsim(counter).remarks.comment = comment;
     end
     
     % Write history
@@ -133,7 +133,7 @@ end
             case 'a'
                 % Suggest reasonable filename
                 suggestedFilename = fullfile(pwd,['Tsim'...
-                    datestr(now,'yyyy-mm-dd_HH-MM') '_sim.tez']);
+                    datestr(now,'yyyy-mm-dd_HH-MM') '_simMulti.tez']);
                 % The "easy" way: consequently use CLI
                 saveFilename = input(...
                     sprintf('Filename (%s): ',suggestedFilename),...
@@ -142,10 +142,16 @@ end
                     saveFilename = suggestedFilename;
                 end
                 % Save dataset
-                [status] = trEPRsave(saveFilename,dataset);
+                % Clear tempSpectrum onyl in dataset that is saved
+                savedataset = dataset;
+                for counter =1:length(savedataset.Tsim)
+                    savedataset.Tsim(counter).fit.spectrum.tempSpectrum = [];
+                end
+                [status] = trEPRsave(saveFilename,savedataset);
                 if ~isempty(status)
                     disp('Some problems with saving data');
                 end
+                
                 clear status saveFilename suggestedFilename;
                 saveloop = true;
                 simouterloop = true;
@@ -156,9 +162,18 @@ end
                 simouterloop = true;
             case 'r'
                 % figureexport and report
+                
+                
+                
+                
+                if ~ishandle(h)
+                    disp('You stupid git deleted your figure!')
+                    saveloop = true;
+                    continue
+                end
                 % Suggest reasonable filename
                 [path,name,~] = fileparts(dataset.file.name);
-                suggestedFilename = fullfile(path,[name '_simfig']);
+                suggestedFilename = fullfile(path,[name '_simMulti']);
                 % The "easy" way: consequently use CLI
                 saveFilename = input(...
                     sprintf('Filename (%s): ',suggestedFilename),...
@@ -166,21 +181,20 @@ end
                 if isempty(saveFilename)
                     saveFilename = suggestedFilename;
                 end
+                % Put FigureFileName in Dataset
+                for counter = 1:length(dataset.Tsim)
+                    dataset.Tsim(counter).results.figureFileName = [saveFilename '-fig'];
+                end
+                % Export figure as .pdf and as .fig
                 
-                % Export figure as .fig and as .pdf
-                [status] = fig2file(h, saveFilename, 'fileType', 'fig' );
-                if ~isempty(status)
-                    disp('Some problems with exporting fig-figure');
-                end
-                [status] = fig2file(h, saveFilename, 'fileType', 'pdf' );
-                if ~isempty(status)
-                    disp('Some problems with exporting pdf-figure');
-                end
+                commonFigureExport(h,[saveFilename '-fig']);
                 
                 % Save dataset
                 % Clear tempSpectrum onyl in dataset that is saved
                 savedataset = dataset;
-                savedataset.Tsim.fit.spectrum.tempSpectrum = [];
+                for counter =1:length(savedataset.Tsim)
+                    savedataset.Tsim(counter).fit.spectrum.tempSpectrum = [];
+                end
                 [status] = trEPRsave(saveFilename,savedataset);
                 if ~isempty(status)
                     disp('Some problems with saving data');
@@ -211,11 +225,11 @@ end
                 end
                 disp('The simulation routines currently in use:')
                 disp(' ')
-                disp(dataset.Tsim.sim.routine);
+                disp(dataset.Tsim(1).sim.routine);
                 disp(' ')
-                oldRoutine = dataset.Tsim.sim.routine;
+                oldRoutine = dataset.Tsim(1).sim.routine;
                 dataset = TsimChangeSimRoutine(dataset);
-                newRoutine = dataset.Tsim.sim.routine;
+                newRoutine = dataset.Tsim(1).sim.routine;
                 
                 if ~strcmpi(oldRoutine,newRoutine)
                     % Check simpar and possibly change it but don't change

@@ -42,29 +42,29 @@ end
 
 % Normalize populations
 if p.Results.populations
-    if isfield(dataset.Tsim.sim.simpar,'p1') ...
-            && isfield(dataset.Tsim.sim.simpar,'p2') ...
-            && isfield(dataset.Tsim.sim.simpar,'p3')
-        [normalized] = TsimPnormalizer([(dataset.Tsim.sim.simpar.p1) ...
-            (dataset.Tsim.sim.simpar.p2) (dataset.Tsim.sim.simpar.p3)]);
+    if isfield(dataset.Tsim(1).sim.simpar,'p1') ...
+            && isfield(dataset.Tsim(1).sim.simpar,'p2') ...
+            && isfield(dataset.Tsim(1).sim.simpar,'p3')
+        [normalized] = TsimPnormalizer([(dataset.Tsim(1).sim.simpar.p1) ...
+            (dataset.Tsim(1).sim.simpar.p2) (dataset.Tsim(1).sim.simpar.p3)]);
         
-        dataset.Tsim.sim.simpar.p1 = normalized(1);
-        dataset.Tsim.sim.simpar.p2 = normalized(2);
-        dataset.Tsim.sim.simpar.p3 = normalized(3);
+        dataset.Tsim(1).sim.simpar.p1 = normalized(1);
+        dataset.Tsim(1).sim.simpar.p2 = normalized(2);
+        dataset.Tsim(1).sim.simpar.p3 = normalized(3);
         
     end
 end
 
 % D and E should follow the convention E <= 1/3 D
 if p.Results.zfs
-    if isfield(dataset.Tsim.sim.simpar,'D') ...
-            && isfield(dataset.Tsim.sim.simpar,'E')
+    if isfield(dataset.Tsim(1).sim.simpar,'D') ...
+            && isfield(dataset.Tsim(1).sim.simpar,'E')
         
         converted = TsimDandEconverter(TsimDandEconverter([...
-            dataset.Tsim.sim.simpar.D dataset.Tsim.sim.simpar.E]));
+            dataset.Tsim(1).sim.simpar.D dataset.Tsim(1).sim.simpar.E]));
         
-        dataset.Tsim.sim.simpar.D = converted(1);
-        dataset.Tsim.sim.simpar.E = converted(2);
+        dataset.Tsim(1).sim.simpar.D = converted(1);
+        dataset.Tsim(1).sim.simpar.E = converted(2);
     end
     
 end

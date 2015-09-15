@@ -45,28 +45,28 @@ switch lower(command)
         % Display simpar
         % TODO Can be made nicer with loading the parameters and displaying the
         % propper name (with description) instead of the internal name
-        disp({'Simulation rotine:' dataset.Tsim.sim.routine});
+        disp({'Simulation rotine:' dataset.Tsim(1).sim.routine});
         
         disp(' ')
        
-        disp(dataset.Tsim.sim.simpar);
+        disp(dataset.Tsim(1).sim.simpar);
         
     case 'fit'
         % Display fitpar, initialvalues, lb and ub
-        disp(dataset.Tsim.fit.fitpar');
-        disp(dataset.Tsim.fit.lb);
-        disp(dataset.Tsim.fit.initialvalue);
-        disp(dataset.Tsim.fit.ub);
+        disp(dataset.Tsim(1).fit.fitpar');
+        disp(dataset.Tsim(1).fit.lb);
+        disp(dataset.Tsim(1).fit.initialvalue);
+        disp(dataset.Tsim(1).fit.ub);
         
     case 'opt'
-        disp(dataset.Tsim.fit.fitopt);
+        disp(dataset.Tsim(1).fit.fitopt);
         disp(' ')
         
         disp('Defined regions for weighting:')
         
         disp(' ')
        
-        disp(dataset.Tsim.fit.weighting.weightingArea)
+        disp(dataset.Tsim(1).fit.weighting.weightingArea)
         
         disp(' ')
         

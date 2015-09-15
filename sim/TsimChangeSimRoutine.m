@@ -11,7 +11,7 @@ function dataset = TsimChangeSimRoutine(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-22
+% 2015-09-15
 
 option ={...
     'p','Pepper';...
@@ -21,12 +21,12 @@ answer = cliMenu(option,'title',...
 
 switch lower(answer)
     case 'p'
-        dataset.Tsim.sim.routine = 'pepper';
+        dataset.Tsim(1).sim.routine = 'pepper';
     case 't'
-        dataset.Tsim.sim.routine = 'tango';
+        dataset.Tsim(1).sim.routine = 'tango';
 end
 
-dataset.Tsim.acknowledgement.sim = TsimAcknowledgement(dataset);
+dataset.Tsim(1).acknowledgement.sim = TsimAcknowledgement(dataset);
 
 disp(' ');
 disp('**********************************************************');
@@ -35,7 +35,7 @@ disp('**                    DISCLAIMER                        **');
 disp('**********************************************************');
 disp('**********************************************************');
 disp('**');
-cellfun(@(x)disp(['** ' x]),dataset.Tsim.acknowledgement.sim);
+cellfun(@(x)disp(['** ' x]),dataset.Tsim(1).acknowledgement.sim);
 disp('**');
 disp('**********************************************************');
 disp('**********************************************************');

@@ -22,7 +22,7 @@ function TsimReport(dataset,varargin)
 % See also TSIM, tpl
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-09-15
 
 try
     % Parse input arguments using the inputParser functionality
@@ -54,7 +54,7 @@ if ~exist(p.Results.template,'file')
 end
 
 % Get filename of dataset loaded
-filename = dataset.Tsim.results.figureFileName;
+filename = dataset.Tsim(1).results.figureFileName;
 [~,filename] = regexp(filename,'-fig','match','split');
 filename = char(cellstr(filename{1,1}));
 % If field is empty, ask user to provide some
@@ -69,19 +69,19 @@ end
 % dataset that get used only here for creating the template.
 % Reason: Normally, you want to tell the reader center position and width
 % of an average, but what you get is only start and end positions.
-switch length(dataset.Tsim.fit.spectrum.section)
+switch length(dataset.Tsim(1).fit.spectrum.section)
     case 0
-        dataset.Tsim.fit.spectrum.sectionCenter = ...
+        dataset.Tsim(1).fit.spectrum.sectionCenter = ...
             dataset.axes.data(1).values;
     case 1
-        dataset.Tsim.fit.spectrum.sectionCenter = ...
-            dataset.Tsim.fit.spectrum.section;
-        dataset.Tsim.fit.spectrum.sectionWidth = [];
+        dataset.Tsim(1).fit.spectrum.sectionCenter = ...
+            dataset.Tsim(1).fit.spectrum.section;
+        dataset.Tsim(1).fit.spectrum.sectionWidth = [];
     case 2
-        dataset.Tsim.fit.spectrum.sectionCenter = ...
-            sum(dataset.Tsim.fit.spectrum.section)/2;
-        dataset.Tsim.fit.spectrum.sectionWidth = ...
-            abs(diff(dataset.Tsim.fit.spectrum.section));
+        dataset.Tsim(1).fit.spectrum.sectionCenter = ...
+            sum(dataset.Tsim(1).fit.spectrum.section)/2;
+        dataset.Tsim(1).fit.spectrum.sectionWidth = ...
+            abs(diff(dataset.Tsim(1).fit.spectrum.section));
 end
 
 % Prepare template engine "tpl"

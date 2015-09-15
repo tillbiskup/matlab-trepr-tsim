@@ -1,0 +1,194 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% TsimMultiReport-de.tex - LaTeX template for reporting sim results from the TsimMulti toolbox.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% The "-de" indicates that this is a GERMAN template. Feel free to translate into any
+% other language while containing the general structure and contents.
+%
+% This template is meant to be used with the report functionality of the Tsim toolbox
+% in combination with the common toolbox and the tpl template engine.
+%
+% Make sure to set the delimiters for fields to "[[" and "]]" accordingly, as it turned 
+% out that the default "{{" and "}}" delimiters are not a very good idea for use with
+% LaTeX.
+%
+% Please note that this template makes use of knowledge about some internals of the tpl
+% template engine. It may serve as starting point for own templates for use with tpl, but
+% be aware that tpl may still change quite dramatically before it reaches a stable
+% interface.
+%
+% For LaTeX purists: This template doesn't use much of the structures LaTeX provides,
+% such as sections and title. In the future there might be a LaTeX class for those reports
+% helping with a common look and feel.
+%
+% All packages used should be fairly common and included in a standard LaTeX installation.
+%
+% A NOTE TO TEMPLATE DEVELOPERS:
+%
+% If using this template as starting point for a series of similar templates, it might be
+% wise to use the "include" hook of the tpl template engine and to separate large parts of
+% the header in an additional document that just gets added to all templates.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Copyright (c) 2015, Till Biskup, Deborah Meyer
+% 2015-09-15
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HEADER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{article}
+\usepackage[paper=a4paper,left=25mm,right=25mm,top=25mm,bottom=20mm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% For German reports, load appropriate language package
+\usepackage[ngerman]{babel}
+
+% Nice looking tables
+\usepackage{booktabs}
+% As "caption" shall be typeset above a table, no separation between caption and table.
+\setlength{\abovetopsep}{1em}
+
+% Math packages
+\usepackage{amsmath}
+
+% Graphics handling
+\usepackage{graphicx}
+  \DeclareGraphicsExtensions{.pdf,.jpg,.png}
+
+% Headers and footers
+\usepackage{fancyhdr}
+\fancyhead[L]{Triplett-Simulation[[if ~isempty(this.assignments.sample.name)]] von [[@sample.name]][[end]]}
+\pagestyle{fancy}
+
+% Change indentation and separation between paragraphs
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{1ex}
+
+% Define some basic commands
+\newcommand{\matlab}{\textsf{Matlab}}
+
+% Caption setup
+\makeatletter
+
+\setlength\abovecaptionskip{5\p@}
+\setlength\belowcaptionskip{0\p@}
+\@ifundefined{captionfontsize}{%
+  \def\captionfontsize{\small} }{}
+\long\def\@makecaption#1#2{%
+  \vskip\abovecaptionskip\captionfontsize
+  \sbox\@tempboxa{\textbf{#1:} #2}%
+  \ifdim \wd\@tempboxa >\hsize
+    \textbf{#1:} #2\par
+  \else
+    \global \@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip\belowcaptionskip}
+  
+\makeatother
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BODY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\thispagestyle{empty}
+
+\vspace*{-1.5cm}
+
+\noindent\rule[1.5ex]{\textwidth}{1pt}
+
+\begin{sffamily}\bfseries\large
+Ergebnisse der Triplett-Simulation [[if ~isempty(this.assignments.sample.name)]]von [[@sample.name]] [[end]]
+\end{sffamily}
+
+\noindent\rule{\textwidth}{1pt}
+
+\begin{flushright}\slshape
+--- [[@history{1}.system.username]], [[@history{1}.date]]
+\end{flushright}
+
+\vspace*{1.5em}
+
+Das Programm \texttt{Tsim} hat unter Verwendung der Simulationsroutine \texttt{[[@Tsim.sim.routine]]} mehrere Triplett-Simulation durchgeführt.
+[[if ~isempty(this.assignments.sample.name)]]Als Vorlage diente das das TREPR-Spektrum von [[@sample.name]].[[end]]
+
+[[if ~isempty(this.assignments.Tsim.remarks.purpose)]]
+\textbf{Zielstellung:} [[@Tsim.remarks.purpose]]
+[[end]]
+
+[[if ~isempty(this.assignments.Tsim.remarks.comment)]]
+\textbf{Nutzerkommentar:} [[@Tsim.remarks.comment]]
+[[end]]
+
+Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation vgl. Abb.~\ref{fig:ergebnisse}, für die zugehörigen Simulationsparameter Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.
+
+
+\begin{figure}[h]
+\centering
+[[if ~isempty(this.assignments.Tsim(1).results.figureFileName)]]
+\includegraphics[width=\textwidth]{[[@Tsim(1).results.figureFileName]]}
+[[end]]
+\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei [[@Tsim(1).fit.spectrum.sectionCenter|f=5.2e]]~s[[if ~isempty(this.assignments.Tsim(1).fit.spectrum.sectionWidth)]] (gemittelt über [[@Tsim(1).fit.spectrum.sectionWidth|f=5.2e]]~s)[[end]]. Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
+\label{fig:ergebnisse}
+\end{figure}
+
+\begin{center}
+\setlength{\fboxsep}{1.5ex}\setlength{\fboxrule}{.75pt}
+\fbox{%
+\begin{minipage}{.9\textwidth}\centering
+\textbf{--- Disclaimer der Simulationsroutine ---}
+\vspace*{1ex}
+
+\slshape
+[[foreach @Tsim(1).acknowledgement.sim]]
+[[@Tsim(1).acknowledgement.sim]]\par
+[[end]]
+\end{minipage}
+}
+\end{center}
+
+\clearpage
+
+
+\begin{table}[h]
+\caption{\textbf{Übersicht über die Simulationsparameter.} Die Simulationsparameter sind der vollständige Satz an Parametern, die für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendet wurden. $\Gamma$ steht für die Linienbreite, mit der die Simulation gefaltet wurde. Welche Parameter für die Kurvenanpassung wie variiert wurden, kann der Tab.~\ref{tab:fitparameter} entnommen werden.}
+\label{tab:simparameter}
+\centering
+\begin{tabular}{cccccccc} 
+\toprule
+\multicolumn{8}{c}{\textbf{Standardparameter} }
+\\
+\midrule 
+$g_x$      & $g_y$      & $g_z$      & $p_1$   & $p_2$   & $p_3$   & $D$ / MHz & $E$ / MHz \\
+[[@Tsim.sim.simpar.gx|f=7.5f]] & [[@Tsim.sim.simpar.gy|f=7.5f]] & [[@Tsim.sim.simpar.gz|f=7.5f]] & [[@Tsim.sim.simpar.p1|f=5.3f]] & [[@Tsim.sim.simpar.p2|f=5.3f]] & [[@Tsim.sim.simpar.p3|f=5.3f]] & [[@Tsim.sim.simpar.D|f=7.1f]]  & [[@Tsim.sim.simpar.E|f=7.1f]]     \\ 
+\bottomrule
+\end{tabular}
+
+\begin{tabular}{cc}
+\toprule
+\textbf{Parameter} & \textbf{Wert}
+\\
+\midrule
+[[if isfield(this.assignments.Tsim.sim.simpar,'lwGauss')]]
+$\Gamma_\text{Gauß}$ / mT & $[[@Tsim.sim.simpar.lwGauss]]$
+\\
+[[end]]
+[[if isfield(this.assignments.Tsim.sim.simpar,'lwLorentz')]]
+$\Gamma_\text{Lorentz}$ / mT & $[[@Tsim.sim.simpar.lwLorentz]]$
+\\
+[[end]]
+[[if isfield(this.assignments.Tsim.sim.simpar,'DeltaB')]]
+$\Delta B$ / mT & $[[@Tsim.sim.simpar.DeltaB]]$
+\\
+[[end]]
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\end{document}

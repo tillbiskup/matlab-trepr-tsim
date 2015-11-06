@@ -12,7 +12,7 @@ function dataset = TsimSim(dataset,varargin)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-09-22
+% 2015-10-28
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.
@@ -46,17 +46,18 @@ dataset.calculated(:,1) = dataset.calculated(:,1)./sum(abs(dataset.calculated(:,
 
 
 % Put Axes information for calculated in main dataset
-if min(size(dataset.data)) < 2
+
+%if min(size(dataset.data)) < 2
     % Only Simulated or 1-d Data
-    dataset.axes.calculated(1).values = linspace(...
-        dataset.Tsim(1).sim.simpar.Range(1),...
-        dataset.Tsim(1).sim.simpar.Range(2),...
-        dataset.Tsim(1).sim.simpar.nPoints);
+ %   dataset.axes.calculated(1).values = linspace(...
+ %       dataset.Tsim(1).sim.simpar.Range(1),...
+ %       dataset.Tsim(1).sim.simpar.Range(2),...
+ %       dataset.Tsim(1).sim.simpar.nPoints);
+ %   
+ %   dataset.axes.calculated(1).unit = 'mT';
+ %   dataset.axes.calculated(1).measure = 'magnetic field';
     
-    dataset.axes.calculated(1).unit = 'mT';
-    dataset.axes.calculated(1).measure = 'magnetic field';
-    
-else
+%else
     % 2-D datata
     dataset.axes.calculated(2).values = linspace(...
         dataset.Tsim(1).sim.simpar.Range(1),...
@@ -65,7 +66,7 @@ else
     
     dataset.axes.calculated(2).unit = 'mT';
     dataset.axes.calculated(2).measure = 'magnetic field';
-end
+%end
 
 
 

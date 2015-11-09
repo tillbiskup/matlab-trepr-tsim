@@ -107,8 +107,11 @@ switch hasFit
         figure('Name', ['Data from ' dataset.file.name])
         
         set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
-        subplot(6,1,[1 5]);
         
+        if strcmpi(config.FitFigureAppearance.residuum,'on')
+            subplot(6,1,[1 5]);
+        end
+         
         plot(...
             Magfieldaxis,...
             [dataset.Tsim.fit.spectrum.tempSpectrum,dataset.calculated],...

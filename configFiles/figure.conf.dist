@@ -1,18 +1,24 @@
 % Configuration file for Tsim toolbox
 %
-% Last modified: 2015-06-17 11:00:26
+% Last modified: 2015-11-09 14:31:17
 
 [FitFigureAppearance]
-residuum = on
+residuum = off
+residuumxticks = on
+residuumyticks = on
+yticks = off
 ylabel = on
+xticks = on
 xlabel = on
 
 [SimFigureAppearance]
+yticks = off
 ylabel = off
+xticks = on
 xlabel = on
 
 [FigureColorDef]
-simlinecolor = 0                    0.6                      0
+simlinecolor = 0                   0.86                    0.5
 explinecolor = 0                      0                      0
 zerolinecolor = 0.5                    0.5                    0.5
 residuumlinecolor = 0                      0                      1
@@ -34,4 +40,7 @@ xlabel = {\it magnetic field} / mT
 ylabel = {\it intensity} / a.u.
 
 [Legend]
+legend = on
 location = SouthEast
+data = Experimental
+sim = Simulation

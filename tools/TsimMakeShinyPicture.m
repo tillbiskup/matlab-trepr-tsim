@@ -13,13 +13,16 @@ function h = TsimMakeShinyPicture(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-11-09
 
 % get config
 config = TsimConfigGet('figure');
 simlinecolor = config.FigureColorDef.simlinecolor;
 explinecolor = config.FigureColorDef.explinecolor;
 residuumlinecolor = config.FigureColorDef.residuumlinecolor;
+legenddata = config.Legend.data;
+legendsim = config.Legend.sim;
+legendlocation = config.Legend.location;
 
 zeroLineProperties = struct(...
     'Color', config.FigureColorDef.zerolinecolor,...
@@ -42,8 +45,7 @@ else
     
     figure(1);
     plot(Magfieldaxis,dataset.data(:,idxMax),'color',explinecolor);
-    legend({'Originaldata'},'Location','SouthEast');
-
+ 
     set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
 
      h = gcf;
@@ -55,6 +57,7 @@ switch hasFit
         % simulation
         plot(Magfieldaxis,dataset.calculated);
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+       
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
             xlabel(config.FigureAxesLabelDef.xlabel);
         end
@@ -62,6 +65,15 @@ switch hasFit
         if strcmpi(config.SimFigureAppearance.ylabel,'on')
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
+        
+         if strcmpi(config.SimFigureAppearance.xticks,'off')
+            set(gca('XTick',[]));
+        end
+        
+        if strcmpi(config.SimFigureAppearance.yticks,'off')
+            set(gca('YTick',[]));
+        end
+        
         addZeroLines(zeroLineProperties)
         set(gcf,'DefaultAxesColorOrder',simlinecolor);
         
@@ -101,25 +113,58 @@ switch hasFit
             Magfieldaxis,...
             [dataset.Tsim.fit.spectrum.tempSpectrum,dataset.calculated],...
             'LineWidth',1);
-        if strcmpi(config.SimFigureAppearance.ylabel,'on')
+        
+        % y axis
+        if strcmpi(config.FitFigureAppearance.ylabel,'on')
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
         
+        if strcmpi(config.FitFigureAppearance.yticks,'off')
+            set(gca,'YTick',[]);
+        end
         
-        legend({'Original','Fit'},'Location',config.Legend.location);
-        set(gca,'XTickLabel',{})
+        % x axis
+        if strcmpi(config.FitFigureAppearance.xticks,'off')
+            set(gca,'XTick',[]);
+        end
+        
+        % legend
+        if strcmpi(config.Legend.legend,'on')
+            legend({legenddata,legendsim},'Location',legendlocation);
+        end
+        
         addZeroLines(zeroLineProperties)
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
         
-        subplot(6,1,6);
-        plot(Magfieldaxis,difference,'LineWidth',1,'Color',residuumlinecolor);
+        % Residuum
+        if strcmpi(config.FitFigureAppearance.residuum,'on')
+            if strcmpi(config.FitFigureAppearance.residuumxticks,'on')
+                set(gca,'XTickLabel',{})
+            end
+            subplot(6,1,6);
+            plot(Magfieldaxis,difference,'LineWidth',1,'Color',residuumlinecolor);
+            set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+            
+            % x axis residuum
+            if strcmpi(config.FitFigureAppearance.residuumxticks,'off')
+                set(gca,'XTick',[]);
+            end
+            % y axis residuum
+            if strcmpi(config.FitFigureAppearance.residuumyticks,'off')
+                set(gca,'YTick',[]);
+            end
+            
+        end
+        
+        % x axis
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
             xlabel(config.FigureAxesLabelDef.xlabel);
         end
+        
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
 end
 
- h = gcf;
+h = gcf;
 
 end
 

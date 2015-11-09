@@ -13,13 +13,16 @@ function h = TsimMakeShinyPicture(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-09-15
+% 2015-11-09
 
 % get config
 config = TsimConfigGet('figure');
 simlinecolor = config.FigureColorDef.simlinecolor;
 explinecolor = config.FigureColorDef.explinecolor;
 residuumlinecolor = config.FigureColorDef.residuumlinecolor;
+legenddata = config.Legend.data;
+legendsim = config.Legend.sim;
+legendlocation = config.Legend.location;
 
 zeroLineProperties = struct(...
     'Color', config.FigureColorDef.zerolinecolor,...
@@ -30,11 +33,11 @@ zeroLineProperties = struct(...
 % Make Axes for Tsim
 if isfield(dataset,'Tsim')
     Magfieldaxis =  linspace(...
-        dataset.Tsim(1).sim.simpar.Range(1),...
-        dataset.Tsim(1).sim.simpar.Range(2),...
-        dataset.Tsim(1).sim.simpar.nPoints);
+        dataset.Tsim.sim.simpar.Range(1),...
+        dataset.Tsim.sim.simpar.Range(2),...
+        dataset.Tsim.sim.simpar.nPoints);
     
-    hasFit = ~isempty(dataset.Tsim(1).fit.fitpar);
+    hasFit = ~isempty(dataset.Tsim.fit.fitpar);
 else
     % No Tsim, hence only experimental
     [~,idxMax] = max(max(dataset.data));
@@ -42,8 +45,7 @@ else
     
     figure(1);
     plot(Magfieldaxis,dataset.data(:,idxMax),'color',explinecolor);
-    legend({'Originaldata'},'Location','SouthEast');
-
+ 
     set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
 
      h = gcf;
@@ -55,6 +57,7 @@ switch hasFit
         % simulation
         plot(Magfieldaxis,dataset.calculated);
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+       
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
             xlabel(config.FigureAxesLabelDef.xlabel);
         end
@@ -62,6 +65,15 @@ switch hasFit
         if strcmpi(config.SimFigureAppearance.ylabel,'on')
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
+        
+         if strcmpi(config.SimFigureAppearance.xticks,'off')
+            set(gca('XTick',[]));
+        end
+        
+        if strcmpi(config.SimFigureAppearance.yticks,'off')
+            set(gca('YTick',[]));
+        end
+        
         addZeroLines(zeroLineProperties)
         set(gcf,'DefaultAxesColorOrder',simlinecolor);
         
@@ -72,54 +84,90 @@ switch hasFit
         % since spectrum is probably weighted calculated it new.
         % Check if 2d or 1d data
         if size(dataset.data) > 1
-            inx = interp1(dataset.axes.data(1).values,1:length(dataset.axes.data(1).values),dataset.Tsim(1).fit.spectrum.section,'nearest');
+            inx = interp1(dataset.axes.data(1).values,1:length(dataset.axes.data(1).values),dataset.Tsim.fit.spectrum.section,'nearest');
             
             if isscalar(inx)
-                dataset.Tsim(1).fit.spectrum.tempSpectrum = dataset.data(:,inx);
+                dataset.Tsim.fit.spectrum.tempSpectrum = dataset.data(:,inx);
             else
                 parameters.start.index = inx(1);
                 parameters.stop.index = inx(2);
                 parameters.dimension = 'x';
                 avgData = trEPRAVG(dataset,parameters);
-                dataset.Tsim(1).fit.spectrum.tempSpectrum = avgData.data;
+                dataset.Tsim.fit.spectrum.tempSpectrum = avgData.data;
             end
         else
             % 1D data
-            dataset.Tsim(1).fit.spectrum.tempSpectrum = dataset.data;
+            dataset.Tsim.fit.spectrum.tempSpectrum = dataset.data;
             
         end
         
-        dataset.Tsim(1).fit.spectrum.tempSpectrum = dataset.Tsim(1).fit.spectrum.tempSpectrum./sum(abs(dataset.Tsim(1).fit.spectrum.tempSpectrum));
+        dataset.Tsim.fit.spectrum.tempSpectrum = dataset.Tsim.fit.spectrum.tempSpectrum./sum(abs(dataset.Tsim.fit.spectrum.tempSpectrum));
         difference = dataset.Tsim.fit.spectrum.tempSpectrum-dataset.calculated;
         
         figure('Name', ['Data from ' dataset.file.name])
         
         set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
-        subplot(6,1,[1 5]);
         
+        if strcmpi(config.FitFigureAppearance.residuum,'on')
+            subplot(6,1,[1 5]);
+        end
+         
         plot(...
             Magfieldaxis,...
-            [dataset.Tsim(1).fit.spectrum.tempSpectrum,dataset.calculated],...
+            [dataset.Tsim.fit.spectrum.tempSpectrum,dataset.calculated],...
             'LineWidth',1);
-        if strcmpi(config.SimFigureAppearance.ylabel,'on')
+        
+        % y axis
+        if strcmpi(config.FitFigureAppearance.ylabel,'on')
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
         
+        if strcmpi(config.FitFigureAppearance.yticks,'off')
+            set(gca,'YTick',[]);
+        end
         
-        legend({'Original','Fit'},'Location',config.Legend.location);
-        set(gca,'XTickLabel',{})
+        % x axis
+        if strcmpi(config.FitFigureAppearance.xticks,'off')
+            set(gca,'XTick',[]);
+        end
+        
+        % legend
+        if strcmpi(config.Legend.legend,'on')
+            legend({legenddata,legendsim},'Location',legendlocation);
+        end
+        
         addZeroLines(zeroLineProperties)
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
         
-        subplot(6,1,6);
-        plot(Magfieldaxis,difference,'LineWidth',1,'Color',residuumlinecolor);
+        % Residuum
+        if strcmpi(config.FitFigureAppearance.residuum,'on')
+            if strcmpi(config.FitFigureAppearance.residuumxticks,'on')
+                set(gca,'XTickLabel',{})
+            end
+            subplot(6,1,6);
+            plot(Magfieldaxis,difference,'LineWidth',1,'Color',residuumlinecolor);
+            set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+            
+            % x axis residuum
+            if strcmpi(config.FitFigureAppearance.residuumxticks,'off')
+                set(gca,'XTick',[]);
+            end
+            % y axis residuum
+            if strcmpi(config.FitFigureAppearance.residuumyticks,'off')
+                set(gca,'YTick',[]);
+            end
+            
+        end
+        
+        % x axis
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
             xlabel(config.FigureAxesLabelDef.xlabel);
         end
+        
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
 end
 
- h = gcf;
+h = gcf;
 
 end
 

@@ -1,17 +1,18 @@
-function dataset=Tsim()
+function MultiDataset=Tsim()
 % TSIM for simulating spin-polarized EPR spectra
 % of triplets.
 %
 % Usage
-%   dataset = Tsim()
+%   MultiDataset = Tsim()
 %
 %
-%   dataset - struct
-%             Full trEPR toolbox dataset including Tsim structure
+%   MultiDataset - Cell of structs
+%                  structs are full trEPR toolbox 
+%                  dataset including Tsim structure
 %
 
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-11-19
 
 
 
@@ -26,118 +27,38 @@ else
     clear status missing
 end
 
+% Global Tsim Welcome
 TsimWelcomeMessage
 disp(' ')
 
 % Load existing data
-answer = cliMenu({'y','Yes';'n','No';'q','Quit'},'default','n','title',...
-    'Do you wish to load an existing (experimental) dataset');
+disp('Please load (multiple) experimental datasets:');
 
-switch answer
-    case 'y'
+datasetloading = true;
+MultiDataset = cell(0);
+while datasetloading
         dataset = loaddata();
         if isempty(fieldnames(dataset))
-            return;
-        end
-    case 'n'
-        % load nothing and start simulation
-        dataset = TsimDataset();
-        dataset = TsimCliSim(dataset);
-        return;
-    case 'q'
-        disp('Goodbye!');
-        return;
-    otherwise
-        % Shall never happen
-        disp('Buuh')
+            datasetloading = false;
+        else
+            MultiDataset{end+1} = dataset;
+        end   
 end
 
-
-
-% Check what kind of dataset and what size of data you have
-% only simulation, only experimental or simulation and experimental
-% and display some figures
-
-if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && isempty(dataset.data)
-    % only simulation
-    % Figure
-    figure();
-    b = TsimMakeShinyPicture(dataset);
-    set(b,'Tag','simulationDataFigure');
+%Display some figures
+for numberOfDatasets = 1:length(MultiDataset)
+    figure(numberOfDatasets);
+    b = TsimMakeShinyPicture(MultiDataset{numberOfDatasets});
     
-    % Should not be necessary
     % Tsim structure is added
-    if  ~isfield(dataset,'Tsim')
-        dataset = TsimDataset(dataset);
-    end
-    
-    dataset = TsimCliSim(dataset);
-    return;
-    
-end
-
-if isfield(dataset,'calculated') && ~isempty(dataset.calculated) && ~isempty(dataset.data)
-    % simulation and experimental
-    
-    % Figure
-    figure();
-    b = TsimMakeShinyPicture(dataset);
-    set(b,'Tag','experimentalDataAndFitFigure');
-    
-    % Should not be necessary
-    % Tsim structure is added
-    if  ~isfield(dataset,'Tsim')
-        dataset = TsimDataset(dataset);
-    end
-    
-    % Ask what to do
-    option = {'f', 'fit';'s','simulate'};
-    answer = cliMenu(option,'title','Do you wish to simulate or fit?','default','f');
-    
-    disp(' ');
-    
-    switch lower(answer)
-        case 's'
-            dataset = TsimCliSim(dataset);
-            return;
-        case 'f'
-            dataset = TsimCliFit(dataset);
-            return;
+    if  ~isfield(MultiDataset{numberOfDatasets},'Tsim')
+        MultiDataset{numberOfDatasets} = TsimDataset(MultiDataset{numberOfDatasets});
     end
 end
 
-if (~isfield(dataset,'calculated') || isempty(dataset.calculated)) && ~isempty(dataset.data)
-    % only experimental
-    
-    % Figure
-    figure();
-    b = TsimMakeShinyPicture(dataset);
-    set(b,'Tag','experimentalDataFigure');
-    
-    if  ~isfield(dataset,'Tsim')
-        % Tsim structure is added
-        dataset = TsimDataset(dataset);
-    end
-    
-    % Ask what to do
-    option = {'f', 'fit';'s','simulate'};
-    answer = cliMenu(option,'title','Do you wish to simulate or fit?','default','f');
-    
-    disp(' ');
-    
-    switch lower(answer)
-        case 's'
-            dataset = TsimCliSim(dataset);
-            return;
-        case 'f'
-            dataset = TsimCliFit(dataset);
-            return;
-    end
-end
-
-%%%
-disp('You seem to have a rather strange dataset... Goodbye!')
-
+% Start the global fit
+MultiDataset = TsimCliFit(MultiDataset);
+return;
 end
 
 function dataset = loaddata()
@@ -150,10 +71,9 @@ while loaddatasetloop
     while isempty(datasetname)
         datasetname = input(sprintf('%s\n%s',...
             'Please enter the name of the dataset',...
-            'you wish to load (''q'' to quit): '),'s');
-        if strcmpi(datasetname,'q')
+            'you wish to load (Hit Enter to finish loading any more ): '),'s');
+        if strcmpi(datasetname,'')
             % Quit
-            disp('Goodbye!');
             dataset = struct();
             return;
         end

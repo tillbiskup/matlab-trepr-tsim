@@ -2,7 +2,7 @@ function [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 % TSIMINISIMCLI Cli used by sim and fit part to initialize simparameters.
 %
 % Usage
-%   [dataset, siminiloop, quit] = TsimChangeSimValues(dataset)
+%   [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 %
 %
 %   dataset    -  struct
@@ -15,7 +15,7 @@ function [dataset, siminiloop, quit] = TsimIniSimCli(dataset)
 % See also TSIM
 
 % Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% 2015-11-19
 
 
 

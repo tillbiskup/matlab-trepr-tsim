@@ -1,4 +1,4 @@
-function sim = TsimFitFun(fitparvalues,~,dataset)
+function Bigsim = TsimFitFun(fitparvalues,~,Multidataset)
 % TSIMFITFUN Calculate fit calling TsimSim and display iterative
 % results.
 %
@@ -16,18 +16,23 @@ function sim = TsimFitFun(fitparvalues,~,dataset)
 % Copyright (c) 2013-15, Deborah Meyer, Till Biskup
 % 2015-09-14
 
+Bigsim = [];
 
 % Set simpar parameters according to parameters that shall be fitted
-[dataset,fitparvalues] = TsimFitpar2simpar(fitparvalues,dataset);
-
-% Calling simulation function
-dataset = TsimSim(dataset);
-
-% simulated and probably weighted spectrum
-[~,sim] = TsimWeightSpectrum(dataset,'calculated');
-
-% The current fit parameters are displayed on the command line
-disp(num2str(fitparvalues));
-
+for numberOfDatasets= 1:length(Multidataset)
+    [Multidataset{numberOfDatasets},fitparvalues] = TsimFitpar2simpar(fitparvalues,Multidataset{numberOfDatasets});
+    
+    % Calling simulation function
+    Multidataset{numberOfDatasets} = TsimSim(Multidataset{numberOfDatasets});
+    
+    % simulated and probably weighted spectrum
+    [~,sim] = TsimWeightSpectrum(Multidataset{numberOfDatasets},'calculated');
+    
+    Bigsim = [Bigsim, sim];
+    
+    % The current fit parameters are displayed on the command line
+    disp(num2str(fitparvalues));
+    
+end
 
 end

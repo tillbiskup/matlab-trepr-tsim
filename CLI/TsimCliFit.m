@@ -1,4 +1,4 @@
-function dataset = TsimCliFit(dataset)
+function MultiDataset = TsimCliFit(MultiDataset)
 % TSIMCLIFIT Subfunction of the Tsim CLI handling the fitting
 % part.
 %
@@ -18,22 +18,37 @@ fitouterloop = true;
 while fitouterloop
     
     % Check if 2d or 1d data
-    if size(dataset.data) > 1
-        [dataset, quit] = TsimDefineFitsection(dataset);
-        if quit
-            % Quit
-            disp('Goodbye!');
-            return;
+    % Fitsection can be defined for each datset individually
+    for numberOfDatasets = 1:length(MultiDataset)
+        if size(MultiDataset{numberOfDatasets}.data) > 1
+            [MultiDataset{numberOfDatasets}, quit] = TsimDefineFitsection(MultiDataset{numberOfDatasets});
+            if quit
+                % Quit
+                disp('Goodbye!');
+                return;
+            end
+        else
+            % 1D data
+            MultiDataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum = MultiDataset{numberOfDatasets}.data;
+            MultiDataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum = MultiDataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum./sum(abs(MultiDataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum));
         end
-    else
-        % 1D data
-        dataset.Tsim.fit.spectrum.tempSpectrum = dataset.data;
-        dataset.Tsim.fit.spectrum.tempSpectrum = dataset.Tsim.fit.spectrum.tempSpectrum./sum(abs(dataset.Tsim.fit.spectrum.tempSpectrum));
     end
     
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% only once the simulation parameters and fit parameters are initialized,
+% since it is a global fit
+% This is done in the firs dataset of the MultiDataset
+disp('')
+disp('Please choose simulation and fitparameters for all your datasets')
+disp('')
+disp('The values of parameters that are in a fixed realtion to each other are for the first spectrum')
+disp('')
+
+Firstdataset = MultiDataset{1};
+
     siminiloop = true;
     while siminiloop
-        [dataset, siminiloop, quit ] = TsimIniSimCli(dataset);
+        [Firstdataset, siminiloop, quit ] = TsimIniSimCli(Firstdataset);
         if quit
             % Quit
             disp('Goodbye!');
@@ -42,7 +57,7 @@ while fitouterloop
     end % siminiloop
     
     % Fitparameters are initialized
-    dataset = TsimIniFitpar(dataset);
+    Firstdataset = TsimIniFitpar(Firstdataset);
     
     fitinnerloop = true;
     while fitinnerloop
@@ -57,7 +72,7 @@ while fitouterloop
             disp('Simulation parameters currently released for fitting in the wild:')
             
             disp(' ');
-            TsimParDisplay(dataset,'fit');
+            TsimParDisplay(Firstdataset,'fit');
             disp(' ');
             
             % Change some things
@@ -74,33 +89,33 @@ while fitouterloop
             switch lower(answer)
                 case 'i'
                     % Change values of simulationparameters for fit
-                    dataset = TsimChangeSimValues(dataset);
+                    Firstdataset = TsimChangeSimValues(Firstdataset);
                     
                     % Copy Values from Simpar to fitpar inivalue
-                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    Firstdataset = TsimCopySimparValues2Initialvalue(Firstdataset);
                     
                     % Check if boundaries are compatible with inivalue and possibly change them
-                    dataset = TsimCheckBoundaries(dataset);
+                    Firstdataset = TsimCheckBoundaries(Firstdataset);
                     
                     fitiniloop = true;
                 case 'p'
                     % Choose different/additional fitting parameters
-                    dataset = TsimChangeFitpar(dataset);
+                    Firstdataset = TsimChangeFitpar(Firstdataset);
                     
                     % Copy Values from Simpar to fitpar inivalue
-                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    Firstdataset = TsimCopySimparValues2Initialvalue(Firstdataset);
                     
                     % Change Boundaries according to fitparvector with values
                     % from config
-                    dataset = TsimMakeBoundaries(dataset);
+                    Firstdataset = TsimMakeBoundaries(Firstdataset);
                     
                     % Check if boundaries are compatible with inivalue and possibly change them
-                    dataset = TsimCheckBoundaries(dataset);
+                    Firstdataset = TsimCheckBoundaries(Firstdataset);
                     
                     fitiniloop = true;
                 case 'b'
                     % Change boundary
-                    dataset = TsimChangeBoundary(dataset);
+                    Firstdataset = TsimChangeBoundary(Firstdataset);
                     
                     fitiniloop = true;
                 case 'c'
@@ -122,7 +137,7 @@ while fitouterloop
       
             disp('Additional fitting Parameters currently initialized')
             disp(' ');
-            TsimParDisplay(dataset,'opt');
+            TsimParDisplay(Firstdataset,'opt');
             disp(' ');
             
             
@@ -141,20 +156,20 @@ while fitouterloop
             switch lower(answer)
                 case 'w'
                     % weight regions differently
-                    dataset = TsimDefineWeightRegion(dataset);
-                    dataset = TsimWeightSpectrum(dataset,'spectrum');
+                    Firstdataset = TsimDefineWeightRegion(Firstdataset);
+                    Firstdataset = TsimWeightSpectrum(Firstdataset,'spectrum');
                     fitalgorithmloop = true;
                 case 'i'
                     % Max number of iterations
-                    dataset = TsimChangeFitopt(dataset,'MaxIter');
+                    Firstdataset = TsimChangeFitopt(Firstdataset,'MaxIter');
                     fitalgorithmloop = true;
                 case 't'
                     % Change termination tolerance
-                    dataset = TsimChangeFitopt(dataset,'TolFun');
+                    Firstdataset = TsimChangeFitopt(Firstdataset,'TolFun');
                     fitalgorithmloop = true;
                 case 'f'
                     % Maximum Number of function calls
-                    dataset = TsimChangeFitopt(dataset,'MaxFunEval');
+                    Firstdataset = TsimChangeFitopt(Firstdataset,'MaxFunEval');
                     fitalgorithmloop = true;
                 case 's'
                     % start fitting
@@ -175,17 +190,23 @@ while fitouterloop
         display('Enter a purpose:');
         purpose = input('> ','s');
         disp(' ');
-        dataset.Tsim.remarks.purpose = purpose;
+        Firstdataset.Tsim.remarks.purpose = purpose;
+ 
         
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+% Here we take care of the global fit stuff
+MultiDataset{1} = Firstdataset;
+MultiDataset = TsimChooseParametersWithFixedRelations(MultiDataset);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Fitting
-        dataset = TsimFit(dataset);
+        MultiDataset = TsimFit(MultiDataset);
         
-        h = TsimMakeShinyPicture(dataset);
+        h = TsimMakeShinyPicture(MultiDataset);
         
         % Pardisplay
         disp(' ');
-        TsimParDisplay(dataset,'fitreport');
+        TsimParDisplay(MultiDataset,'fitreport');
         disp(' ');
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
@@ -193,12 +214,12 @@ while fitouterloop
         % Enter comment
         disp('Enter a comment:');
         comment = input('> ','s');
-        dataset.Tsim.remarks.comment = comment;
+        MultiDataset.Tsim.remarks.comment = comment;
         
        
         % Write history
         % (Orwell style - we're creating our own)
-        dataset = TsimHistory('write',dataset);
+        MultiDataset = TsimHistory('write',MultiDataset);
         
         saveloop = true;
         while saveloop
@@ -240,7 +261,7 @@ while fitouterloop
                     end
                     % Save dataset
                     % Clear tempSpectrum onyl in dataset that is saved
-                    savedataset = dataset;
+                    savedataset = MultiDataset;
                     savedataset.Tsim.fit.spectrum.tempSpectrum = [];
                     [status] = trEPRsave(saveFilename,savedataset);
                     if ~isempty(status)
@@ -257,7 +278,7 @@ while fitouterloop
                         continue
                     end
                     % Suggest reasonable filename
-                    [path,name,~] = fileparts(dataset.file.name);
+                    [path,name,~] = fileparts(MultiDataset.file.name);
                     suggestedFilename = fullfile(path,[name '_fit']);
                     % The "easy" way: consequently use CLI
                     saveFilename = input(...
@@ -267,7 +288,7 @@ while fitouterloop
                         saveFilename = suggestedFilename;
                     end
                     % Put FigureFileName in Dataset
-                    dataset.Tsim.results.figureFileName = [saveFilename '-fig'];
+                    MultiDataset.Tsim.results.figureFileName = [saveFilename '-fig'];
                     
                     % Export figure as .pdf and as .fig
                     
@@ -284,7 +305,7 @@ while fitouterloop
                     
                     % Save dataset
                     % Clear tempSpectrum onyl in dataset that is saved
-                    savedataset = dataset;
+                    savedataset = MultiDataset;
                     savedataset.Tsim.fit.spectrum.tempSpectrum = [];
                     [status] = trEPRsave(saveFilename,savedataset);
                     if ~isempty(status)
@@ -292,14 +313,14 @@ while fitouterloop
                     end                    
                     
                     % Make Report
-                    TsimReport(dataset,'template','TsimFitReport-de.tex');
+                    TsimReport(MultiDataset,'template','TsimFitReport-de.tex');
                                         
                     clear status saveFilename suggestedFilename savedataset;
                     
                     saveloop = true;
                 case 'w'
                     % Write Parameters in Config
-                    TsimSimpar2ConfigFile(dataset)
+                    TsimSimpar2ConfigFile(MultiDataset)
                     saveloop = true;
                     
                     
@@ -311,10 +332,10 @@ while fitouterloop
                     end
                     % Don't clear tempSpectrum
                     % Copy Values from Simpar to fitpar inivalue
-                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    MultiDataset = TsimCopySimparValues2Initialvalue(MultiDataset);
                     
                     % Check if boundaries are compatible with inivalue and possibly change them
-                    dataset = TsimCheckBoundaries(dataset);
+                    MultiDataset = TsimCheckBoundaries(MultiDataset);
                     
                     % Fit again
                     saveloop = false;
@@ -326,8 +347,8 @@ while fitouterloop
                     end
                     % Don't clear tempSpectrum
                     % New fit with same initial parameters as before
-                    dataset = TsimFitpar2simpar(dataset.Tsim.fit.initialvalue,dataset);
-                    dataset = TsimApplyConventions(dataset);
+                    MultiDataset = TsimFitpar2simpar(MultiDataset.Tsim.fit.initialvalue,MultiDataset);
+                    MultiDataset = TsimApplyConventions(MultiDataset);
                     
                     
                     % Fit again
@@ -341,12 +362,12 @@ while fitouterloop
                     % New fit with default initial parameters from
                     % config
                     % Clear simpar and fitpar and tempSpectrum
-                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
-                    fields2beremoved = fieldnames(dataset.Tsim.sim.simpar);
+                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
+                    fields2beremoved = fieldnames(MultiDataset.Tsim.sim.simpar);
                     for k = 1: length(fields2beremoved)
-                        dataset.Tsim.sim.simpar = rmfield(dataset.Tsim.sim.simpar,(fields2beremoved(k)));
+                        MultiDataset.Tsim.sim.simpar = rmfield(MultiDataset.Tsim.sim.simpar,(fields2beremoved(k)));
                     end
-                    dataset.Tsim.fit.fitpar = {};
+                    MultiDataset.Tsim.fit.fitpar = {};
                     saveloop = false;
                     fitinnerloop = false;
                     
@@ -358,12 +379,12 @@ while fitouterloop
                     % New fit with final values as starting parameters but
                     % different section
                     % Clear tempSpectrum
-                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
+                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
                     % Copy Values from Simpar to fitpar inivalue
-                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    MultiDataset = TsimCopySimparValues2Initialvalue(MultiDataset);
                     
                     % Check if boundaries are compatible with inivalue and possibly change them
-                    dataset = TsimCheckBoundaries(dataset);
+                    MultiDataset = TsimCheckBoundaries(MultiDataset);
                   
                     saveloop = false;
                     fitinnerloop = false;
@@ -380,31 +401,31 @@ while fitouterloop
                     % different simulation routine, same section
                     disp('The simulation routines currently in use:')
                     disp(' ')
-                    disp(dataset.Tsim.sim.routine);
+                    disp(MultiDataset.Tsim.sim.routine);
                     disp(' ')
                     
-                    oldRoutine = dataset.Tsim.sim.routine;
-                    dataset = TsimChangeSimRoutine(dataset);
-                    newRoutine = dataset.Tsim.sim.routine;
+                    oldRoutine = MultiDataset.Tsim.sim.routine;
+                    MultiDataset = TsimChangeSimRoutine(MultiDataset);
+                    newRoutine = MultiDataset.Tsim.sim.routine;
                     
                     if ~strcmpi(oldRoutine,newRoutine)
                         % Check simpar and possibly change it but don't change
                         % values
-                        dataset = TsimCleanUpSimpar(dataset,oldRoutine);
+                        MultiDataset = TsimCleanUpSimpar(MultiDataset,oldRoutine);
                         % Check fitpar. Is there a parameter that is now not
                         % possible anymore. Change fitpar and analogously lb and
                         % ub.
-                        dataset = TsimKickOutFitpar(dataset);
+                        MultiDataset = TsimKickOutFitpar(MultiDataset);
                         
                         %Clear initialvalues
-                        dataset.Tsim.fit.initialvalues = [];
+                        MultiDataset.Tsim.fit.initialvalues = [];
                         
                     end
                     % Copy Values from Simpar to fitpar inivalue
-                    dataset = TsimCopySimparValues2Initialvalue(dataset);
+                    MultiDataset = TsimCopySimparValues2Initialvalue(MultiDataset);
                     
                     % Check if boundaries are compatible with inivalue and possibly change them
-                    dataset = TsimCheckBoundaries(dataset);
+                    MultiDataset = TsimCheckBoundaries(MultiDataset);
                     
                     saveloop = false;
                     fitinnerloop = false;
@@ -417,13 +438,13 @@ while fitouterloop
                     % Quit
                     % Suggest reasonable filename
                     % Clear tempSpectrum
-                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
-                    [path,name,~] = fileparts(dataset.file.name);
+                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
+                    [path,name,~] = fileparts(MultiDataset.file.name);
                     suggestedFilename = fullfile(...
                         path,[name '_fit-' datestr(now,30) '.tez']);
                     saveFilename = suggestedFilename;
                     % Save dataset
-                    [status] = TsimSave(saveFilename,dataset);
+                    [status] = TsimSave(saveFilename,MultiDataset);
                     if ~isempty(status)
                         disp('Some problems with saving data');
                     end
@@ -437,7 +458,7 @@ while fitouterloop
                     end
                     % Quit without saving
                     % Clear tempSpectrum
-                    dataset.Tsim.fit.spectrum.tempSpectrum = [];
+                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
                     disp('Goodbye!');
                     return,
                 otherwise

@@ -1,4 +1,4 @@
-function dataset = TsimFit(dataset)
+function Multidataset = TsimFit(Multidataset)
 % TSIMFIT Fit triplet spectra with Tsim.
 %
 %
@@ -13,43 +13,87 @@ function dataset = TsimFit(dataset)
 % Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
 % 2015-09-14
 
+BigSpectrum = [];
+BigMagfieldaxis = [];
+for numberOfDatasets = 1:length(Multidataset)
+   Magfieldaxis = linspace(...
+    Multidataset{numberOfDatasets}.Tsim.sim.simpar.Range(1),...
+    Multidataset{numberOfDatasets}.Tsim.sim.simpar.Range(2),...
+    Multidataset{numberOfDatasets}.Tsim.sim.simpar.nPoints);
+BigMagfieldaxis = [BigMagfieldaxis, Magfieldaxis] ;
+BigSpectrum = [BigSpectrum, Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum];
+end
 
-Magfieldaxis = linspace(...
-    dataset.Tsim.sim.simpar.Range(1),...
-    dataset.Tsim.sim.simpar.Range(2),...
-    dataset.Tsim.sim.simpar.nPoints);
+assignin('base', 'Multidataset', Multidataset)
 
 % x = lsqcurvefit(fun,x0,xdata,ydata,lb,ub)
 % Fitting
 % [x,resnorm,residual,exitflag,output,lambda,jacobian] = ...
 % dataset.Tsim.fit.routine = output.algorithm
-options = optimset(dataset.Tsim.fit.fitopt);
-fitfun = @(x,Magfieldaxis)TsimFitFun(x,Magfieldaxis,dataset);
-[dataset.Tsim.fit.finalvalue,resnorm,residual,exitflag,output,lambda,jacobian] = lsqcurvefit(fitfun, ...
-    dataset.Tsim.fit.initialvalue, ...
-    Magfieldaxis, ...
-    dataset.Tsim.fit.spectrum.tempSpectrum, ...
-    dataset.Tsim.fit.lb, ...
-    dataset.Tsim.fit.ub, ...
+options = optimset(Multidataset{1}.Tsim.fit.fitopt);
+fitfun = @(x,BigMagfieldaxis)TsimFitFun(x,BigMagfieldaxis,Multidataset);
+[Multidataset{1}.Tsim.fit.finalvalue,resnorm,residual,exitflag,output,lambda,jacobian] = lsqcurvefit(fitfun, ...
+    Multidataset{1}.Tsim.fit.initialvalue, ...
+    BigMagfieldaxis, ...
+    BigSpectrum, ...
+    Multidataset{1}.Tsim.fit.lb, ...
+    Multidataset{1}.Tsim.fit.ub, ...
     options);
 
 
 % Calculate with final values for a full dataset
 % Set simpar parameters according to parameters that have been fitted
-dataset = TsimFitpar2simpar(dataset.Tsim.fit.finalvalue,dataset);
+
+Multidataset{1} = TsimFitpar2simpar(Multidataset{1}.Tsim.fit.finalvalue,Multidataset{1});
 % Calling simulation function
-dataset = TsimSim(dataset);
+Multidataset{1} = TsimSim(Multidataset{1});
+
 
 % Fill in some information
-dataset.Tsim.fit.routine = 'lsqcurvefit';
-dataset.Tsim.fit.algorithm = output.algorithm;
-dataset.Tsim.fit.fitreport.residual = residual;
-dataset.Tsim.fit.fitreport.jacobian = jacobian;
-dataset.Tsim.fit.fitreport.exitmessage = output.message;
+Multidataset{1}.Tsim.fit.routine = 'lsqcurvefit';
+Multidataset{1}.Tsim.fit.algorithm = output.algorithm;
+Multidataset{1}.Tsim.fit.fitreport.residual = residual;
+Multidataset{1}.Tsim.fit.fitreport.jacobian = jacobian;
+Multidataset{1}.Tsim.fit.fitreport.exitmessage = output.message;
 
 
-variance = var(dataset.Tsim.fit.fitreport.residual);
-dataset.Tsim.fit.fitreport.stdDev = ...
-    full(commonFitStdDev(dataset.Tsim.fit.fitreport.jacobian,variance));
+variance = var(Multidataset{1}.Tsim.fit.fitreport.residual);
+Multidataset{1}.Tsim.fit.fitreport.stdDev = ...
+    full(commonFitStdDev(Multidataset{1}.Tsim.fit.fitreport.jacobian,variance));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Put all parameters in all datasets, and take care to make the
+% offsetthingy right
+
+Master = Multidataset{1};
+
+for numberOfDatasets = 1:length(Multidataset)
+    
+    tempSpectrum = Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum;
+    section = Multidataset{numberOfDatasets}.Tsim.fit.spectrum.section;
+    fixedRealtionParameters = Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRealtionParameters;
+    offset = Multidataset{numberOfDatasets}.Tsim.fit.globally.offset;
+    
+    Multidataset{numberOfDatasets}.Tsim = Master.Tsim;
+    
+    Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum =tempSpectrum;
+    Multidataset{numberOfDatasets}.Tsim.fit.spectrum.section = section;
+    Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRealtionParameters = fixedRealtionParameters;
+    Multidataset{numberOfDatasets}.Tsim.fit.globally.offset = offset;
+    
+    for HowManyFixedRealtionParameters = 1:length(fixedRealtionParameters)
+        
+        Multidataset{numberOfDatasets}.Tsim.sim.simpar.(char(fixedRealtionParameters(HowManyFixedRealtionParameters))) ...
+            = Master.Tsim.sim.simpar.(char(fixedRealtionParameters(HowManyFixedRealtionParameters))) + offset(HowManyFixedRealtionParameters) ;
+    end
+    
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Take care of the spectrum for all datasets by simulating each spectrum
+    
+    % Calling simulation function
+    Multidataset{numberOfDatasets} = TsimSim(Multidataset{numberOfDatasets});
+    
+end
 
 end

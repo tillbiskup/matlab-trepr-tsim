@@ -46,10 +46,14 @@ while datasetloading
 end
 
 %Display some figures
+
+for bla = 1:length(MultiDataset)
+    TsimMakeShinyPicture(MultiDataset{bla});
+    set(gcf,'Tag',['TsimGlobalExp' num2str(bla)]);
+end
+
+
 for numberOfDatasets = 1:length(MultiDataset)
-    figure(numberOfDatasets);
-    b = TsimMakeShinyPicture(MultiDataset{numberOfDatasets});
-    
     % Tsim structure is added
     if  ~isfield(MultiDataset{numberOfDatasets},'Tsim')
         MultiDataset{numberOfDatasets} = TsimDataset(MultiDataset{numberOfDatasets});

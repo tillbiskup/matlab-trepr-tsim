@@ -26,23 +26,24 @@ config = TsimConfigGet([routine 'parameters']);
 
 if isempty(fieldnames(config))
     dataset = TsimInitializeFallBackParameters(dataset);
-     disp(' ')
+    disp(' ')
     disp('Missing configuration... Loaded default values.');
-     disp(' ')
+    disp(' ')
 else
+    
     % CleanUp Config for MinSim and EasySpinIncompatibilities
     try
         configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
         config = configCleanupRoutine(config);
         
-        TsimConfigSet([routine 'parameters'],config)
+        TsimConfigSet([routine 'parameters'],config);
         % CreateSimpar from Config
         dataset.Tsim.sim.simpar = config.StandardSimulationParameters;
-        
+       
     catch %#ok<CTCH>
         disp(' ')
         disp('(WW) Configuation file corrupted. Fall back to default parameters.')
-         disp(' ')
+        disp(' ')
         dataset = TsimInitializeFallBackParameters(dataset);
     end
     

@@ -21,10 +21,10 @@ for numberOfDatasets = 1:length(Multidataset)
     Multidataset{numberOfDatasets}.Tsim.sim.simpar.Range(2),...
     Multidataset{numberOfDatasets}.Tsim.sim.simpar.nPoints);
 BigMagfieldaxis = [BigMagfieldaxis, Magfieldaxis] ;
-BigSpectrum = [BigSpectrum, Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum];
+BigSpectrum = [BigSpectrum; Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum];
 end
 
-assignin('base', 'Multidataset', Multidataset)
+
 
 % x = lsqcurvefit(fun,x0,xdata,ydata,lb,ub)
 % Fitting
@@ -52,14 +52,25 @@ Multidataset{1} = TsimSim(Multidataset{1});
 % Fill in some information
 Multidataset{1}.Tsim.fit.routine = 'lsqcurvefit';
 Multidataset{1}.Tsim.fit.algorithm = output.algorithm;
-Multidataset{1}.Tsim.fit.fitreport.residual = residual;
-Multidataset{1}.Tsim.fit.fitreport.jacobian = jacobian;
+
 Multidataset{1}.Tsim.fit.fitreport.exitmessage = output.message;
 
+%%%%%%%%%%%%%%%%%%%
+% cut residual according to length of individual spectra
 
-variance = var(Multidataset{1}.Tsim.fit.fitreport.residual);
-Multidataset{1}.Tsim.fit.fitreport.stdDev = ...
-    full(commonFitStdDev(Multidataset{1}.Tsim.fit.fitreport.jacobian,variance));
+whereToCut = cumsum([0 cellfun(@(x)x.Tsim.sim.simpar.nPoints,Multidataset)]);
+
+%%%%%%%%%%%%%%%%%%%%
+for numberOfDatasets = 1:length(Multidataset)
+    Multidataset{numberOfDatasets}.Tsim.fit.fitreport.jacobian = jacobian;
+    Multidataset{numberOfDatasets}.Tsim.fit.fitreport.residual = ...
+        residual(1+whereToCut(numberOfDatasets):whereToCut(numberOfDatasets+1));
+    variance = var(Multidataset{numberOfDatasets}.Tsim.fit.fitreport.residual);
+    Jac = Multidataset{numberOfDatasets}.Tsim.fit.fitreport.jacobian;
+Multidataset{numberOfDatasets}.Tsim.fit.fitreport.stdDev = ...
+    full(commonFitStdDev(Jac,variance));
+end
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Put all parameters in all datasets, and take care to make the
@@ -71,24 +82,62 @@ for numberOfDatasets = 1:length(Multidataset)
     
     tempSpectrum = Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum;
     section = Multidataset{numberOfDatasets}.Tsim.fit.spectrum.section;
-    fixedRealtionParameters = Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRealtionParameters;
+    Range = Multidataset{numberOfDatasets}.Tsim.sim.simpar.Range;
+    nPoints = Multidataset{numberOfDatasets}.Tsim.sim.simpar.nPoints;
+    mwFreq =   Multidataset{numberOfDatasets}.Tsim.sim.simpar.mwFreq;
+
+    
+    fixedRelationParameters = Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRelationParameters;
     offset = Multidataset{numberOfDatasets}.Tsim.fit.globally.offset;
+    stDev = Multidataset{numberOfDatasets}.Tsim.fit.fitreport.stdDev;
+    residual = Multidataset{numberOfDatasets}.Tsim.fit.fitreport.residual;
+    jacobian = Multidataset{numberOfDatasets}.Tsim.fit.fitreport.jacobian;
+
+    
+    
     
     Multidataset{numberOfDatasets}.Tsim = Master.Tsim;
     
     Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum =tempSpectrum;
     Multidataset{numberOfDatasets}.Tsim.fit.spectrum.section = section;
-    Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRealtionParameters = fixedRealtionParameters;
-    Multidataset{numberOfDatasets}.Tsim.fit.globally.offset = offset;
+    Multidataset{numberOfDatasets}.Tsim.sim.simpar.Range = Range;
+    Multidataset{numberOfDatasets}.Tsim.sim.simpar.nPoints = nPoints;
+    Multidataset{numberOfDatasets}.Tsim.sim.simpar.mwFreq = mwFreq;
     
-    for HowManyFixedRealtionParameters = 1:length(fixedRealtionParameters)
+    
+    Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRelationParameters = fixedRelationParameters;
+    Multidataset{numberOfDatasets}.Tsim.fit.globally.offset = offset;
+    Multidataset{numberOfDatasets}.Tsim.fit.fitreport.stdDev = stDev;
+    Multidataset{numberOfDatasets}.Tsim.fit.fitreport.residual = residual;
+    Multidataset{numberOfDatasets}.Tsim.fit.fitreport.jacobian = jacobian;
+    
+    for HowManyFixedRelationParameters = 1:length(fixedRelationParameters)
         
-        Multidataset{numberOfDatasets}.Tsim.sim.simpar.(char(fixedRealtionParameters(HowManyFixedRealtionParameters))) ...
-            = Master.Tsim.sim.simpar.(char(fixedRealtionParameters(HowManyFixedRealtionParameters))) + offset(HowManyFixedRealtionParameters) ;
+        Multidataset{numberOfDatasets}.Tsim.sim.simpar.(char(fixedRelationParameters(HowManyFixedRelationParameters))) ...
+            = Master.Tsim.sim.simpar.(char(fixedRelationParameters(HowManyFixedRelationParameters))) + offset(HowManyFixedRelationParameters) ;
+        
     end
     
     
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Make the finalvalues right
+    % Take care of offset
+    
+    numbers = 1:length(Multidataset{1}.Tsim.fit.fitpar);
+    whereInFinalValues = numbers(ismember(Multidataset{1}.Tsim.fit.fitpar,  Multidataset{1}.Tsim.fit.globally.fixedRelationParameters));
+    
+    for foundIt=1:length(whereInFinalValues)
+        
+        numbers2 = 1:length(Multidataset{1}.Tsim.fit.globally.fixedRelationParameters);
+        BoolwhereInOffset = ismember(Multidataset{1}.Tsim.fit.globally.fixedRelationParameters, Multidataset{numberOfDatasets}.Tsim.fit.fitpar(whereInFinalValues(foundIt)) );
+        
+        Multidataset{numberOfDatasets}.Tsim.fit.finalvalue(whereInFinalValues(foundIt)) = Multidataset{numberOfDatasets}.Tsim.fit.finalvalue(whereInFinalValues(foundIt)) + ...
+            Multidataset{numberOfDatasets}.Tsim.fit.globally.offset(numbers2(BoolwhereInOffset));
+    end
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Take care of the spectrum for all datasets by simulating each spectrum
     
     % Calling simulation function

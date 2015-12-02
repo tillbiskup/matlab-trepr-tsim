@@ -46,4 +46,12 @@ for k = 1:length(fitparvalues)
     dataset.Tsim.sim.simpar.(dataset.Tsim.fit.fitpar{k}) = fitparvalues(k);
 end
 
+% Take care of offset
+for  HowManyFixedRealtionParameters = 1:length(dataset.Tsim.fit.globally.fixedRelationParameters)
+dataset.Tsim.sim.simpar.(char(dataset.Tsim.fit.globally.fixedRelationParameters(HowManyFixedRealtionParameters)))...
+    = dataset.Tsim.sim.simpar.(char(dataset.Tsim.fit.globally.fixedRelationParameters(HowManyFixedRealtionParameters)))...
+    +  dataset.Tsim.fit.globally.offset(HowManyFixedRealtionParameters);
+
+end
+
 end

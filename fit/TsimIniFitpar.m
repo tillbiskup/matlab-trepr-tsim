@@ -30,39 +30,40 @@ else
     % CleanUp Config for MinSim and EasySpinIncompatibilities
     
     try
-        configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
-        config = configCleanupRoutine(config);
-        
-        TsimConfigSet([routine 'parameters'],config)
-        % CreateFitpar from Config
-        dataset.Tsim.fit.fitpar = fieldnames(config.FitparametersAndBoundaries);
-        for k = 1:length(dataset.Tsim.fit.fitpar)
-            dataset.Tsim.fit.lb(k) = config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k})(1);
-            dataset.Tsim.fit.ub(k) = config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k})(2);
-        end
-        
-        if isfield(config.FitOptions, 'MaximumIteration')
-            dataset.Tsim.fit.fitopt.MaxIter = config.FitOptions.MaximumIteration;
-        end
-        
-        if isfield(config.FitOptions,'MaximumFunctionEvaluation')
-            dataset.Tsim.fit.fitopt.MaxFunEval = config.FitOptions.MaximumFunctionEvaluation;
-        end
-        
-        if isfield(config.FitOptions, 'TerminationTolerance')
-            dataset.Tsim.fit.fitopt.TolFun = config.FitOptions.TerminationTolerance;
-        end
-                
+    configCleanupRoutine = str2func(commonCamelCase({'TsimCleanUpConfig',routine}));
+    config = configCleanupRoutine(config);
+    
+    TsimConfigSet([routine 'parameters'],config)
+    % CreateFitpar from Config
+    dataset.Tsim.fit.fitpar = fieldnames(config.FitparametersAndBoundaries);
+    for k = 1:length(dataset.Tsim.fit.fitpar)
+        dataset.Tsim.fit.lb(k) = config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k})(1);
+        dataset.Tsim.fit.ub(k) = config.FitparametersAndBoundaries.(dataset.Tsim.fit.fitpar{k})(2);
+    end
+    
+    if isfield(config.FitOptions, 'MaximumIteration')
+        dataset.Tsim.fit.fitopt.MaxIter = config.FitOptions.MaximumIteration;
+    end
+    
+    if isfield(config.FitOptions,'MaximumFunctionEvaluation')
+        dataset.Tsim.fit.fitopt.MaxFunEval = config.FitOptions.MaximumFunctionEvaluation;
+    end
+    
+    if isfield(config.FitOptions, 'TerminationTolerance')
+        dataset.Tsim.fit.fitopt.TolFun = config.FitOptions.TerminationTolerance;
+    end
+    
+    
     catch %#ok<CTCH>
-        disp(' ')
-        disp('(WW) Configuation file corrupted. Fall back to default parameters.')
-        dataset = initializeDefaultFitParameters(dataset);
+             disp(' ')
+             disp('(WW) Configuation file corrupted. Fall back to default parameters.')
+             dataset = initializeDefaultFitParameters(dataset);
     end
     
     
 end
 
-% Chek if fitpar is subset of (or equal to) simpar and add parameters in simpar if necessary  
+% Chek if fitpar is subset of (or equal to) simpar and add parameters in simpar if necessary
 dataset = TsimChekFitpar(dataset);
 
 % Copy Values from Simpar to fitpar inivalue

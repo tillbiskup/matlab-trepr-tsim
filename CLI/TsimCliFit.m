@@ -55,7 +55,18 @@ Firstdataset = MultiDataset{1};
             return;
         end
     end % siminiloop
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
+    
+    % Take care of diffrent range of spectra in eache dataset and put in
+    % the routin in every dataset
+    routine = Firstdataset.Tsim.sim.routine;
+    for bla = 1:length(MultiDataset)
+        MultiDataset{bla}.Tsim.sim.routine = routine;
+        MultiDataset{bla} = TsimIniSimpar(MultiDataset{bla});
+    end
+   
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Fitparameters are initialized
     Firstdataset = TsimIniFitpar(Firstdataset);
     
@@ -184,45 +195,50 @@ Firstdataset = MultiDataset{1};
             end
             
         end % fitalgorithmloop
-           
+        
         % Enter purpose
         disp(' ');
         display('Enter a purpose:');
         purpose = input('> ','s');
         disp(' ');
         Firstdataset.Tsim.remarks.purpose = purpose;
- 
         
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-% Here we take care of the global fit stuff
-MultiDataset{1} = Firstdataset;
-MultiDataset = TsimChooseParametersWithFixedRelations(MultiDataset);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        % Here we take care of the global fit stuff
+        MultiDataset{1} = Firstdataset;
+        MultiDataset = TsimChooseParametersWithFixedRelations(MultiDataset);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Fitting
         MultiDataset = TsimFit(MultiDataset);
         
-        h = TsimMakeShinyPicture(MultiDataset);
-        
         % Pardisplay
-        disp(' ');
-        TsimParDisplay(MultiDataset,'fitreport');
-        disp(' ');
+        for bla = 1:length(MultiDataset)
+            TsimMakeShinyPicture(MultiDataset{bla});
+            set(gcf,'Tag',['TsimGlobal' num2str(bla)]);
+            disp(' ');
+            TsimParDisplay(MultiDataset{bla},'fitreport');
+            disp(' ');
+        end
         
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % Enter comment
         disp('Enter a comment:');
         comment = input('> ','s');
-        MultiDataset.Tsim.remarks.comment = comment;
         
-       
-        % Write history
-        % (Orwell style - we're creating our own)
-        MultiDataset = TsimHistory('write',MultiDataset);
-        
+        for bla = 1:length(MultiDataset)
+            MultiDataset{bla}.Tsim.remarks.comment = comment;
+            
+            % Write history
+            % (Orwell style - we're creating our own)
+            MultiDataset{bla} = TsimHistory('write',MultiDataset{bla});
+        end
         saveloop = true;
         while saveloop
+            
+            assignin('base', 'Multidataset', MultiDataset)
             
             % Ask how to continue
             option = {...
@@ -232,8 +248,6 @@ MultiDataset = TsimChooseParametersWithFixedRelations(MultiDataset);
                 ' ',' ';...
                 'f','Start new fit with final values as starting point';...
                 'i','Start new fit with same initial values as before' ;...
-                'p','Start new fit on different position in your 2-D data with final values as starting point';...
-                'c','Start new fit on different position in your 2-D data with initial values from configuration';...
                 ' ',' ';...
                 's','Start new fit with final values as starting point using a different simulation routine';...
                 ' ',' ';...
@@ -271,201 +285,194 @@ MultiDataset = TsimChooseParametersWithFixedRelations(MultiDataset);
                     
                     saveloop = true;
                 case 'r'
-                    % Get figure handel
-                    if ~ishandle(h)
-                        disp('You stupid git deleted your figure!')
-                        saveloop = true;
-                        continue
+                    
+                    for bla = 1:length(MultiDataset)
+                        % Suggest reasonable filename
+                        [path,name,~] = fileparts(MultiDataset{bla}.file.name);
+                        suggestedFilename = fullfile(path,[name '_fit']);
+                        % The "easy" way: consequently use CLI
+                        saveFilename = input(...
+                            sprintf('Filename (%s): ',suggestedFilename),...
+                            's');
+                        if isempty(saveFilename)
+                            saveFilename = suggestedFilename;
+                        end
+                        
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        
+                        
+                        % Put FigureFileName in Dataset
+                        MultiDataset{bla}.Tsim.results.figureFileName = [saveFilename '-fig'];
+                        
+                        % Export figure as .pdf and as .fig
+                        
+                        commonFigureExport(pff,[saveFilename '-fig']);
+                        
+                        % Save dataset
+                        % Clear tempSpectrum onyl in dataset that is saved
+                        savedataset = MultiDataset{bla};
+                        savedataset.Tsim.fit.spectrum.tempSpectrum = [];
+                        [status] = trEPRsave(saveFilename,savedataset);
+                        if ~isempty(status)
+                            disp('Some problems with saving data');
+                        end
+                        
                     end
-                    % Suggest reasonable filename
-                    [path,name,~] = fileparts(MultiDataset.file.name);
-                    suggestedFilename = fullfile(path,[name '_fit']);
-                    % The "easy" way: consequently use CLI
-                    saveFilename = input(...
-                        sprintf('Filename (%s): ',suggestedFilename),...
-                        's');
-                    if isempty(saveFilename)
-                        saveFilename = suggestedFilename;
+                    
+                    % Make Reports
+                    for bla = 1:length(MultiDataset)
+                    TsimReport(MultiDataset{bla},'template','TsimFitReport-de.tex');
                     end
-                    % Put FigureFileName in Dataset
-                    MultiDataset.Tsim.results.figureFileName = [saveFilename '-fig'];
                     
-                    % Export figure as .pdf and as .fig
-                    
-                    commonFigureExport(h,[saveFilename '-fig']);
-                    
-%                     [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'pdf' );
-%                     if ~isempty(status)
-%                         disp('Some problems with exporting pdf-figure');
-%                     end                     
-%                     [status] = fig2file(h, [saveFilename '-fig'], 'fileType', 'fig' );
-%                     if ~isempty(status)
-%                         disp('Some problems with exporting fig-figure');
-%                     end
-                    
-                    % Save dataset
-                    % Clear tempSpectrum onyl in dataset that is saved
-                    savedataset = MultiDataset;
-                    savedataset.Tsim.fit.spectrum.tempSpectrum = [];
-                    [status] = trEPRsave(saveFilename,savedataset);
-                    if ~isempty(status)
-                        disp('Some problems with saving data');
-                    end                    
-                    
-                    % Make Report
-                    TsimReport(MultiDataset,'template','TsimFitReport-de.tex');
-                                        
                     clear status saveFilename suggestedFilename savedataset;
                     
                     saveloop = true;
                 case 'w'
                     % Write Parameters in Config
-                    TsimSimpar2ConfigFile(MultiDataset)
+                    TsimSimpar2ConfigFile(MultiDataset{1})
                     saveloop = true;
                     
                     
                     
                 case 'f'
-                   
-                    if ishandle(h)
-                        close(h);
+                    
+                    for bla = 1:length(MultiDataset)
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        if ishandle(pff)
+                            close(pff);
+                        end
                     end
                     % Don't clear tempSpectrum
                     % Copy Values from Simpar to fitpar inivalue
-                    MultiDataset = TsimCopySimparValues2Initialvalue(MultiDataset);
-                    
-                    % Check if boundaries are compatible with inivalue and possibly change them
-                    MultiDataset = TsimCheckBoundaries(MultiDataset);
-                    
+                    for bla = 1:length(MultiDataset)
+                        MultiDataset{bla} = TsimCopySimparValues2Initialvalue(MultiDataset{bla});
+                        
+                        % Check if boundaries are compatible with inivalue and possibly change them
+                        MultiDataset{bla} = TsimCheckBoundaries(MultiDataset{bla});
+                    end
                     % Fit again
                     saveloop = false;
                     
                 case 'i'
-                   
-                    if ishandle(h)
-                        close(h);
+                    for bla = 1:length(MultiDataset)
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        if ishandle(pff)
+                            close(pff);
+                        end
                     end
                     % Don't clear tempSpectrum
                     % New fit with same initial parameters as before
-                    MultiDataset = TsimFitpar2simpar(MultiDataset.Tsim.fit.initialvalue,MultiDataset);
-                    MultiDataset = TsimApplyConventions(MultiDataset);
-                    
-                    
+                    for bla = 1:length(MultiDataset)
+                        MultiDataset{bla} = TsimFitpar2simpar(MultiDataset{bla}.Tsim.fit.initialvalue,MultiDataset{bla});
+                        MultiDataset{bla} = TsimApplyConventions(MultiDataset{bla});
+                        
+                    end
                     % Fit again
                     saveloop = false;
                     
-                case 'c'
-                   
-                    if ishandle(h)
-                        close(h);
-                    end
-                    % New fit with default initial parameters from
-                    % config
-                    % Clear simpar and fitpar and tempSpectrum
-                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
-                    fields2beremoved = fieldnames(MultiDataset.Tsim.sim.simpar);
-                    for k = 1: length(fields2beremoved)
-                        MultiDataset.Tsim.sim.simpar = rmfield(MultiDataset.Tsim.sim.simpar,(fields2beremoved(k)));
-                    end
-                    MultiDataset.Tsim.fit.fitpar = {};
-                    saveloop = false;
-                    fitinnerloop = false;
-                    
-                case 'p'
-                   
-                    if ishandle(h)
-                        close(h);
-                    end
-                    % New fit with final values as starting parameters but
-                    % different section
-                    % Clear tempSpectrum
-                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
-                    % Copy Values from Simpar to fitpar inivalue
-                    MultiDataset = TsimCopySimparValues2Initialvalue(MultiDataset);
-                    
-                    % Check if boundaries are compatible with inivalue and possibly change them
-                    MultiDataset = TsimCheckBoundaries(MultiDataset);
-                  
-                    saveloop = false;
-                    fitinnerloop = false;
-                    
-                    
-                    
                     
                 case 's'
-                   
-                    if ishandle(h)
-                        close(h);
+                    
+                    for bla = 1:length(MultiDataset)
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        if ishandle(pff)
+                            close(pff);
+                        end
                     end
                     % New fit with final values as starting parameters but
                     % different simulation routine, same section
                     disp('The simulation routines currently in use:')
                     disp(' ')
-                    disp(MultiDataset.Tsim.sim.routine);
+                    disp(MultiDataset{1}.Tsim.sim.routine);
                     disp(' ')
                     
-                    oldRoutine = MultiDataset.Tsim.sim.routine;
-                    MultiDataset = TsimChangeSimRoutine(MultiDataset);
-                    newRoutine = MultiDataset.Tsim.sim.routine;
+                    oldRoutine = MultiDataset{1}.Tsim.sim.routine;
+                    MultiDataset{1} = TsimChangeSimRoutine(MultiDataset{1});
+                    newRoutine = MultiDataset{1}.Tsim.sim.routine;
+                    for bla = 1:length(MultiDataset)
+                        MultiDataset{bla}.Tsim.sim.routine = newRoutine;
+                    end
                     
                     if ~strcmpi(oldRoutine,newRoutine)
                         % Check simpar and possibly change it but don't change
                         % values
-                        MultiDataset = TsimCleanUpSimpar(MultiDataset,oldRoutine);
-                        % Check fitpar. Is there a parameter that is now not
-                        % possible anymore. Change fitpar and analogously lb and
-                        % ub.
-                        MultiDataset = TsimKickOutFitpar(MultiDataset);
-                        
-                        %Clear initialvalues
-                        MultiDataset.Tsim.fit.initialvalues = [];
+                        for bla = 1:length(MultiDataset)
+                            MultiDataset{bla} = TsimCleanUpSimpar(MultiDataset{bla},oldRoutine);
+                            % Check fitpar. Is there a parameter that is now not
+                            % possible anymore. Change fitpar and analogously lb and
+                            % ub.
+                            MultiDataset{bla} = TsimKickOutFitpar(MultiDataset{bla});
+                            
+                            %Clear initialvalues
+                            MultiDataset{bla}.Tsim.fit.initialvalues = [];
+                        end
                         
                     end
-                    % Copy Values from Simpar to fitpar inivalue
-                    MultiDataset = TsimCopySimparValues2Initialvalue(MultiDataset);
                     
-                    % Check if boundaries are compatible with inivalue and possibly change them
-                    MultiDataset = TsimCheckBoundaries(MultiDataset);
-                    
+                    for bla = 1:length(MultiDataset)
+                        % Copy Values from Simpar to fitpar inivalue
+                        MultiDataset{bla} = TsimCopySimparValues2Initialvalue(MultiDataset{bla});
+                        
+                        % Check if boundaries are compatible with inivalue and possibly change them
+                        MultiDataset{bla} = TsimCheckBoundaries(MultiDataset{bla});
+                    end
                     saveloop = false;
                     fitinnerloop = false;
-                         
+                    
                 case 'q'
-                   
-                    if ishandle(h)
-                        close(h);
+                    
+                    for bla = 1:length(MultiDataset)
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        if ishandle(pff)
+                            close(pff);
+                        end
                     end
                     % Quit
                     % Suggest reasonable filename
                     % Clear tempSpectrum
-                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
-                    [path,name,~] = fileparts(MultiDataset.file.name);
-                    suggestedFilename = fullfile(...
-                        path,[name '_fit-' datestr(now,30) '.tez']);
-                    saveFilename = suggestedFilename;
-                    % Save dataset
-                    [status] = TsimSave(saveFilename,MultiDataset);
-                    if ~isempty(status)
-                        disp('Some problems with saving data');
+                    for bla = 1:length(MultiDataset)
+                        MultiDataset{bla}.Tsim.fit.spectrum.tempSpectrum = [];
+                        [path,name,~] = fileparts(MultiDataset{bla}.file.name);
+                        suggestedFilename = fullfile(...
+                            path,[name '_fit-' datestr(now,30) '.tez']);
+                        saveFilename = suggestedFilename;
+                        % Save dataset
+                        [status] = TsimSave(saveFilename,MultiDataset{bla});
+                        if ~isempty(status)
+                            disp('Some problems with saving data');
+                        end
+                        clear status saveFilename suggestedFilename;
+                        disp('Goodbye!');
                     end
-                    clear status saveFilename suggestedFilename;
-                    disp('Goodbye!');
                     return
                 case 'e'
                     
-                    if ishandle(h)
-                        close(h);
+                    for bla = 1:length(MultiDataset)
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        brr = findobj('-regexp','Tag',['TsimGlobalExp' num2str(bla)]);
+                        if ishandle(pff)
+                            close(pff);
+                        end
+                        if ishandle(brr)
+                            close(brr);
+                        end
+                        
+                        MultiDataset{bla}.Tsim.fit.spectrum.tempSpectrum = [];
                     end
                     % Quit without saving
                     % Clear tempSpectrum
-                    MultiDataset.Tsim.fit.spectrum.tempSpectrum = [];
+                    
                     disp('Goodbye!');
                     return,
                 otherwise
-                   
-                    if ishandle(h)
-                        close(h);
+                    
+                    for bla = 1:length(MultiDataset)
+                        pff = findobj('-regexp','Tag',['TsimGlobal' num2str(bla)]);
+                        if ishandle(pff)
+                            close(pff);
+                        end
                     end
+                    
                     % Shall never happen
                     disp(['You did bullshit... '...
                         'however you managed. '...

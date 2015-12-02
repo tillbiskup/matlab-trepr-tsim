@@ -40,15 +40,15 @@ if isfield(dataset,'Tsim')
     hasFit = ~isempty(dataset.Tsim.fit.fitpar);
 else
     % No Tsim, hence only experimental
+    figure('Name', ['ExpData from ' dataset.file.name])
     [~,idxMax] = max(max(dataset.data));
     Magfieldaxis = dataset.axes.data(2).values;
     
-    figure(1);
     plot(Magfieldaxis,dataset.data(:,idxMax),'color',explinecolor);
- 
+    
     set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
-
-     h = gcf;
+    
+    h = gcf;
     return;
 end
 

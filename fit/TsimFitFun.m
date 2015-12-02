@@ -28,8 +28,8 @@ for numberOfDatasets= 1:length(Multidataset)
     % simulated and probably weighted spectrum
     [~,sim] = TsimWeightSpectrum(Multidataset{numberOfDatasets},'calculated');
     
-    Bigsim = [Bigsim, sim];
-    
+    Bigsim = [Bigsim; sim];
+
     % The current fit parameters are displayed on the command line
     disp(num2str(fitparvalues));
     

@@ -55,7 +55,7 @@ function Multidataset = TsimChooseParametersWithFixedRelations(Multidataset)
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        % Put all Parameters into Multidatasets, including offsets and
+        % Put all Parameters into Multidatasets, take care of range, including offsets and
         % names of fixed ralation parameters (FixedRelationParameters, new)
         
         Master = Multidataset;
@@ -64,16 +64,25 @@ function Multidataset = TsimChooseParametersWithFixedRelations(Multidataset)
             
             tempSpectrum = Master{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum;
             section = Master{numberOfDatasets}.Tsim.fit.spectrum.section;
+            Range = Master{numberOfDatasets}.Tsim.sim.simpar.Range;
+            nPoints = Master{numberOfDatasets}.Tsim.sim.simpar.nPoints;
+            mwFreq =   Master{numberOfDatasets}.Tsim.sim.simpar.mwFreq;
+            
             
             Multidataset{numberOfDatasets}.Tsim = Master{1}.Tsim;
             Multidataset{numberOfDatasets}.Tsim.fit.spectrum.tempSpectrum =tempSpectrum;
             Multidataset{numberOfDatasets}.Tsim.fit.spectrum.section = section;
-           Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRealtionParameters = FixedRelationParameters;
-           Multidataset{numberOfDatasets}.Tsim.fit.globally.offset = sumoffset(:,numberOfDatasets);
+            Multidataset{numberOfDatasets}.Tsim.sim.simpar.Range = Range;
+            Multidataset{numberOfDatasets}.Tsim.sim.simpar.nPoints =  nPoints;
+            Multidataset{numberOfDatasets}.Tsim.sim.simpar.mwFreq = mwFreq ;
             
-             for HowManyFixedRealtionParameters = 1:length(FixedRelationParameters) 
-                                  
-                 Multidataset{numberOfDatasets}.Tsim.sim.simpar.(char(FixedRelationParameters(HowManyFixedRealtionParameters))) ...
+            
+            Multidataset{numberOfDatasets}.Tsim.fit.globally.fixedRelationParameters = FixedRelationParameters;
+            Multidataset{numberOfDatasets}.Tsim.fit.globally.offset = sumoffset(:,numberOfDatasets);
+            
+            for HowManyFixedRealtionParameters = 1:length(FixedRelationParameters)
+                
+                Multidataset{numberOfDatasets}.Tsim.sim.simpar.(char(FixedRelationParameters(HowManyFixedRealtionParameters))) ...
                      = Multidataset{1}.Tsim.sim.simpar.(char(FixedRelationParameters(HowManyFixedRealtionParameters))) + sumoffset(HowManyFixedRealtionParameters,numberOfDatasets) ;  
              end
         end

@@ -270,6 +270,9 @@ while fitouterloop
                     dataset.Tsim.results.figureFileName = [saveFilename '-fig'];
                     
                     % Export figure as .pdf and as .fig
+                    % Try to make axis the same size
+                    set(h,'Units','centimeters');
+                    set(h,'Position',[1.5, 1.5, 14, 9]);
                     
                     commonFigureExport(h,[saveFilename '-fig']);
                     

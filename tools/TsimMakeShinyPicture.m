@@ -12,14 +12,23 @@ function h = TsimMakeShinyPicture(dataset)
 %
 % See also TSIM
 
-% Copyright (c) 2013-2015, Deborah Meyer, Till Biskup
-% 2015-11-09
+% Copyright (c) 2013-2016, Deborah Meyer, Till Biskup
+% 2016-01-14
 
 % get config
 config = TsimConfigGet('figure');
 simlinecolor = config.FigureColorDef.simlinecolor;
 explinecolor = config.FigureColorDef.explinecolor;
 residuumlinecolor = config.FigureColorDef.residuumlinecolor;
+
+simLineWidth = config.FigureLineWidthDef.simlinewidth;
+expLineWidth = config.FigureLineWidthDef.explinewidth;
+residuumLineWidth = config.FigureLineWidthDef.residuumlinewidth;
+
+simLineStyle = config.FigureLineStyleDef.simlinestyle;
+expLineStyle = config.FigureLineStyleDef.explinestyle;
+residuumLineStyle = config.FigureLineStyleDef.residuumlinestyle;
+
 legenddata = config.Legend.data;
 legendsim = config.Legend.sim;
 legendlocation = config.Legend.location;
@@ -40,15 +49,27 @@ if isfield(dataset,'Tsim')
     hasFit = ~isempty(dataset.Tsim.fit.fitpar);
 else
     % No Tsim, hence only experimental
-    [~,idxMax] = max(max(dataset.data));
+    [maximum,idxMax] = max(max(dataset.data));
     Magfieldaxis = dataset.axes.data(2).values;
     
     figure(1);
-    plot(Magfieldaxis,dataset.data(:,idxMax),'color',explinecolor);
- 
+    plot(Magfieldaxis,dataset.data(:,idxMax),'color',explinecolor, 'LineWidth', expLineWidth);
+    
+    % Find minimum
+    [minimum,~] = min(min(dataset.data));
+    
+    % Make in total 20% white space on top and on the bottom of plot
+    whitespace = (maximum-minimum)*0.1;
+    
+    % set Y axes nice
+    set(gca,'YLim',[minimum-whitespace,maximum+whitespace]);
     set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
-
-     h = gcf;
+    
+    % Try to make axis the same size
+    set(gca,'Units','centimeters');
+    set(gca,'Position',[1.5, 1.5, 14, 9]);
+    
+    h = gcf;
     return;
 end
 
@@ -57,7 +78,7 @@ switch hasFit
         % simulation
         plot(Magfieldaxis,dataset.calculated);
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
-       
+        
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
             xlabel(config.FigureAxesLabelDef.xlabel);
         end
@@ -66,18 +87,30 @@ switch hasFit
             ylabel(config.FigureAxesLabelDef.ylabel);
         end
         
-         if strcmpi(config.SimFigureAppearance.xticks,'off')
-            set(gca('XTick',[]));
+        maximum = max(dataset.calculated);
+        % Find minimum
+        minimum = min(dataset.calculated);
+        
+        % Make in total 20% white space on top and on the bottom of plot
+        whitespace = (maximum-minimum)*0.1;
+        
+        % set Y axes nice
+        set(gca,'YLim',[minimum-whitespace,maximum+whitespace]);
+        
+        if strcmpi(config.SimFigureAppearance.xticks,'off')
+            set(gca,'XTick',[]);
         end
         
         if strcmpi(config.SimFigureAppearance.yticks,'off')
-            set(gca('YTick',[]));
+            set(gca,'YTick',[]);
         end
         
         addZeroLines(zeroLineProperties)
-        set(gcf,'DefaultAxesColorOrder',simlinecolor);
+        set(gcf,'DefaultAxesColorOrder',simlinecolor, 'LineWidth', simLineWidth);
         
-        
+        % Try to make axis the same size
+        set(gca,'Units','centimeters');
+        set(gca,'Position',[1.5, 1.5, 14, 9]);
         
     case true
         % fit
@@ -106,16 +139,18 @@ switch hasFit
         
         figure('Name', ['Data from ' dataset.file.name])
         
-        set(gcf,'DefaultAxesColorOrder',[explinecolor; simlinecolor]);
         
         if strcmpi(config.FitFigureAppearance.residuum,'on')
             subplot(6,1,[1 5]);
         end
-         
-        plot(...
-            Magfieldaxis,...
-            [dataset.Tsim.fit.spectrum.tempSpectrum,dataset.calculated],...
-            'LineWidth',1);
+        
+        plot(Magfieldaxis,dataset.Tsim.fit.spectrum.tempSpectrum, 'color',explinecolor, 'LineWidth', expLineWidth, 'LineStyle', expLineStyle);
+        
+        hold on
+        
+        plot(Magfieldaxis,dataset.calculated, 'color',simlinecolor, 'LineWidth', simLineWidth, 'LineStyle', simLineStyle);
+        
+        hold off
         
         % y axis
         if strcmpi(config.FitFigureAppearance.ylabel,'on')
@@ -125,6 +160,33 @@ switch hasFit
         if strcmpi(config.FitFigureAppearance.yticks,'off')
             set(gca,'YTick',[]);
         end
+        
+        %find maximum
+        maximumExp = max(dataset.Tsim.fit.spectrum.tempSpectrum);
+        maximumSim =  max(dataset.calculated);
+        % Find minimum
+        minimumExp = min(dataset.Tsim.fit.spectrum.tempSpectrum);
+        minimumSim =  min(dataset.calculated);
+        
+        if maximumExp > maximumSim
+            maximum = maximumExp;
+        else
+            maximum = maximumSim;
+        end
+        
+        
+        if minimumExp < minimumSim
+            minimum = minimumExp;
+        else
+            minimum = minimumSim;
+        end
+        
+        % Make in total 20% white space on top and on the bottom of plot
+        whitespace = (maximum-minimum)*0.1;
+        
+        % set Y axes nice
+        set(gca,'YLim',[minimum-whitespace,maximum+whitespace]);
+        
         
         % x axis
         if strcmpi(config.FitFigureAppearance.xticks,'off')
@@ -145,7 +207,7 @@ switch hasFit
                 set(gca,'XTickLabel',{})
             end
             subplot(6,1,6);
-            plot(Magfieldaxis,difference,'LineWidth',1,'Color',residuumlinecolor);
+            plot(Magfieldaxis,difference,'LineWidth',residuumLineWidth,'Color',residuumlinecolor, 'LineStyle', residuumLineStyle);
             set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
             
             % x axis residuum
@@ -165,11 +227,15 @@ switch hasFit
         end
         
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
+        
+        % Try to make axis the same size
+        set(gca,'Units','centimeters');
+        set(gca,'Position',[1.5, 1.5, 14, 9]);
 end
 
 h = gcf;
 
-end
+end % function
 
 
 

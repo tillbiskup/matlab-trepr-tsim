@@ -10,8 +10,8 @@ function dataset = TsimSimpar2EasySpin(dataset)
 %
 % See also TSIM
 
-% Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% Copyright (c) 2015-16, Deborah Meyer, Till Biskup
+% 2016-01-26
 
 % Create Empty EasySpinStructure with all possible fields
 EmptyDataset = TsimDataset;
@@ -77,9 +77,22 @@ end
 
 % Check if DeltaB is in simpar and change Range in EasySpin accordingly
 if isfield(dataset.Tsim.sim.simpar,'DeltaB')
-   dataset.Tsim.sim.EasySpin.Exp.Range = dataset.Tsim.sim.EasySpin.Exp.Range - dataset.Tsim.sim.simpar.DeltaB;
+    dataset.Tsim.sim.EasySpin.Exp.Range = dataset.Tsim.sim.EasySpin.Exp.Range - dataset.Tsim.sim.simpar.DeltaB;
 end
 
+% Make special thing for the pepper parameters sigma and theta in the
+% special field EasySpin.Opt.function. Gaussian is a gaussian function with
+% input theta and fwhm.
+
+if strcmpi(dataset.Tsim.sim.routine, 'pepper')
+    
+    if isfield(dataset.Tsim.sim.simpar,'Theta') && isfield(dataset.Tsim.sim.simpar,'Sigma')
+        dataset.Tsim.sim.EasySpin.Exp.Ordering = @(phi,theta)gaussian(theta,(dataset.Tsim.sim.simpar.Theta)/180*pi,((dataset.Tsim.sim.simpar.Sigma)/180*pi)*2*sqrt(2*log(2)));
+        
+        % Remove the EasySpin.Opt.function field
+        dataset.Tsim.sim.EasySpin.Opt = rmfield(dataset.Tsim.sim.EasySpin.Opt,'function');
+    end
+end
 
 % Remove all empty fields in EasySpin structure
 EasySpinFields = fieldnames(dataset.Tsim.sim.EasySpin);

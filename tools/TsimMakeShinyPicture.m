@@ -76,7 +76,8 @@ end
 switch hasFit
     case false
         % simulation
-        plot(Magfieldaxis,dataset.calculated);
+        
+        plot(Magfieldaxis,dataset.calculated,'color',simlinecolor, 'LineWidth', simLineWidth);
         set(gca,'XLim',[min(Magfieldaxis),max(Magfieldaxis)]);
         
         if strcmpi(config.SimFigureAppearance.xlabel,'on')
@@ -106,8 +107,7 @@ switch hasFit
         end
         
         addZeroLines(zeroLineProperties)
-        set(gcf,'DefaultAxesColorOrder',simlinecolor, 'LineWidth', simLineWidth);
-        
+          
         % Try to make axis the same size
         set(gca,'Units','centimeters');
         set(gca,'Position',[1.5, 1.5, 14, 9]);

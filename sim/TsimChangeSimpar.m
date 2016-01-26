@@ -23,10 +23,14 @@ Temp = CreateTemporaryParameterStruct(dataset);
 
 if ~isempty(varargin)
     old = fieldnames(dataset.Tsim.sim.simpar);
-    for k=1:length(varargin)
-        add(k) = varargin{k}';
+    varas = varargin{1};
+    
+    for k=1:length(varas)
+        add(k) = varas(k);
     end
-    NewUserSimulationParameters = [old;add];
+
+    NewUserSimulationParameters = [old;add'];
+    
     Bol = TestFunction(NewUserSimulationParameters);
     if any(Bol)
         disp('Parameter(s) could not be added.')
@@ -141,7 +145,7 @@ end
         IncomParam2 = Incompatibilities(indexInc);
         
         for test = 1:length(IncomParam1)
-            Bol(test) = any(ismember(IncomParam1(test),NewUserSimulationParameters)) && any(ismember(IncomParam2{test},NewUserSimulationParameters));
+            Bol(test) = any(ismember(IncomParam1(test),NewUserSimulationParameters) && any(ismember(IncomParam2{test},NewUserSimulationParameters)));
         end
         
     end

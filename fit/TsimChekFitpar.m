@@ -19,9 +19,8 @@ missingInSimpar = setdiff(dataset.Tsim.fit.fitpar,fieldnames(dataset.Tsim.sim.si
 if isempty(missingInSimpar)
     return
 else
-           
+         
 dataset = TsimChangeSimpar(dataset, missingInSimpar);
-
 
 dataset = TsimKickOutFitpar(dataset);
 

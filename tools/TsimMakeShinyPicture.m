@@ -13,7 +13,7 @@ function h = TsimMakeShinyPicture(dataset)
 % See also TSIM
 
 % Copyright (c) 2013-2016, Deborah Meyer, Till Biskup
-% 2016-01-14
+% 2016-01-26
 
 % get config
 config = TsimConfigGet('figure');

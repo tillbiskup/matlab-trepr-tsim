@@ -16,8 +16,8 @@ function dataset = TsimChangeSimpar(dataset, varargin)
 %
 % See also TSIM
 
-% Copyright (c) 2015, Deborah Meyer, Till Biskup
-% 2015-09-14
+% Copyright (c) 2015-16, Deborah Meyer, Till Biskup
+% 2016-01-26
 
 Temp = CreateTemporaryParameterStruct(dataset);
 

@@ -31,8 +31,8 @@ function parameters = TsimParameters(varargin)
 %
 % See also TSIM
 
-% Copyright (c) 2013-15, Deborah Meyer, Till Biskup
-% 2015-07-16
+% Copyright (c) 2013-16, Deborah Meyer, Till Biskup
+% 2016-01-26
 
 % Parse input arguments using the inputParser functionality
 parser = inputParser;   % Create an instance of the inputParser class.

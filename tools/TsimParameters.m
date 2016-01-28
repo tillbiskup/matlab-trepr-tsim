@@ -66,8 +66,8 @@ parameters(16,:) = {'DeltaB','','Field offset','mT', true, true, false, false, t
 parameters(17,:) = {'mwFreq','Exp.mwFreq','Microwave frequency','GHz',false, true, true, false, true, 9.7, false, {}, {'pepper', 'tango'}};
 parameters(18,:) = {'nPoints','Exp.nPoints','Number of points of field axis','',false, true, true, false, true, 326, false, {}, {'pepper', 'tango'}};
 parameters(19,:) = {'Range','Exp.Range','Lower and upper boundaries of field axis','mT', false, true, true, false, true, [280 410], false, {}, {'pepper', 'tango'}};
-parameters(20,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder between 0 and 90 deg','', false, true, false, false, true, 100, false, {}, {'pepper', 'tango'}};
-parameters(21,:) = {'nKnotsInterpolation','Opt.nKnots(2)','Refinement factor for interpolation of orientational grid','',false, true, false, false, true, 2, false, {}, {'pepper'}};
+parameters(20,:) = {'nKnotsOrientation','Opt.nKnots(1)','Number of orientations in powder between 0 and 90 deg','', false, true, false, false, false, 100, false, {}, {'pepper', 'tango'}};
+parameters(21,:) = {'nKnotsInterpolation','Opt.nKnots(2)','Refinement factor for interpolation of orientational grid','',false, true, false, false, false, 3, false, {}, {'pepper'}};
 parameters(22,:) = {'Ordering','Exp.Ordering','Order parameter for partially ordered systems (don''t use with D or g strains!)','',true, true, false, false, true, 0.1, false, {'gStrainx', 'gStrainy', 'gStrainz','DStrainD','DStrainE','Sigma','Theta'}, {'pepper'}};
 parameters(23,:) = {'Harmonic','Exp.Harmonic','Harmonic of detection','',false, true, true, false, false, 0, false, {}, {'pepper','tango'}};
 parameters(24,:) = {'Spinsystem','Sys.S','Spinsystem','',false, true, true, false, false, 1, false, {}, {'pepper', 'tango'}};
@@ -82,6 +82,8 @@ parameters(31,:) = {'InterpolB0','Opt.InterpolB0','Interpolation of magnetic fie
 %parameters(32,:) = {'Phi','Opt.function.phi','azimut angel phi for powder averaging','degree', true, true, false, false, true, 0, false, {}, {'tango'}};
 parameters(32,:) = {'Theta','Opt.function.theta','polar angel theta for powder averaging','degree', true, true, false, false, true, 0, false, {'Ordering'}, {'pepper'}};
 parameters(33,:) = {'Sigma','Opt.function.sigma','Full Width at Half Maximum of gaussian in powder averaging','degree', true, true, false, false, true, 0, false, {'Ordering'}, {'pepper'}};
+parameters(34,:) = {'Symmetry','Opt.Symmetry','Symmetry of Hamiltonian','',false, true, false, false, false, 'Ci', false, {}, {'pepper'}};
+
 
 
 % If user prefers structs over cell arrays, convert into struct

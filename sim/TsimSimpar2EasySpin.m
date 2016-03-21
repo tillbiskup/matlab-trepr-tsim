@@ -87,7 +87,7 @@ end
 if strcmpi(dataset.Tsim.sim.routine, 'pepper') 
 
    if isfield(dataset.Tsim.sim.simpar,'Theta') && isfield(dataset.Tsim.sim.simpar,'Sigma')  
-       dataset.Tsim.sim.EasySpin.Exp.Ordering = @(phi,theta)gaussian(theta,(dataset.Tsim.sim.simpar.Theta)/180*pi,((dataset.Tsim.sim.simpar.Sigma)/180*pi)*2*sqrt(2*log(2))); 
+       dataset.Tsim.sim.EasySpin.Exp.Ordering = @(phi,theta)gaussian(phi,(dataset.Tsim.sim.simpar.Theta)/180*pi,((dataset.Tsim.sim.simpar.Sigma)/180*pi)*2*sqrt(2*log(2))); 
        
        % Remove the EasySpin.Opt.function field
        dataset.Tsim.sim.EasySpin.Opt = rmfield(dataset.Tsim.sim.EasySpin.Opt,'function');

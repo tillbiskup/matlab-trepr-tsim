@@ -15,7 +15,8 @@ function dataset = TsimChangeSimRoutine(dataset)
 
 option ={...
     'p','Pepper';...
-    't','Tango'};
+    't','Tango';...
+    'b', 'Bachata'};
 answer = cliMenu(option,'title',...
     'Please chose a simulation routine','default','p');
 
@@ -24,6 +25,8 @@ switch lower(answer)
         dataset.Tsim.sim.routine = 'pepper';
     case 't'
         dataset.Tsim.sim.routine = 'tango';
+    case 'b'
+        dataset.Tsim.sim.routine = 'bachata';
 end
 
 dataset.Tsim.acknowledgement.sim = TsimAcknowledgement(dataset);

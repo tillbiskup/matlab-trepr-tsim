@@ -43,6 +43,7 @@ else
     userpar = logical(cell2mat(parameters(:,9)));
     pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),parameters(:,13));
     tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),parameters(:,13));
+    bachatapar =  cellfun(@(x)any(strcmpi(x,'bachata')),parameters(:,13));
 
     routine = dataset.Tsim.sim.routine;
     
@@ -51,6 +52,8 @@ else
             minsimuser = userpar & minsim & pepperpar;
         case 'tango'
             minsimuser = userpar & minsim & tangopar;
+        case 'bachata'
+            minsimuser = userpar & minsim & bachatapar;
     end
     
     
@@ -63,11 +66,13 @@ else
     
     % all possible simparameters for user
     allsimpar = logical(cell2mat(parameters(:,6)));
-     switch routine
+    switch routine
         case 'pepper'
             allsimuser = userpar & allsimpar & pepperpar;
         case 'tango'
-           allsimuser = userpar & allsimpar & tangopar;
+            allsimuser = userpar & allsimpar & tangopar;
+        case 'bachata'
+            allsimuser = userpar & allsimpar & bachatapar;
     end
     
     PossibleUserSimulationParameterNames = ParameterNames(allsimuser);
@@ -165,11 +170,14 @@ userpar = logical(cell2mat(parameters(:,9)));
 allsimpar = logical(cell2mat(parameters(:,6)));
 pepperpar =  cellfun(@(x)any(strcmpi(x,'pepper')),parameters(:,13));
 tangopar =  cellfun(@(x)any(strcmpi(x,'tango')),parameters(:,13));
+bachatapar =  cellfun(@(x)any(strcmpi(x,'bachata')),parameters(:,13));
 switch routine
     case 'pepper'
         allsimuser = userpar & allsimpar & pepperpar;
     case 'tango'
         allsimuser = userpar & allsimpar & tangopar;
+    case 'bachata'
+        allsimuser = userpar & allsimpar & bachatapar;
 end
 allsimuser = ParameterNames(allsimuser);
 

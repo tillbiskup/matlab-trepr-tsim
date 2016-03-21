@@ -1,0 +1,37 @@
+% Configuration file for Tsim toolbox
+%
+% Last modified: 2015-06-09 13:24:48
+
+[StandardSimulationParameters]
+gx = 2.002
+gy = 2.002
+gz = 2.002
+D = 600
+E = 150
+p1 = 0.35
+p2 = 0.36
+p3 = 0.29
+lwGauss = 2
+lwLorentz = 2
+mwFreq = 9.7
+nPoints = 326
+Range = 280 410
+
+[AdditionalSimulationParameters]
+nKnotsOrientation = 31
+DeltaB = 0.2
+
+[FitparametersAndBoundaries]
+D = 500                    750
+E = 140                    160
+p1 = 0                    1
+p2 = 0                    1
+p3 = 0                    1
+lwGauss =   0                7
+lwLorentz = 0                7
+DeltaB = -0.1                    0.3
+
+[FitOptions]
+MaximumIteration = 400
+MaximumFunctionEvaluation = 1000
+TerminationTolerance = 1e-10

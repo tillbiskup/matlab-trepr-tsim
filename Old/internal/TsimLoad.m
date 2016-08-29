@@ -101,7 +101,7 @@ end
 
 
 % Merging parameters from experimental dataset.
-data.TSim = expdataset.TSim;
+data.Tsim = expdataset.Tsim;
 expdataset = data;
 clear data;
 end

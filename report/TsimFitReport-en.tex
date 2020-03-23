@@ -1,10 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% TsimFitReport-de.tex - LaTeX template for reporting fit results from the Tsim toolbox.
+% TsimFitReport-en.tex - LaTeX template for reporting fit results from the Tsim toolbox.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% The "-de" indicates that this is a GERMAN template. Feel free to translate into any
+% The "-en" indicates that this is a ENGLISH template. Feel free to translate into any
 % other language while containing the general structure and contents.
 %
 % This template is meant to be used with the report functionality of the Tsim toolbox
@@ -44,8 +44,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
-% For German reports, load appropriate language package
-\usepackage[ngerman]{babel}
+% For English reports, load appropriate language package
+\usepackage[british]{babel}
+
+% Links within the PDF and alike
+\usepackage{hyperref}
 
 % Nice looking tables
 \usepackage{booktabs}
@@ -61,7 +64,7 @@
 
 % Headers and footers
 \usepackage{fancyhdr}
-\fancyhead[L]{Triplett-Simulation von [[@sample.name]]}
+\fancyhead[L]{Triplet Simulation of [[@sample.name]]}
 \pagestyle{fancy}
 
 % Change indentation and separation between paragraphs
@@ -69,7 +72,10 @@
 \setlength{\parskip}{1ex}
 
 % Define some basic commands
-\newcommand{\matlab}{\textsf{Matlab}}
+\usepackage{textcomp}
+\newcommand{\matlab}{\textsf{MATLAB\textsuperscript{\textregistered}}}
+
+\newcommand*{\command}[1]{\texttt{#1}}
 
 % Caption setup
 \makeatletter
@@ -103,7 +109,7 @@
 \noindent\rule[1.5ex]{\textwidth}{1pt}
 
 \begin{sffamily}\bfseries\large
-Ergebnisse der Triplett-Simulation von [[@sample.name]]
+Results of the triplet simulation of [[@sample.name]]
 \end{sffamily}
 
 \noindent\rule{\textwidth}{1pt}
@@ -114,17 +120,17 @@ Ergebnisse der Triplett-Simulation von [[@sample.name]]
 
 \vspace*{1.5em}
 
-An das TREPR-Spektrum von [[@sample.name]] wurde mittels des Programms \texttt{Tsim} und unter Verwendung der Simulationsroutine \texttt{[[@Tsim.sim.routine]]} eine Triplett-Simulation angepasst.
+A triplet simulation has been fitted to the TREPR spectrum of [[@sample.name]] using the program \command{TSim} and the simulation routine \command{[[@Tsim.sim.routine]]}.
 
 [[if ~isempty(this.assignments.Tsim.remarks.purpose)]]
-\textbf{Zielstellung:} [[@Tsim.remarks.purpose]]
+\textbf{Purpose:} [[@Tsim.remarks.purpose]]
 [[end]]
 
 [[if ~isempty(this.assignments.Tsim.remarks.comment)]]
-\textbf{Nutzerkommentar:} [[@Tsim.remarks.comment]]
+\textbf{User comment:} [[@Tsim.remarks.comment]]
 [[end]]
 
-Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und der Anpassung an die experimentellen Daten vgl. Abb.~\ref{fig:ergebnisse}, für die zugehörigen Simulationsparameter Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}, und für die Fitparameter Tab.~\ref{tab:fitparameter}, S.~\pageref{tab:fitparameter}.
+For a first overview of the results of the triplet simulation and the fit to the experimental data, see Fig.~\ref{fig:results}. For the simulation parameters, see Tab.~\ref{tab:simparameter}, p.~\pageref{tab:simparameter}, and for the fitting parameters, see, Tab.~\ref{tab:fitparameter}, p.~\pageref{tab:fitparameter}.
 
 
 \begin{figure}[h]
@@ -132,15 +138,15 @@ Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und de
 [[if ~isempty(this.assignments.Tsim.results.figureFileName)]]
 \includegraphics[width=\textwidth]{[[@Tsim.results.figureFileName]]}
 [[end]]
-\caption{\textbf{Gemessene Daten zusammen mit einer angepassten Simulation.} Angepasst wurde die Simulation an einen Schnitt bei [[@Tsim.fit.spectrum.sectionCenter|f=5.2e]]~s[[if ~isempty(this.assignments.Tsim.fit.spectrum.sectionWidth)]] (gemittelt über [[@Tsim.fit.spectrum.sectionWidth|f=5.2e]]~s)[[end]]. Experimentelle Parameter: Mikrowellenfrequenz [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], Mikrowellenleistung [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, Lichtanregung bei [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] mit [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] Pulsleistung. Für die Simulationsparameter vgl. Tab.~\ref{tab:simparameter}, S.~\pageref{tab:simparameter}.}
-\label{fig:ergebnisse}
+\caption{\textbf{Recorded data together with a fitted simulation.} The simulation has been fitted to a slice at  [[@Tsim.fit.spectrum.sectionCenter|f=5.2e]]~s[[if ~isempty(this.assignments.Tsim.fit.spectrum.sectionWidth)]] (averaged over [[@Tsim.fit.spectrum.sectionWidth|f=5.2e]]~s)[[end]]. Experimental parameters: microwave frequency [[@parameters.bridge.MWfrequency.value|f=8.5f]]~[[@parameters.bridge.MWfrequency.unit]], microwave power [[@parameters.bridge.power.value|f=5.2f]]~[[@parameters.bridge.power.unit]] ([[@parameters.bridge.attenuation.value|f=2.0f]]~[[@parameters.bridge.attenuation.unit]]), [[@parameters.recorder.averages|f=4.0f]] spp, light excitation at  [[@parameters.laser.wavelength.value|f=3.0f]]~[[@parameters.laser.wavelength.unit]] with [[@parameters.laser.power.value|f=3.0f]]~[[@parameters.laser.power.unit]] pulse power. For simulation parameters, see Tab.~\ref{tab:simparameter}, p.~\pageref{tab:simparameter}.}
+\label{fig:results}
 \end{figure}
 
 \begin{center}
 \setlength{\fboxsep}{1.5ex}\setlength{\fboxrule}{.75pt}
 \fbox{%
 \begin{minipage}{.9\textwidth}\centering
-\textbf{--- Disclaimer der Simulationsroutine ---}
+\textbf{--- Disclaimer for the simulation routine ---}
 \vspace*{1ex}
 
 \slshape
@@ -154,44 +160,49 @@ Für einen ersten Überblick über die Ergebnisse der Triplett-Simulation und de
 \clearpage
 
 
-Für die Kurvenanpassung wurde die Funktion \texttt{lsqcurvefit} von \matlab{} verwendet. Die verwendeten Optionen können Tab.~\ref{tab:fitopt} entnommen werden. Das Abbruchkriterium der Kurvenanpassung lautete:
+Fitting has been done using the function \command{lsqcurvefit} within \matlab{}. For the fit options used see Tab.~\ref{tab:fitopt}. The exit message of the fit was as follows:
 
 \begin{quote}\small
 \ttfamily\raggedright
 [[@Tsim.fit.fitreport.exitmessage]]
 \end{quote}
 
-Gemessene Daten und Simulation wurden für die Kurvenanpassung jeweils auf gleiche Fläche normiert.[[if ~isempty(this.assignments.Tsim.fit.weighting.weightingArea)]] Zusätzlich kamen folgende Gewichtungen für bestimmte Bereiche des Spektrums zum Einsatz:
+Recorded data and simulation have each been normalised to the same area for the fitting.[[if ~isempty(this.assignments.Tsim.fit.weighting.weightingArea)]] Additionally, the following weightings for certain areas of the experimental spectrum have been used:
 
 \begin{table}[h]
-\caption{\textbf{Übersicht über die Gewichtungbereiche und Gewichte.} Die Gewichtungen, welche während des Fittens genutzt wurden, um den Algorithmus in ein entsprechendes Minimum zu zwingen.}
-\label{tab:gewichte}
+\caption{\textbf{Overview of the weighting areas and their respective weights.} The weightings used during fitting to force the optimisation algorithm into a respective minimum.}
+\label{tab:weights}
 \centering
 \begin{tabular}{cc}
 \toprule
-\textbf{Bereich} & \textbf{Gewicht}
+\textbf{Area} & \textbf{Weight}
 \\
 \midrule 
+
 [[foreach element of @Tsim.fit.weighting.weightingFactor]]
 [[@Tsim.fit.weighting.weightingArea(2*[[@element]]-1)]]--[[@Tsim.fit.weighting.weightingArea(2*[[@element]])]] mT      & [[@Tsim.fit.weighting.weightingFactor([[@element]])]]
 \\
+
 [[end]]
+
 \bottomrule
 \end{tabular}
 \end{table}
 [[end]]
 
 \begin{table}[h]
-\caption{\textbf{Übersicht über die Simulationsparameter.} Die Simulationsparameter sind der vollständige Satz an Parametern, die für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendet wurden. $\Gamma$ steht für die Linienbreite, mit der die Simulation gefaltet wurde. Welche Parameter für die Kurvenanpassung wie variiert wurden, kann der Tab.~\ref{tab:fitparameter} entnommen werden.}
+\caption{\textbf{Overview of the simulation parameters.} The simulation parameters are the complete set of parameters used for simulating the spectrum shown in Fig.~\ref{fig:results}. $\Gamma$ is the line width the simulation has been convoluted with. See Tab.~\ref{tab:fitparameter} for the parameters that have been varied for the fitting.}
 \label{tab:simparameter}
 \centering
 \begin{tabular}{cccccccc} 
 \toprule
-\multicolumn{8}{c}{\textbf{Standardparameter} }
+\multicolumn{8}{c}{\textbf{Standard parameters} }
 \\
 \midrule 
 $g_x$      & $g_y$      & $g_z$      & $p_1$   & $p_2$   & $p_3$   & $D$ / MHz & $E$ / MHz \\
-[[@Tsim.sim.simpar.gx|f=7.5f]] & [[@Tsim.sim.simpar.gy|f=7.5f]] & [[@Tsim.sim.simpar.gz|f=7.5f]] & [[@Tsim.sim.simpar.p1|f=5.3f]] & [[@Tsim.sim.simpar.p2|f=5.3f]] & [[@Tsim.sim.simpar.p3|f=5.3f]] & [[@Tsim.sim.simpar.D|f=7.1f]]  & [[@Tsim.sim.simpar.E|f=7.1f]]     \\ 
+
+[[@Tsim.sim.simpar.gx|f=7.5f]] & [[@Tsim.sim.simpar.gy|f=7.5f]] & [[@Tsim.sim.simpar.gz|f=7.5f]] & [[@Tsim.sim.simpar.p1|f=5.3f]] & [[@Tsim.sim.simpar.p2|f=5.3f]] & [[@Tsim.sim.simpar.p3|f=5.3f]] & [[@Tsim.sim.simpar.D|f=7.1f]]  & [[@Tsim.sim.simpar.E|f=7.1f]]     \\
+
 \bottomrule
 \end{tabular}
 
@@ -200,8 +211,9 @@ $g_x$      & $g_y$      & $g_z$      & $p_1$   & $p_2$   & $p_3$   & $D$ / MHz &
 \textbf{Parameter} & \textbf{Wert}
 \\
 \midrule
+
 [[if isfield(this.assignments.Tsim.sim.simpar,'lwGauss')]]
-$\Gamma_\text{Gauß}$ / mT & $[[@Tsim.sim.simpar.lwGauss]]$
+$\Gamma_\text{Gauss}$ / mT & $[[@Tsim.sim.simpar.lwGauss]]$
 \\
 [[end]]
 [[if isfield(this.assignments.Tsim.sim.simpar,'lwLorentz')]]
@@ -211,31 +223,34 @@ $\Gamma_\text{Lorentz}$ / mT & $[[@Tsim.sim.simpar.lwLorentz]]$
 [[if isfield(this.assignments.Tsim.sim.simpar,'DeltaB')]]
 $\Delta B$ / mT & $[[@Tsim.sim.simpar.DeltaB]]$
 \\
+
 [[end]]
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[h]
-\caption{\textbf{Übersicht über die Fitparameter.} Diese Parameter stellen in der Regel eine Untermenge der für die Simulation des in Abb.~\ref{fig:ergebnisse} dargestellten Spektrums verwendeten Parameter dar. Für einen vollständigen Satz der Simulationsparameter vgl. Tab.~\ref{tab:simparameter}. Der Fehler für jeden Parameter ist die Standardabweichung, die aus der Jacobi-Matrix berechnet wird.}
+\caption{\textbf{Overview of the fitting parameters.} These parameters are usually a subset of the parameters used for simulating the spectrum shown in Fig.~\ref{fig:results}.  For a complete set of simulation parameters see Tab.~\ref{tab:simparameter}. The error given for each parameter is the standard deviation obtained from the Jacobi matrix.}
 \label{tab:fitparameter}
 \centering
 \begin{tabular}{cccccc}
 \toprule
-\textbf{Parameter} & \textbf{Startwert} & \textbf{untere Grenze} & \textbf{obere Grenze} & \textbf{Endwert} & \textbf{Fehler}
+\textbf{Parameter} & \textbf{Start value} & \textbf{Lower boundary} & \textbf{Upper boundary} & \textbf{Endwert} & \textbf{Error}
 \\
 \midrule
-%$g_x$ & 2.002 & 2.000 & 2.005 & 2.003
+
 [[foreach element of @Tsim.fit.fitpar]]
-\texttt{[[@Tsim.fit.fitpar([[@element]])]]} & [[@Tsim.fit.initialvalue([[@element]])]] & [[@Tsim.fit.lb([[@element]])]] & [[@Tsim.fit.ub([[@element]])]] & [[@Tsim.fit.finalvalue([[@element]])]] & [[@Tsim.fit.fitreport.stdDev([[@element]])]]
+\command{[[@Tsim.fit.fitpar([[@element]])]]} & [[@Tsim.fit.initialvalue([[@element]])]] & [[@Tsim.fit.lb([[@element]])]] & [[@Tsim.fit.ub([[@element]])]] & [[@Tsim.fit.finalvalue([[@element]])]] & [[@Tsim.fit.fitreport.stdDev([[@element]])]]
 \\
+
 [[end]]
+
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[h]
-\caption{\textbf{Übersicht über die Optionen der \matlab-Routine \texttt{lsqcurvefit}, die bei der Kurvenanpassung Verwendung fanden.} Vergleiche auch das Abbruchkriterium der Funktion \texttt{lsqcurvefit} weiter oben.}
+\caption{\textbf{Overview of the options the \matlab{} routine \command{lsqcurvefit} has been called with.} See also the exit criteria for the routine \command{lsqcurvefit} given above.}
 \label{tab:fitopt}
 \centering
 \begin{tabular}{lr}
@@ -243,10 +258,11 @@ $\Delta B$ / mT & $[[@Tsim.sim.simpar.DeltaB]]$
 \textbf{Parameter} & \textbf{Wert}
 \\
 \midrule
-%\texttt{TolFun} & 1e-18
+
 [[foreach @Tsim.fit.fitopt]]
-\texttt{[[@Tsim.fit.fitopt.fieldname]]} & [[@Tsim.fit.fitopt.fieldvalue|f=4.2e]]
+\command{[[@Tsim.fit.fitopt.fieldname]]} & [[@Tsim.fit.fitopt.fieldvalue|f=4.2e]]
 \\
+
 [[end]]
 \bottomrule
 \end{tabular}

@@ -1,6 +1,6 @@
 % Configuration file for Tsim toolbox
 %
-% Last modified: 2015-11-09 14:31:17
+% Last modified: 2020-03-24 10:10:00
 
 [FitFigureAppearance]
 residuum = off
@@ -38,6 +38,9 @@ zerolinestyle = --
 [FigureAxesLabelDef]
 xlabel = {\it magnetic field} / mT
 ylabel = {\it intensity} / a.u.
+
+[Axis]
+Position = [1.5, 2.15, 16.5, 12]
 
 [Legend]
 legend = on

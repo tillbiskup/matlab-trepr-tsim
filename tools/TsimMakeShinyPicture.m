@@ -12,8 +12,8 @@ function h = TsimMakeShinyPicture(dataset)
 %
 % See also TSIM
 
-% Copyright (c) 2013-2016, Deborah Meyer, Till Biskup
-% 2016-01-26
+% Copyright (c) 2013-2020, Deborah Meyer, Till Biskup
+% 2020-03-24
 
 % get config
 config = TsimConfigGet('figure');
@@ -67,7 +67,7 @@ else
     
     % Try to make axis the same size
     set(gca,'Units','centimeters');
-    set(gca,'Position',[1.5, 1.5, 14, 9]);
+    set(gca,'Position',config.Axis.Position);
     
     h = gcf;
     return;
@@ -110,7 +110,7 @@ switch hasFit
           
         % Try to make axis the same size
         set(gca,'Units','centimeters');
-        set(gca,'Position',[1.5, 1.5, 14, 9]);
+        set(gca,'Position',config.Axis.Position);
         
     case true
         % fit
@@ -230,7 +230,7 @@ switch hasFit
         
         % Try to make axis the same size
         set(gca,'Units','centimeters');
-        set(gca,'Position',[1.5, 1.5, 14, 9]);
+        set(gca,'Position',config.Axis.Position);
 end
 
 h = gcf;
@@ -262,7 +262,7 @@ end
 
 % Set line properties
 for lHandle = 1:length(hLine)
-    set(hLine(lHandle),lineProperties);
+    set(hLine(lHandle),lineProperties,'HandleVisibility','off');
 end
 
 end

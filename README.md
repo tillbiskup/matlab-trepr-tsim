@@ -13,6 +13,6 @@ If using this program leads to a publication, please mention it in the methods s
 > Deborah L. Meyer, Florian Lombeck, Sven Huettner, Michael Sommer, Till Biskup
 > Direct S0→T Excitation of a Conjugated Polymer Repeat Unit: Unusual Spin-Forbidden Transitions Probed by Time-Resolved Electron Paramagnetic Resonance Spectroscopy
 > J. Phys. Chem. Lett., 8:1677–1682, 2017.
-> doi:10.1021/acs.jpclett.7b00644
+> doi:[10.1021/acs.jpclett.7b00644](https://dx.doi.org/10.1021/acs.jpclett.7b00644)
 
 

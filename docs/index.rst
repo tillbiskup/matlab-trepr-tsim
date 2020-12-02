@@ -10,6 +10,9 @@ Tsim documentation
 
 Welcome! This is the documentation of the Tsim toolbox for MATLAB\ |reg|. 
 
+Tsim lets you simulate and fit spin-polarised triplet spectra recorded with time-resolved electron paramagnetic resonance (TREPR) spectroscopy. For simulation capabilities, it relies on the well-proven `EasySpin toolbox <https://easyspin.org/>`_, fitting is performed using the functionality provided by the MATLAB\ |reg| Optimization Toolbox\ |trade|.
+
+Key to Tsim is a fully reproducible and documented workflow resulting in well-formatted reports as well as a command-line interface (CLI) guiding the user through the process of simulating and fitting the data. Thus, even Bachelor students with next to no prior knowledge of EPR spectroscopy and spectral simulations can get sensible results within reasonable time frame and presented in a form that makes life easier for both, them and their supervisors.
 
 .. note::
    If using this program leads to a publication, please mention it in the methods section and cite the following reference:
@@ -58,6 +61,7 @@ Prerequisites
 -------------
 
   * MATLAB\ |reg|
+  * MATLAB\ |reg| Optimization Toolbox\ |trade|
   * `EasySpin toolbox <https://easyspin.org/>`_
   * `trEPR toolbox <https://github.com/tillbiskup/matlab-trepr>`_
 

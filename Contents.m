@@ -1,3 +1,2 @@
 % trEPR Toolbox Tsim module
-% Version 0.3.19 24-Mar-2020
-
+% Version 0.3.20 14-Dez-2020

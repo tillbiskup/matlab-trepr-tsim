@@ -45,6 +45,9 @@ switch answer
         dataset = TsimCliSim(dataset);
         return;
     case 'q'
+        fprintf('\nPlease don''t forget:\n\n')
+        fprintf(TsimDisclaimerCitation)
+        fprintf('\n')
         disp('Goodbye!');
         return;
     otherwise

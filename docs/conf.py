@@ -10,19 +10,25 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('.'))
 
 
 # -- Project information -----------------------------------------------------
+
+with open(os.path.join(os.path.dirname(__file__), '..', 'Contents.m')) as \
+        version_file:
+    contents = version_file.readlines()
+    release_ = contents[1].split(' ')[2].strip()
 
 project = 'matlab-tsim'
 copyright = '2013-2020, Deborah L. Meyer, Till Biskup'
 author = 'Deborah L. Meyer, Till Biskup'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3.19'
+release = release_
+version = release
 
 
 # -- General configuration ---------------------------------------------------

@@ -23,7 +23,7 @@ with open(os.path.join(os.path.dirname(__file__), '..', 'Contents.m')) as \
     release_ = contents[1].split(' ')[2].strip()
 
 project = 'matlab-tsim'
-copyright = '2013-2020, Deborah L. Meyer, Till Biskup'
+copyright = '2013-2015, Deborah L. Meyer, 2013-2022 Till Biskup'
 author = 'Deborah L. Meyer, Till Biskup'
 
 # The full version, including alpha/beta/rc tags
@@ -43,7 +43,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.intersphinx',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.bibtex',
+    #'sphinxcontrib.bibtex',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -67,3 +67,12 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
+
+# The name of an image file (relative to this directory) to place at the top
+# of the sidebar.
+html_logo = './trepr-tsim-logo.png'
+
+# The name of an image file (relative to this directory) to use as a favicon
+# of the docs.  This file should be a Windows icon file (.ico) being 16x16 or
+# 32x32 pixels large.
+html_favicon = 'favicon.ico'

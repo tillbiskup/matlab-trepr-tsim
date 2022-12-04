@@ -1,0 +1,63 @@
+cff-version: 1.2.0
+title: Tsim toolbox
+message: >-
+  If you use this software, please cite it using the metadata from this file.
+type: software
+authors:
+  - given-names: Deborah
+    family-names: Meyer
+    name-particle: L
+  - given-names: Till
+    family-names: Biskup
+    orcid: 'https://orcid.org/0000-0003-2913-0004'
+repository-code: 'https://github.com/tillbiskup/matlab-trepr-tsim'
+url: 'https://www.trepr.de/'
+abstract: >-
+  A module for the trEPR Toolbox (https://github.com/tillbiskup/matlab-trepr) that lets you simulate and fit spin-polarised triplet spectra recorded with time-resolved electron paramagnetic resonance (TREPR) spectroscopy. For simulation capabilities, it relies on the well-proven  EasySpin toolbox (https://easyspin.org/), fitting is performed using the functionality provided by the MATLAB(r) Optimization Toolbox(tm).
+keywords:
+  - "electron paramagnetic resonance spectroscopy"
+  - "time-resolved electron paramagnetic resonance spectroscopy"
+  - "tr-EPR spectroscopy"
+  - "spectroscopy"
+  - "triplet states"
+  - "spectral fitting"
+  - "magnetic resonance"
+  - "data processing and analysis"
+  - "reproducible science"
+  - "reproducible research"
+license: LGPL-3.0
+references:
+  - authors:
+    - family-names: Meyer
+      given-names: Deborah
+      name-particle: L
+    - family-names: Lombeck
+      given-names: Florian
+    - family-names: Huettner
+      given-names: Sven
+    - family-names: Sommer
+      given-names: Michael
+      orcid: "https://orcid.org/0000-0002-2377-5998"
+    - family-names: Biskup
+      given-names: Till
+      orcid: "https://orcid.org/0000-0003-2913-0004"
+    title: "Direct S0→T Excitation of a Conjugated Polymer Repeat Unit: Unusual Spin-Forbidden Transitions Probed by Time-Resolved Electron Paramagnetic Resonance Spectroscopy"
+    doi: 10.1021/acs.jpclett.7b00644
+    journal: "Journal of Physical Chemistry Letters"
+    pages: 1677-1682
+    volume: 8
+    year: 2017
+    type: article
+  - authors:
+    - given-names: Till
+      family-names: Biskup
+      orcid: 'https://orcid.org/0000-0003-2913-0004'
+    - given-names: Bernd
+      family-names: Paulus
+    - given-names: Deborah
+      family-names: Meyer
+      name-particle: L
+    title: "trEPR toolbox"
+    repository-code: 'https://github.com/tillbiskup/matlab-trepr'
+    doi: 10.5281/zenodo.7395548
+    type: software

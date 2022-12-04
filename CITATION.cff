@@ -6,7 +6,6 @@ type: software
 authors:
   - given-names: Deborah
     family-names: Meyer
-    name-particle: L
   - given-names: Till
     family-names: Biskup
     orcid: 'https://orcid.org/0000-0003-2913-0004'
@@ -34,7 +33,6 @@ references:
   - authors:
     - family-names: Meyer
       given-names: Deborah
-      name-particle: L
     - family-names: Lombeck
       given-names: Florian
     - family-names: Huettner
@@ -60,7 +58,6 @@ references:
       family-names: Paulus
     - given-names: Deborah
       family-names: Meyer
-      name-particle: L
     title: "trEPR toolbox"
     repository-code: 'https://github.com/tillbiskup/matlab-trepr'
     doi: 10.5281/zenodo.7395548

@@ -35,17 +35,9 @@ Features
 How to cite
 -----------
 
-Tsim is free software. However, if you use Tsim for your own research, please cite both, the following article and the software itself:
+Tsim is free software. However, if you use Tsim for your own research, please cite the following article:
 
   * Deborah L. Meyer, Florian Lombeck, Sven Huettner, Michael Sommer, Till Biskup.  Direct S\ :sub:`0`\ →T Excitation of a Conjugated Polymer Repeat Unit: Unusual Spin-Forbidden Transitions Probed by Time-Resolved Electron Paramagnetic Resonance Spectroscopy. `J. Phys. Chem. Lett., 8:1677–1682, 2017 <http://dx.doi.org/10.1021/acs.jpclett.7b00644>`_.
-
-  * Deborah L. Meyer, Till Biskup. Tsim toolbox (2022). `doi:10.5281/zenodo.xxxxxxx <https://doi.org/10.5281/zenodo.xxxxxxx>`_
-
-To make things easier, Tsim has a `DOI <https://doi.org/10.5281/zenodo.xxxxxxx>`_ provided by `Zenodo <https://zenodo.org/>`_, and you may click on the badge below to directly access the record associated with it. Note that this DOI refers to the package as such and always forwards to the most current version.
-
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.xxxxxxx.svg
-   :target: https://doi.org/10.5281/zenodo.xxxxxxx
-
 
 
 Where to start?

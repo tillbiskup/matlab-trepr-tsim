@@ -5,6 +5,10 @@
 
 .. include:: <isonum.txt>
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7395749.svg
+   :target: https://doi.org/10.5281/zenodo.7395749
+   :align: right
+
 Tsim documentation
 ==================
 
@@ -21,13 +25,13 @@ Key to Tsim is a fully reproducible and documented workflow resulting in well-fo
 Features
 --------
 
-  * Comfortable command-line interface (CLI) for fit and simulation
-  * Modular design
-  * Reproducibility: all routines operate on datasets
-  * Support for different input file formats
-  * Integrated help
-  * Automatically generated reports: well-formatted presentation of results
-  * Complete simulation and fit history
+* Comfortable command-line interface (CLI) for fit and simulation
+* Modular design
+* Reproducibility: all routines operate on datasets
+* Support for different input file formats
+* Integrated help
+* Automatically generated reports: well-formatted presentation of results
+* Complete simulation and fit history
 
 
 .. _sec-how_to_cite:
@@ -37,7 +41,15 @@ How to cite
 
 Tsim is free software. However, if you use Tsim for your own research, please cite the following article:
 
-  * Deborah L. Meyer, Florian Lombeck, Sven Huettner, Michael Sommer, Till Biskup.  Direct S\ :sub:`0`\ →T Excitation of a Conjugated Polymer Repeat Unit: Unusual Spin-Forbidden Transitions Probed by Time-Resolved Electron Paramagnetic Resonance Spectroscopy. `J. Phys. Chem. Lett., 8:1677–1682, 2017 <http://dx.doi.org/10.1021/acs.jpclett.7b00644>`_.
+* Deborah L. Meyer, Florian Lombeck, Sven Huettner, Michael Sommer, Till Biskup.  Direct S\ :sub:`0`\ →T Excitation of a Conjugated Polymer Repeat Unit: Unusual Spin-Forbidden Transitions Probed by Time-Resolved Electron Paramagnetic Resonance Spectroscopy. `J. Phys. Chem. Lett., 8:1677–1682, 2017 <http://dx.doi.org/10.1021/acs.jpclett.7b00644>`_.
+
+* Deborah L. Meyer, Till Biskup. Tsim toolbox (2022). `doi:10.5281/zenodo.7395749 <https://doi.org/10.5281/zenodo.7395749>`_
+
+To make things easier, Tsim has a `DOI <https://doi.org/10.5281/zenodo.7395749>`_ provided by `Zenodo <https://zenodo.org/>`_, and you may click on the badge below to directly access the record associated with it. Note that this DOI refers to the package as such and always forwards to the most current version.
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.7395749.svg
+   :target: https://doi.org/10.5281/zenodo.7395749
+
 
 
 Where to start?
@@ -51,11 +63,11 @@ Installation
 
 The Tsim toolbox for MATLAB\ |reg| comes with a dedicated installer. Therefore, it is *highly recommended* to use this installer to get a properly working installation of the Tsim toolbox.
 
-  * Download the source code (from `GitHub <https://github.com/tillbiskup/matlab-trepr-tsim>`_).
-  * Start MATLAB\ |reg|
-  * Change to the folder you've downloaded (and unpacked) the source code to
-  * Change to the 'internal' subdirectory
-  * Call the ``TsimInstall`` function
+* Download the source code (from `GitHub <https://github.com/tillbiskup/matlab-trepr-tsim>`_).
+* Start MATLAB\ |reg|
+* Change to the folder you've downloaded (and unpacked) the source code to
+* Change to the 'internal' subdirectory
+* Call the ``TsimInstall`` function
 
 This will add all necessary (and only the necessary) folders to the MATLAB\ |reg| path and place configuration and templates in their respective folders in your user's home directory.
 
@@ -66,10 +78,10 @@ This will add all necessary (and only the necessary) folders to the MATLAB\ |reg
 Prerequisites
 -------------
 
-  * MATLAB\ |reg|
-  * MATLAB\ |reg| Optimization Toolbox\ |trade|
-  * `EasySpin toolbox <https://easyspin.org/>`_
-  * `trEPR toolbox <https://github.com/tillbiskup/matlab-trepr>`_
+* MATLAB\ |reg|
+* MATLAB\ |reg| Optimization Toolbox\ |trade|
+* `EasySpin toolbox <https://easyspin.org/>`_
+* `trEPR toolbox <https://github.com/tillbiskup/matlab-trepr>`_
 
 
 License
@@ -103,11 +115,11 @@ MATLAB\ |reg| projects
 
 * `trEPR toolbox <https://github.com/tillbiskup/matlab-trepr>`_
 
-    Toolbox for preprocessing, display, analysis, and postprocessing of transient (*i.e.*, time-resolved) electron spin resonance spectroscopy (in short: trEPR) data. Spiritual predecessor of the `trepr package <https://docs.trepr.de/>`_ implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Focusses particularly on automating the pre-processing and representation of data.
+  Toolbox for preprocessing, display, analysis, and postprocessing of transient (*i.e.*, time-resolved) electron spin resonance spectroscopy (in short: trEPR) data. Spiritual predecessor of the `trepr package <https://docs.trepr.de/>`_ implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Focusses particularly on automating the pre-processing and representation of data.
 
 * `cwepr toolbox <https://github.com/tillbiskup/matlab-cwepr>`_
 
-    Toolbox for analysing cwEPR data (common Toolbox based). Spiritual predecessor of the `cwepr package <https://docs.cwepr.de/>`_ implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Focusses particularly on automating the pre-processing and representation of data.
+  Toolbox for analysing cwEPR data (common Toolbox based). Spiritual predecessor of the `cwepr package <https://docs.cwepr.de/>`_ implemented in Python. Each processing and analysis step gets automatically logged with all parameters to ensure reproducibility. Focusses particularly on automating the pre-processing and representation of data.
 
 
 Python projects
@@ -115,19 +127,19 @@ Python projects
 
 * `ASpecD framework <https://docs.aspecd.de/>`_
 
-    A Python framework for the analysis of spectroscopic data focussing on reproducibility and good scientific practice, developed by T. Biskup.
+  A Python framework for the analysis of spectroscopic data focussing on reproducibility and good scientific practice, developed by T. Biskup.
 
 * `trepr package <https://docs.trepr.de/>`_
 
-    Python package for processing and analysing time-resolved electron paramagnetic resonance (trEPR) data, developed by J. Popp, currently developed and maintained by M. Schröder and T. Biskup.
+  Python package for processing and analysing time-resolved electron paramagnetic resonance (trEPR) data, developed by J. Popp, currently developed and maintained by M. Schröder and T. Biskup.
 
 * `cwepr package <https://docs.cwepr.de/>`_
 
-    Python package for processing and analysing continuous-wave electron paramagnetic resonance (cw-EPR) data, originally implemented by P. Kirchner, developed and maintained by M. Schröder and T. Biskup.
+  Python package for processing and analysing continuous-wave electron paramagnetic resonance (cw-EPR) data, originally implemented by P. Kirchner, developed and maintained by M. Schröder and T. Biskup.
 
 * `FitPy framework <https://docs.fitpy.de/>`_
 
-    Python framework for the advanced fitting of models to spectroscopic data focussing on reproducibility, developed by T. Biskup.
+  Python framework for the advanced fitting of models to spectroscopic data focussing on reproducibility, developed by T. Biskup.
 
 
 .. toctree::

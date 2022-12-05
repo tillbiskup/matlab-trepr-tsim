@@ -1,5 +1,7 @@
 # Tsim Toolbox
 
+[![DOI](zenodo.7395749.svg)](https://doi.org/10.5281/zenodo.7395749)
+
 Tsim is a module for the [trEPR Toolbox](https://github.com/tillbiskup/matlab-trepr) that lets you simulate and fit spin-polarised triplet spectra recorded with time-resolved electron paramagnetic resonance (TREPR) spectroscopy. For simulation capabilities, it relies on the well-proven [EasySpin toolbox](https://easyspin.org/), fitting is performed using the functionality provided by the MATLAB(r) Optimization Toolbox(tm).
 
 For more information type "TsimInfo" at the Matlab(r) command line.
@@ -40,8 +42,12 @@ This will add all necessary (and only the necessary) folders to the MATLAB(r) pa
 
 The Tsim toolbox is free software. However, if using this program leads to a publication, please mention it in the methods section and cite the following reference:
 
- * Deborah L. Meyer, Florian Lombeck, Sven Huettner, Michael Sommer, Till Biskup. 
+  * Deborah L. Meyer, Florian Lombeck, Sven Huettner, Michael Sommer, Till Biskup. 
 Direct S0→T Excitation of a Conjugated Polymer Repeat Unit: Unusual Spin-Forbidden Transitions Probed by Time-Resolved Electron Paramagnetic Resonance Spectroscopy. *J. Phys. Chem. Lett.*, **8**:1677–1682, 2017. doi:[10.1021/acs.jpclett.7b00644](https://dx.doi.org/10.1021/acs.jpclett.7b00644)
+
+  * Deborah L. Meyer, Till Biskup. Tsim toolbox (2022). [doi:10.5281/zenodo.7395749](https://doi.org/10.5281/zenodo.7395749)
+
+    [![DOI](zenodo.7395749.svg)](https://doi.org/10.5281/zenodo.7395749)
 
 
 ## License

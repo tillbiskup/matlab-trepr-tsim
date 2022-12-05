@@ -10,9 +10,9 @@ authors:
     family-names: Biskup
     orcid: 'https://orcid.org/0000-0003-2913-0004'
 repository-code: 'https://github.com/tillbiskup/matlab-trepr-tsim'
-url: 'https://www.trepr.de/'
+url: 'https://tsim.docs.till-biskup.de/'
 abstract: >-
-  A module for the trEPR Toolbox (https://github.com/tillbiskup/matlab-trepr) that lets you simulate and fit spin-polarised triplet spectra recorded with time-resolved electron paramagnetic resonance (TREPR) spectroscopy. For simulation capabilities, it relies on the well-proven  EasySpin toolbox (https://easyspin.org/), fitting is performed using the functionality provided by the MATLAB(r) Optimization Toolbox(tm).
+  A module for the MATLAB(r) trEPR Toolbox (https://github.com/tillbiskup/matlab-trepr) that lets you simulate and fit spin-polarised triplet spectra recorded with time-resolved electron paramagnetic resonance (TREPR) spectroscopy. For simulation capabilities, it relies on the well-proven  EasySpin toolbox (https://easyspin.org/), fitting is performed using the functionality provided by the MATLAB(r) Optimization Toolbox(tm).
 keywords:
   - "electron paramagnetic resonance spectroscopy"
   - "time-resolved electron paramagnetic resonance spectroscopy"
